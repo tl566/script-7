@@ -4,8 +4,8 @@
 "info":"请更新版本，\n* 修复一些问题及优化一些代码：\n\t- 修复最后统计显示为0，新增开卡个数统计\n\t- 修复文件绝对路径与相对路径问题\n* 新增机器人通知\n\t- 开启远程shopid、配合crontab 坐等收豆\n\n以下获取最新版本方式:\n1.公众号 TopStyle\n2.TG频道 https://t.me/TopStyle2021 \n3.开源仓库 github.com/curtinlv/JD-Script",
 "readme1":"",
 "readme2":"",
-"readme3":"\n\n[Info]: 目前每天07:30分自动更新远程shopid，08:00后跑一次即可。",
-"m":"!!! 无法使用，请联系作者。CurtinLV",
+"readme3":"\n\n[Info]: \n今天出现点小意外，shopid将12点更新，请12点后再执行脚本。",
+"m":"!!! 无法使用，请联系作者。CurtinLV 目前每天07:30分自动更新远程shopid，08:00后跑一次即可。",
 "s":5,
 "footer":"记得销卡哈哈哈~\n开源免费使用：https://github.com/curtinlv/JD-Script"
 
