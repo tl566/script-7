@@ -85,6 +85,7 @@
 {'shopid': '10111212', 'venderId': '10246306', 'activityId': '10390814', 'signbody': 'sign=9ca73a70b7134d7f1e88fe81097688fb&st=1622993859810&sv=121'}
 {'shopid': '988794', 'venderId': '10140740', 'activityId': '10389361', 'signbody': 'sign=38de6b19b6b86e14217ca7e070a61a41&st=1622866240513&sv=102'}
 {'shopid': '181390', 'venderId': '188883', 'activityId': '10388325', 'signbody': 'sign=6acc7e79f1a616cb2bd98cdffb6bb2d1&st=1622880183929&sv=110'}
+{'shopid': '1000014988', 'venderId': '1000014988', 'activityId': '10384469', 'signbody': 'sign=4ecb643f1d20e74dcc9a3d56cb52580c&st=1623074300945&sv=101'}
 {'shopid': '1000104643', 'venderId': '1000104643', 'activityId': '10390832', 'signbody': 'sign=e53c1dfe82e339e602c72ef401958b9f&st=1622912381043&sv=110'}
 {'shopid': '10213158', 'venderId': '10359892', 'activityId': '10394283', 'signbody': 'sign=788649a40586a8c8147feccc4630ad8e&st=1623073167579&sv=111'}
 {'shopid': '20377', 'venderId': '20922', 'activityId': '10388874', 'signbody': 'sign=b9ee5b52eff4c92e80e443bf101eec90&st=1622912252499&sv=121'}
