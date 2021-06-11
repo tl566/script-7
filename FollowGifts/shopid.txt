@@ -79,6 +79,7 @@
 {'shopid': '10234077', 'venderId': '10381198', 'activityId': '10397601', 'signbody': 'sign=76a872c600eb348ce4a2dd9f3f5dc935&st=1623285297159&sv=121'}
 {'shopid': '1000328862', 'venderId': '1000328862', 'activityId': '10376053', 'signbody': 'sign=aa81129b870f4a8483e532ae69b91454&st=1622961771003&sv=111'}
 {'shopid': '662490', 'venderId': '667324', 'activityId': '10394502', 'signbody': 'sign=9871c9365f099b1636c448f78aa73c1c&st=1623152392618&sv=102'}
+{'shopid': '1000004549', 'venderId': '1000004549', 'activityId': '10399582', 'signbody': 'sign=dcbf59e5ef6cb524b31917596449a6c0&st=1623418912388&sv=121'}
 {'shopid': '1000104502', 'venderId': '1000104502', 'activityId': '10396596', 'signbody': 'sign=d33170d5ce6fd599286ae052e9a6e3d2&st=1623212733223&sv=111'}
 {'shopid': '12888', 'venderId': '13358', 'activityId': '10385477', 'signbody': 'sign=ede51b54b204750cc190d79f70b54a19&st=1622912209837&sv=100'}
 {'shopid': '797281', 'venderId': '801136', 'activityId': '10397993', 'signbody': 'sign=9bb66c4299deb71f5dbcc95f82f14f41&st=1623285402538&sv=122'}
@@ -99,6 +100,7 @@
 {'shopid': '10170504', 'venderId': '10308227', 'activityId': '10386485', 'signbody': 'sign=40dc3ddc6c44682e4ff91134f36cca2f&st=1622916512872&sv=100'}
 {'shopid': '86769', 'venderId': '89319', 'activityId': '10393285', 'signbody': 'sign=f8e1af56601c65bde2f9928e80e62fe7&st=1622912543128&sv=110'}
 {'shopid': '1000155401', 'venderId': '1000155401', 'activityId': '10385237', 'signbody': 'sign=bf95ab1c642a80e5be1c57f9d56c81f6&st=1622962214002&sv=102'}
+{'shopid': '1000000589', 'venderId': '1000000589', 'activityId': '10399847', 'signbody': 'sign=87bd46e9921fd18c3b7d8e2cc348c25a&st=1623418929951&sv=110'}
 {'shopid': '1000367563', 'venderId': '1000367563', 'activityId': '10372032', 'signbody': 'sign=00eb59cbee9dd8d20afb9bbd17e09e7b&st=1622916069354&sv=120'}
 {'shopid': '807012', 'venderId': '809319', 'activityId': '10382851', 'signbody': 'sign=a1420c82bcaf5772e962df09460e5bd0&st=1622972630031&sv=110'}
 {'shopid': '10390256', 'venderId': '10614613', 'activityId': '10391975', 'signbody': 'sign=45acd1ab14aa04a792c8a950bf215f36&st=1623029256735&sv=120'}
