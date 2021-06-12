@@ -83,6 +83,7 @@
 {'shopid': '1000104502', 'venderId': '1000104502', 'activityId': '10396596', 'signbody': 'sign=d33170d5ce6fd599286ae052e9a6e3d2&st=1623212733223&sv=111'}
 {'shopid': '12888', 'venderId': '13358', 'activityId': '10385477', 'signbody': 'sign=ede51b54b204750cc190d79f70b54a19&st=1622912209837&sv=100'}
 {'shopid': '797281', 'venderId': '801136', 'activityId': '10397993', 'signbody': 'sign=9bb66c4299deb71f5dbcc95f82f14f41&st=1623285402538&sv=122'}
+{'shopid': '1000368082', 'venderId': '1000368082', 'activityId': '10399343', 'signbody': 'sign=54001141ee5741bd3ef93131438c119d&st=1623487841690&sv=101'}
 {'shopid': '10044221', 'venderId': '10179646', 'activityId': '10386352', 'signbody': 'sign=68da7d624e92332b6f210b50fc41f1d6&st=1622961711917&sv=102'}
 {'shopid': '21108', 'venderId': '21583', 'activityId': '10393258', 'signbody': 'sign=058560adc45e4348444900b35da0b86c&st=1622916416167&sv=111'}
 {'shopid': '833781', 'venderId': '10000062', 'activityId': '10303685', 'signbody': 'sign=fd49e66ac7cf08938dc715ef133b78de&st=1622916286037&sv=102'}
@@ -130,6 +131,7 @@
 {'shopid': '1000369701', 'venderId': '1000369701', 'activityId': '10395318', 'signbody': 'sign=488ab1104333b7ed6a59414918f48956&st=1623213228767&sv=110'}
 {'shopid': '781305', 'venderId': '785466', 'activityId': '10384198', 'signbody': 'sign=8144d4ddf4af5359a5cecb9efd00593f&st=1622972289088&sv=112'}
 {'shopid': '1000364368', 'venderId': '1000364368', 'activityId': '10383832', 'signbody': 'sign=078d3f2e22e4f1f1b158a09d84295a12&st=1623213171701&sv=102'}
+{'shopid': '993330', 'venderId': '10147642', 'activityId': '10399602', 'signbody': 'sign=9bf555e4c8318dce5c7cec297860fe5f&st=1623487769824&sv=122'}
 {'shopid': '890399', 'venderId': '10051039', 'activityId': '10389744', 'signbody': 'sign=8e13cadeec056b7ea501be0689d7b3b6&st=1623213683437&sv=101'}
 {'shopid': '10027432', 'venderId': '10161883', 'activityId': '10378089', 'signbody': 'sign=dfe06d39d2e483102fc37c93c932358c&st=1622915697338&sv=112'}
 {'shopid': '1000362204', 'venderId': '1000362204', 'activityId': '10395201', 'signbody': 'sign=a14a00a358f6c59d869cb0ef9e5c462a&st=1623212836477&sv=122'}
