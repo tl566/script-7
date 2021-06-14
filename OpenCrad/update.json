@@ -1,7 +1,8 @@
+
 {
-"isEnable":54,
-"version":"v1.2.0",
-"info":"低版本无法使用请更新版本【v1.2.0】，\n*新增单或多账号并发、新增企业微信、Bark推送，及优化一些逻辑\n1.公众号 TopStyle\n2.TG频道 https://t.me/TopStyle2021 \n\nPC端exe版：\nhttps://github.com/curtinlv/JD-Script/releases/download/v.1.2.0/JDOpenCrad_ForWin_v1.2.0.zip\nPy源码下载（手机用户）：\nhttps://github.com/curtinlv/JD-Script/releases/download/v.1.2.0/JDOpenCardSrc_v1.2.0.zip",
+"isEnable":55,
+"version":"v1.2.1",
+"info":"已更新版本【v1.2.1】:\n\t*新增单/双线程控制开关\n\t*修复请求异常问题，如腾讯云服务器环境跑报错\n1.公众号 TopStyle\n2.TG频道 https://t.me/TopStyle2021 \n\nPC端exe版：\nhttps://github.com/curtinlv/JD-Script/releases/download/v.1.2.0/JDOpenCrad_ForWin_v1.2.0.zip\nPy源码下载（手机用户）：\nhttps://github.com/curtinlv/JD-Script/releases/download/v.1.2.0/JDOpenCardSrc_v1.2.0.zip",
 "readme1":"",
 "readme2":"",
 "readme3":"\n[Info]: \n目前每天07:30和14:30 更新远程shopid，08,15点后跑一次即可。有问题请到群反馈讨论：\nTG群：https://t.me/topstyle996",
