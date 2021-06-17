@@ -227,7 +227,7 @@ async function joinTwoPeopleRun() {
 }
 //日常任务
 async function petTask() {
-  for (let item of $.getPetTaskConfigRes.datas) {
+  for (let item of $.getPetTaskConfigRes.datas || []) {
     const joinedCount = item.joinedCount || 0;
     if (item['receiveStatus'] === 'chance_full') {
       console.log(`${item.taskName} 任务已完成`)
@@ -378,7 +378,7 @@ async function appPetTask() {
   await appGetPetTaskConfig();
   // console.log('$.appGetPetTaskConfigRes', $.appGetPetTaskConfigRes.success)
   if ($.appGetPetTaskConfigRes.success) {
-    for (let item of $.appGetPetTaskConfigRes.datas) {
+    for (let item of $.appGetPetTaskConfigRes.datas || []) {
       if (item['taskType'] === 'ScanMarket' && item['receiveStatus'] === 'chance_left') {
         const scanMarketList = item.scanMarketList;
         for (let scan of scanMarketList) {
