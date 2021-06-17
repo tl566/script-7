@@ -50,6 +50,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
     $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+  await getToken();
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS
   console.log(`\n小功能::仅仅是收集一下618动物联萌领金币每秒产生的金币,建议30分钟执行一次脚本\n`)
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -128,6 +129,30 @@ function getHomeData() {
         resolve();
       }
     })
+  })
+}
+
+function getToken(timeout = 0){
+  return new Promise((resolve) => {
+    setTimeout( ()=>{
+      let url = {
+        url : `https://bh.m.jd.com/gettoken`,
+        headers : {
+          'Content-Type' : `text/plain;charset=UTF-8`
+        },
+        body : `content={"appname":"50084","whwswswws":"","jdkey":"","body":{"platform":"1"}}`
+      }
+      $.post(url, async (err, resp, data) => {
+        try {
+          data = JSON.parse(data);
+          joyToken = data.joyytoken;
+        } catch (e) {
+          $.logErr(e, resp);
+        } finally {
+          resolve()
+        }
+      })
+    },timeout)
   })
 }
 
