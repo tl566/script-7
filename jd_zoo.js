@@ -50,13 +50,11 @@ if ($.isNode()) {
     cookiesArr.push(jdCookieNode[item])
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
-  cookiesArr = cookiesArr.map(ck => ck  + `joyytoken=50084${joyToken};`)
 } else {
   cookiesArr = [
     $.getdata("CookieJD"),
     $.getdata("CookieJD2"),
     ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
-  cookiesArr = cookiesArr.map(ck => ck  + `joyytoken=50084${joyToken};`)
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -64,6 +62,7 @@ if ($.isNode()) {
     return;
   }
   await getToken();
+  cookiesArr = cookiesArr.map(ck => ck  + `joyytoken=50084${joyToken};`)
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS
   console.log('活动入口：京东APP-》搜索 玩一玩-》瓜分20亿\n' +
       '邀请好友助力：内部账号自行互助(排名靠前账号得到的机会多)\n' +

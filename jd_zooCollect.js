@@ -38,10 +38,8 @@ if ($.isNode()) {
     cookiesArr.push(jdCookieNode[item])
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
-  cookiesArr = cookiesArr.map(ck => ck  + `joyytoken=50084${joyToken};`)
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
-  cookiesArr = cookiesArr.map(ck => ck  + `joyytoken=50084${joyToken};`)
 }
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
@@ -51,6 +49,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
     return;
   }
   await getToken();
+  cookiesArr = cookiesArr.map(ck => ck  + `joyytoken=50084${joyToken};`)
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS
   console.log(`\n小功能::仅仅是收集一下618动物联萌领金币每秒产生的金币,建议30分钟执行一次脚本\n`)
   for (let i = 0; i < cookiesArr.length; i++) {
