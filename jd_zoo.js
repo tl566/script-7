@@ -168,7 +168,8 @@ async function zoo() {
     }
     await $.wait(1000);
     await takePostRequest('zoo_getHomeData');
-    $.userInfo =$.homeData.result.homeMainInfo
+    $.userInfo =$.homeData.result.homeMainInfo;
+    await takePostRequest('zoo_pk_receiveGroupReward');//领取PK红包
     console.log(`\n\n当前分红：${$.userInfo.raiseInfo.redNum}份，当前等级:${$.userInfo.raiseInfo.scoreLevel}\n当前金币${$.userInfo.raiseInfo.remainScore}，下一关需要${$.userInfo.raiseInfo.nextLevelScore - $.userInfo.raiseInfo.curLevelStartScore}\n\n`);
     await $.wait(1000);
     await takePostRequest('zoo_getSignHomeData');
@@ -541,6 +542,10 @@ async function takePostRequest(type) {
       body = getPostBody(type);
       myRequest = await getPostRequest(`zoo_collectScore`,body);
       break;
+    case 'zoo_pk_receiveGroupReward':
+      body = `functionId=${type}&body={}&client=wh5&clientVersion=1.0.0`;
+      myRequest = await getPostRequest(`zoo_pk_receiveGroupReward`, body);
+      break;
     default:
       console.log(`错误${type}`);
   }
@@ -760,7 +765,22 @@ async function dealReturn(type, data) {
         console.log(JSON.stringify(data));
         console.log(`加购失败`);
       }
-      break
+      break;
+    case 'zoo_pk_receiveGroupReward':
+      if (data.code === 0) {
+        if (data.data.bizCode === 0) {
+          console.log(`领取PK红包成功:共${data.data.result.value}元\n`);
+          if (parseInt(data.data.result.value)) {
+            $.msg($.name, `京东账号 ${$.index} ${$.UserName || $.nickName}\n领取PK红包成功:共${data.data.result.value}元`);
+            if ($.isNode()) await notify.sendNotify($.name, `京东账号 ${$.index} ${$.UserName || $.nickName}\n领取PK红包成功:共${data.data.result.value}元`)
+          }
+        } else {
+          console.log(`领取PK红包失败:${data.data.bizMsg}\n`)
+        }
+      } else {
+        console.log(`领取PK奖励异常:${JSON.stringify(data)}`);
+      }
+      break;
     default:
       console.log(`未判断的异常${type}`);
   }
@@ -860,7 +880,7 @@ function getPostBody(type) {
     taskBody = `functionId=zoo_getWelfareScore&body=${JSON.stringify({"type": 2,"currentScence":$.currentScence,"ss" : getBody()})}&client=wh5&clientVersion=1.0.0`;
   } else if(type === 'add_car'){
     taskBody = `functionId=zoo_collectScore&body=${JSON.stringify({"taskId": $.taskId,"taskToken":$.taskToken,"actionType":1,"ss" : getBody()})}&client=wh5&clientVersion=1.0.0`
-  }else{
+  } else{
     taskBody = `functionId=${type}&body=${JSON.stringify({"taskId": $.oneTask.taskId,"actionType":1,"taskToken" : $.oneActivityInfo.taskToken,"ss" : getBody()})}&client=wh5&clientVersion=1.0.0`
   }
   return taskBody + '&uuid=ef746bc0663f7ca06cdd1fa724c15451900039cf'
