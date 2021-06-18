@@ -47,18 +47,35 @@ async function getGirl() {
 /**
  * 获取每日毒鸡汤
  */
+// async function getSoup() {
+//   try {
+//     // let res = await superagent.req(POISON, "GET");
+//     let res = await superagent.req(POISON, "GET");
+//     // let $ = cheerio.load(res.text);
+//     // const content = $("#sentence").text();
+//     const result = res.body;
+//     // return content;
+//     console.log(result.data.title)
+//     return result.data.title;
+//   } catch (err) {
+//     console.error("err");
+//     return err;
+//   }
+// }
 async function getSoup() {
+  const url = TXHOST + "dujitang/index";
   try {
-    // let res = await superagent.req(POISON, "GET");
-    let res = await superagent.req(POISON, "GET");
-    // let $ = cheerio.load(res.text);
-    // const content = $("#sentence").text();
-    const result = res.body;
-    // return content;
-    return result.data.title;
+    let res = await superagent.req(url, "GET", {
+      key: APIKEY,
+    });
+    let content = JSON.parse(res.text);
+    if (content.code === 200) {
+      return content.newslist[0].content;
+    } else {
+      console.log("获取接口失败", content.msg);
+    }
   } catch (err) {
-    console.error("err");
-    return err;
+    console.log("获取接口失败", err);
   }
 }
 
@@ -163,13 +180,33 @@ async function getEnglishOne() {
   }
 }
 
+/**
+ * 舔狗日记
+*/
+async function getEatDog() {
+  const url = TXHOST + "tiangou/index";
+  try {
+    let res = await superagent.req(url, "GET", {
+      key: APIKEY,
+    });
+    let content = JSON.parse(res.text);
+    if (content.code === 200) {
+      return content.newslist[0].content;
+    } else {
+      console.log("获取接口失败", content.msg);
+    }
+  } catch (err) {
+    console.log("获取接口失败", err);
+  }
+}
+
 // 转链接
 async function MyLink(params) {
   // var reg = /(https?|http|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/g;
   // let reg = /https:\/\/u\.jd\.com\/[A-Za-z0-9]*/g // 匹配的是无query参数的
   let reg = /https:\/\/u\.jd\.com\/[A-Za-z0-9]*\??([A-Za-z0-9]*=[A-Za-z0-9]*&*)*/g // 匹配有query参数的
   let arr = params.match(reg)
-  console.log(arr, "原始链接");
+  // console.log(arr, "原始链接");
   let tempLink = []
 
   if (arr && arr.length) {
@@ -200,14 +237,14 @@ async function MyLink(params) {
       )
     }
     let res = await Promise.all(tempLink)
-    console.log(res, "我需要的链接");
+    // console.log(res, "我需要的链接");
     arr.forEach((item, idx) => {
       params = params.replace(item, res[idx] ? res[idx] : item)
     })
-    console.log(params, "我的推广文案");
+    // console.log(params, "我的推广文案");
     return params
   } else {
-    if (params.includes('毒鸡汤')) {
+    if (params.includes('序号')) {
       params = ""
     } else {
       params = params
@@ -225,5 +262,6 @@ module.exports = {
   getProvinceFeiyan,
   getGodReply,
   getEnglishOne,
+  getEatDog,
   MyLink,
 };

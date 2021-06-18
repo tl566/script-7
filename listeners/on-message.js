@@ -32,6 +32,7 @@ const allKeywords = `回复序号或关键字获取对应服务
 3.英语一句话
 4.京东省钱群
 5.摸鱼群
+6.舔狗日记
 `;
 
 const youhuiquan = `JD【优惠雷达】，自动扫描降价商品；
@@ -61,12 +62,12 @@ async function onMessage(msg, bot) {
     // console.log(room.payload.topic);
     if (room.payload.topic === '自营京东省钱群' || room.payload.topic === '京东省钱群' ||
       room.payload.topic === 'web技术交流群' || room.payload.topic.includes('最佳冖家人') ||
-      room.payload.topic.includes("邑大") || room.payload.topic.includes("不加班")) {
+      room.payload.topic.includes("邑大") || room.payload.topic.includes("不加班") || room.payload.topic.includes("啊这嗯哼")) {
       await onWebRoomMessage(msg, bot);
     }
   } else {
     //处理用户消息  用户消息暂时只处理文本消息。后续考虑其他
-    console.log("bot.Message", bot.Message);
+    // console.log("bot.Message", bot.Message);
     const isText = msg.type() === bot.Message.Type.Text;
     const isImg = msg.type() === bot.Message.Type.Image;
 
@@ -138,13 +139,13 @@ async function onPeopleMessage(msg, bot) {
     }
   } else if (content === "爱养眼") {
     let mm = await superagent.getGirl();
-    console.log(mm);
+    // console.log(mm);
     const fileBox1 = FileBox.fromUrl(mm)
     await msg.say(fileBox1)
   } else if (content === "毒鸡汤" || parseInt(content) === 1) {
     let poison = await superagent.getSoup();
     await delay(200);
-    console.log(poison);
+    // console.log(poison);
     await msg.say(poison);
   } else if (content === '情语' || parseInt(content) === 2) {
     let love = await superagent.getSweet();
@@ -154,6 +155,10 @@ async function onPeopleMessage(msg, bot) {
     const { title, content } = await superagent.getGodReply();
     await delay(200);
     await msg.say(`标题：${title}<br><br>神回复：${content}`);
+  } else if (content === "舔狗日记" || parseInt(content) === 6) {
+    const tg = await superagent.getEatDog();
+    await delay(200);
+    await msg.say(tg);
   } else if (content === "英语一句话" || parseInt(content) === 3) {
     const { en, zh } = await superagent.getEnglishOne();
     await delay(200);
@@ -177,7 +182,7 @@ async function onWebRoomMessage(msg, bot) {
     if (content === "情语") {
       let love = await superagent.getSweet();
       await delay(200);
-      console.log(love);
+      // console.log(love);
       await msg.say(love);
     } else if (content === "毒鸡汤") {
       if (room.payload.topic === "京东省钱群") return
@@ -188,6 +193,10 @@ async function onWebRoomMessage(msg, bot) {
       const res = await superagent.getEnglishOne();
       await delay(200);
       await msg.say(`en：${res.en}<br><br>zh：${res.zh}`);
+    } else if (content === "舔狗日记") {
+      const tg = await superagent.getEatDog();
+      await delay(200);
+      await msg.say(tg);
     } else if (content === "菜单") {
       await delay(200);
       await msg.say(allKeywords);
@@ -231,7 +240,7 @@ async function onUtilsMessage(msg, bot) {
     if (webRoom) {
       if (isText) {
         const result = await superagent.MyLink(msg.payload.text);
-        console.log(result, 999);
+        // console.log(result, 999);
         await delay(200);
         if (result) {
           await webRoom.say(result);

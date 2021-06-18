@@ -52,7 +52,8 @@ function formatDate(date) {
     if (second < 10) {
         second = "0" + second;
     }
-    return year + "-" + month + "-" + day + "日 " + hour + ":" + min + ' ' + str;
+    // return year + "-" + month + "-" + day + "日 " + hour + ":" + min + ' ' + str;
+    return year + "-" + month + "-" + day + "日 " + "09:00" + ' ' + str;
 }
 /**
  * rgb转base64

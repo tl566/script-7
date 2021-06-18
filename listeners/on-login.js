@@ -23,13 +23,10 @@ async function onLogin(user, bot) {
  */
 async function onRoom(bot) {
   //匹配规则可参考 schedule/index.js
-  // const time = "0 30 9 * * *";
-  schedule.setSchedule({ hour: 9, minute: 30 }, async () => {
-    const room0 = await bot.Room.find({
-      topic: config.WEBROOM[0]
-    });
+  const time = "0 0 1 * * *";
+  schedule.setSchedule(time, async () => {
     const room = await bot.Room.find({
-      topic: config.WEBROOM[1]
+      topic: config.WEBROOM[0]
     });
     let today = await untils.formatDate(new Date()); //获取今天的日期
     let one = await superagent.getOne(); //获取每日一句
@@ -38,7 +35,6 @@ async function onRoom(bot) {
     let poison = await superagent.getSoup(); //毒鸡汤
     const str = `${today}\n元气满满的一天开始啦,要加油噢^_^\n\n每日一句：\n${one}\n\n英语一句话：\n${english}\n\n毒鸡汤：\n${poison}`;
     await room.say(str);
-    await room0.say(str);
   });
 }
 module.exports = onLogin;
