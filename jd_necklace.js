@@ -1,6 +1,6 @@
 /*
 点点券，可以兑换无门槛红包（1元，5元，10元，100元，部分红包需抢购）
-Last Modified time: 2021-05-28 17:27:14
+Last Modified time: 2021-06-18 12:27:14
 活动入口：京东APP-领券中心/券后9.9-领点点券 [活动地址](https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html)
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===============Quantumultx===============
@@ -21,6 +21,7 @@ cron "10 0,20 * * *" script-path=jd_necklace.js,tag=点点券
 const $ = new Env('点点券');
 let allMessage = ``;
 const notify = $.isNode() ? require('./sendNotify') : '';
+const zooFaker = require('./utils/ZooFaker_Necklace');
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const openUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html%22%20%7D`
@@ -43,7 +44,6 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  console.log(`\n通知：京东已在领取任务、签到、领取点点券三个添加了log做了校验，暂时无可解决\n`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -53,7 +53,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       $.nickName = '';
       message = '';
       await TotalBean();
-      console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
+      console.log(`\n*******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
 
@@ -105,8 +105,9 @@ function showMsg() {
 async function doTask() {
   for (let item of $.taskConfigVos) {
     if (item.taskStage === 0) {
-      console.log(`【${item.taskName}】 任务未领取,开始领取此任务`);
-      await necklace_startTask(item.id);
+      console.log(`\n【${item.taskName}】 任务未领取,开始领取此任务`);
+      const res = await necklace_startTask(item.id);
+      if (res && res.rtn_code !== 0) continue
       console.log(`【${item.taskName}】 任务领取成功,开始完成此任务`);
       await $.wait(1000);
       await reportTask(item);
@@ -121,9 +122,15 @@ async function doTask() {
   }
 }
 async function receiveBubbles() {
-  for (let item of $.bubbles) {
+  if ($.bubbles && $.bubbles.length) {
     console.log(`\n开始领取点点券`);
-    await necklace_chargeScores(item.id)
+    for (let item of $.bubbles) {
+      if (!item.id) continue;
+      await necklace_chargeScores(item.id);
+      await $.wait(1000)
+    }
+  } else {
+    console.log(`\n当前暂无可领取点点券`);
   }
 }
 async function sign() {
@@ -131,7 +138,7 @@ async function sign() {
     console.log(`\n开始每日签到`)
     await necklace_sign();
   } else {
-    console.log(`当前${new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000).toLocaleString()}已签到`)
+    console.log(`已签到\n`)
   }
 }
 async function reportTask(item = {}) {
@@ -153,10 +160,8 @@ async function reportTask(item = {}) {
 }
 //每日签到福利
 function necklace_sign() {
-  return new Promise(resolve => {
-    const body = {
-      currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
-    }
+  return new Promise(async resolve => {
+    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'sign' });
     $.post(taskPostUrl("necklace_sign", body), async (err, resp, data) => {
       try {
         if (err) {
@@ -171,6 +176,8 @@ function necklace_sign() {
                 // $.taskConfigVos = data.data.result.taskConfigVos;
                 // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
               }
+            } else if (data.rtn_code === 403) {
+              console.log(`每日签到失败：活动太火爆了,还是去买买买吧~\n`);
             } else {
               console.log(`每日签到失败：${JSON.stringify(data)}\n`);
             }
@@ -220,23 +227,22 @@ function necklace_exchangeGift(scoreNums) {
 }
 //领取奖励
 function necklace_chargeScores(bubleId) {
-  return new Promise(resolve => {
-    const body = {
-      bubleId,
-      currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
-    }
+  return new Promise(async resolve => {
+    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'chargeScores', 'id': bubleId });
     $.post(taskPostUrl("necklace_chargeScores", body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
+          // console.log(`领取点点券结果`, data);
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
-                // $.taskConfigVos = data.data.result.taskConfigVos;
-                // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
+                console.log(`点点券领取成功,获得${data.data.result.giftScoreNum},当前共有${data.data.result.totalScoreNum}\n`)
+                // $.giftScoreNum = data.data.result.giftScoreNum;
+                $.totalScore = data.data.result.totalScoreNum;
               }
             } else {
               console.log(`领取点点券失败：${JSON.stringify(data)}\n`)
@@ -252,19 +258,21 @@ function necklace_chargeScores(bubleId) {
   })
 }
 function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = "") {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
     let body = {
       taskId,
       currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
     }
-    if (itemId) body['itemId'] = itemId;
+    if (functionId === 'necklace_startTask') {
+      body = await zooFaker.getBody({ 'id': taskId, 'cookie': cookie, 'action': 'startTask' })
+    }
+    if (itemId && functionId === 'necklace_reportTask') body['itemId'] = itemId;
     $.post(taskPostUrl(functionId, body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          console.log(`${functionId === 'necklace_startTask' ? '领取任务结果' : '做任务结果'}：${data}`);
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
@@ -272,13 +280,17 @@ function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = 
                 // $.taskConfigVos = data.data.result.taskConfigVos;
                 // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
               }
+            } else if (data.rtn_code === 403) {
+              console.log(`${functionId === 'necklace_startTask' ? '领取任务失败' : '做任务失败'}：活动太火爆了,还是去买买买吧~\n`);
+            } else {
+              console.log(`${functionId === 'necklace_startTask' ? '领取任务失败' : '做任务失败'}：${JSON.stringify(data)}\n`);
             }
           }
         }
       } catch (e) {
         $.logErr(e, resp)
       } finally {
-        resolve();
+        resolve(data);
       }
     })
   })
