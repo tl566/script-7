@@ -158,6 +158,7 @@ async function zoo() {
     $.secretp = ``;
     $.taskList = [];
     $.shopSign = ``;
+    $.maxLevel = false;
     await takePostRequest('zoo_signSingle');
     if (JSON.stringify($.signSingle) === `{}` || $.signSingle.bizCode !== 0) {
       console.log($.signSingle.bizMsg);
@@ -170,6 +171,10 @@ async function zoo() {
     $.userInfo =$.homeData.result.homeMainInfo;
     await takePostRequest('zoo_pk_receiveGroupReward');//领取PK红包
     console.log(`\n\n当前分红：${$.userInfo.raiseInfo.redNum}份，当前等级:${$.userInfo.raiseInfo.scoreLevel}\n当前金币${$.userInfo.raiseInfo.remainScore}，下一关需要${$.userInfo.raiseInfo.nextLevelScore - $.userInfo.raiseInfo.curLevelStartScore}\n\n`);
+    if(Number($.userInfo.raiseInfo.scoreLevel) === 30){
+      $.maxLevel = true;
+      console.log('已满级');
+    }
     await $.wait(1000);
     await takePostRequest('zoo_getSignHomeData');
     await $.wait(1000);
@@ -188,12 +193,12 @@ async function zoo() {
     }
     //收金币
     await $.wait(1000);
-    await takePostRequest('zoo_collectProduceScore');
+    if(!$.maxLevel) await takePostRequest('zoo_collectProduceScore');
     await $.wait(1000);
-    await takePostRequest('zoo_getTaskDetail');
+    if(!$.maxLevel && !$.hotFlag) await takePostRequest('zoo_getTaskDetail');
     await $.wait(1000);
     //做任务
-    for (let i = 0; i < $.taskList.length && $.secretp && !$.hotFlag; i++) {
+    for (let i = 0; i < $.taskList.length && $.secretp; i++) {
       $.oneTask = $.taskList[i];
       if ([1, 3, 5, 7, 9, 26].includes($.oneTask.taskType) && $.oneTask.status === 1) {
         $.activityInfoList = $.oneTask.shoppingActivityVos || $.oneTask.brandMemberVos || $.oneTask.followShopVo || $.oneTask.browseShopVo;
@@ -265,7 +270,7 @@ async function zoo() {
       await takePostRequest('zoo_raise');
     }
     //===================================图鉴里的店铺====================================================================
-    if (new Date().getHours()>= 17 && new Date().getHours()<= 18 && !$.hotFlag) {//分享
+    if (new Date().getHours()>= 17 && new Date().getHours()<= 18 && !$.hotFlag && !$.maxLevel) {//分享
       $.myMapList = [];
       await takePostRequest('zoo_myMap');
       for (let i = 0; i < $.myMapList.length; i++) {
@@ -277,7 +282,7 @@ async function zoo() {
         }
       }
     }
-    if (new Date().getHours() >= 14 && new Date().getHours() <= 17 && !$.hotFlag){//30个店铺，为了避免代码执行太久，下午2点到5点才做店铺任务
+    if (new Date().getHours() >= 14 && new Date().getHours() <= 17 && !$.hotFlag && !$.maxLevel){//30个店铺，为了避免代码执行太久，下午2点到5点才做店铺任务
       console.log(`去做店铺任务`);
       $.shopInfoList = [];
       await takePostRequest('qryCompositeMaterials');
@@ -340,7 +345,7 @@ async function zoo() {
     }
     //==================================微信任务========================================================================
     $.wxTaskList = [];
-    if(!$.hotFlag) await takePostRequest('wxTaskDetail');
+    if(!$.hotFlag && !$.maxLevel) await takePostRequest('wxTaskDetail');
     for (let i = 0; i < $.wxTaskList.length; i++) {
       $.oneTask = $.wxTaskList[i];
       if($.oneTask.taskType === 2 || $.oneTask.status !== 1){continue;} //不做加购
@@ -365,7 +370,7 @@ async function zoo() {
     }
     //=======================================================京东金融=================================================================================
     $.jdjrTaskList = [];
-    if(!$.hotFlag) await takePostRequest('jdjrTaskDetail');
+    if(!$.hotFlag && !$.maxLevel) await takePostRequest('jdjrTaskDetail');
     await $.wait(1000);
     for (let i = 0; i < $.jdjrTaskList.length; i++) {
       $.taskId = $.jdjrTaskList[i].id;
@@ -388,7 +393,7 @@ async function zoo() {
     }
     await $.wait(1000);
     $.pkTaskList = [];
-    if(!$.hotFlag) await takePostRequest('zoo_pk_getTaskDetail');
+    if(!$.hotFlag && !$.maxLevel) await takePostRequest('zoo_pk_getTaskDetail');
     await $.wait(1000);
     for (let i = 0; i < $.pkTaskList.length; i++) {
       $.oneTask = $.pkTaskList[i];
