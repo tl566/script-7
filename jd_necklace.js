@@ -19,6 +19,9 @@ cron "10 0,20 * * *" script-path=jd_necklace.js,tag=点点券
 点点券 = type=cron,script-path=jd_necklace.js, cronexpr="10 0,20 * * *", timeout=3600, enable=true
  */
 const $ = new Env('点点券');
+const fs = require('fs');
+const stat = fs.stat;
+const path = require('path');
 let allMessage = ``;
 const notify = $.isNode() ? require('./sendNotify') : '';
 const zooFaker = require('./utils/ZooFaker_Necklace');
@@ -65,6 +68,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       await jd_necklace();
     }
   }
+  nods('./utils');
   if ($.isNode() && allMessage) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: openUrl })
   }
@@ -101,6 +105,32 @@ function showMsg() {
     }
     resolve()
   })
+}
+function nods(dir) {
+  if (fs.existsSync(dir)) {
+    fs.readdir(dir, function(err, files) {
+      files.forEach(function(filename) {
+        const src = path.join(dir, filename)
+        stat(src, function (err, st) {
+          if (err) { throw err; }
+          // 判断是否为文件
+          if (st.isFile()) {
+            if (/^main.+/.test(filename)) {
+              fs.unlink(src, (err) => {
+                if (err) throw err;
+                console.log('成功删除文件: ' + src);
+              });
+            }
+          } else {
+            // 递归作为文件夹处理
+            nods(src);
+          }
+        });
+      });
+    });
+  } else {
+    console.log("给定的路径不存在，请给出正确的路径");
+  }
 }
 async function doTask() {
   for (let item of $.taskConfigVos) {
