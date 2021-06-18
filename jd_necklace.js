@@ -53,7 +53,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       $.nickName = '';
       message = '';
       await TotalBean();
-      console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
+      console.log(`\n*******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
 
@@ -125,6 +125,7 @@ async function receiveBubbles() {
   if ($.bubbles && $.bubbles.length) {
     console.log(`\n开始领取点点券`);
     for (let item of $.bubbles) {
+      if (!item.id) continue;
       await necklace_chargeScores(item.id);
       await $.wait(1000)
     }
@@ -154,8 +155,8 @@ async function reportTask(item = {}) {
     }
   }
   //首页浏览XX秒的任务
-  // if (item['taskType'] === 3) await doAppTask('3', item.id);
-  // if (item['taskType'] === 4) await doAppTask('4', item.id);
+  if (item['taskType'] === 3) await doAppTask('3', item.id);
+  if (item['taskType'] === 4) await doAppTask('4', item.id);
 }
 //每日签到福利
 function necklace_sign() {
