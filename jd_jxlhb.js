@@ -49,7 +49,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
       '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
   let res = await getAuthorShareCode() || [];
-  let res2 = await getAuthorShareCode('http://cdn.annnibb.me/cf79ae6addba60ad018347359bd144d2.json') || [];
+  let res2 = [];
   if (res && res.activeId) $.activeId = res.activeId;
   $.authorMyShareIds = [...((res && res.codes) || []), ...res2];
   //开启红包,获取互助码
@@ -156,21 +156,11 @@ function getUserInfo() {
           data = JSON.parse(data)
           if (data.iRet === 0) {
             console.log(`获取助力码成功：${data.Data.strUserPin}\n`);
-            if (data.Data['dwCurrentGrade'] >= 7) {
-              console.log(`${data.Data['dwCurrentGrade']}个阶梯红包已全部拆完\n`)
-              if (data.Data.strUserPin) {
-                $.packetIdArr.push({
-                  strUserPin: data.Data.strUserPin,
-                  userName: $.UserName
-                })
-              }
-            } else {
-              if (data.Data.strUserPin) {
-                $.packetIdArr.push({
-                  strUserPin: data.Data.strUserPin,
-                  userName: $.UserName
-                })
-              }
+            if (data.Data.strUserPin) {
+              $.packetIdArr.push({
+                strUserPin: data.Data.strUserPin,
+                userName: $.UserName
+              })
             }
           } else {
             console.log(`获取助力码失败：${data.sErrMsg}\n`);
@@ -194,7 +184,7 @@ function enrollFriend(strPin) {
       try {
         if (err) {
           console.log(`\n${$.name}:  API查询请求失败 ‼️‼️`)
-          $.logErr(err);
+          $.log(JSON.stringify(err));
         } else {
           // console.log('助力结果', data)
           data = JSON.parse(data)
