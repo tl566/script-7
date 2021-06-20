@@ -150,7 +150,7 @@ async function getBody($ = {}) {
     case 'sign':
       riskData = {};
     case 'exchangeGift':
-      riskData = { scoreNums: $.id, giftConfigId: $.giftConfigId };
+      riskData = { scoreNums: $.id, giftConfigId: $.giftConfigId || 198 };
     default:
       break;
   }

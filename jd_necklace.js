@@ -395,11 +395,11 @@ function necklace_homePage() {
                 $.bubbles = data.data.result.bubbles;
                 $.signInfo = data.data.result.signInfo;
                 $.totalScore = data.data.result.totalScore;
-                $.exchangeGiftConfigs.map(item => {
-                  if (item['giftType'] === 1) {
-                    $.giftConfigId = item['id'];
-                  }
-                })
+                const config = $.exchangeGiftConfigs.filter(item => item['giftType'] === 1);
+                if (config && config[0]) {
+                  $.giftConfigId = config[0]['id'];
+                  console.log(`点点券兑换无门槛红包ID为：${$.giftConfigId}`);
+                }
               }
             }
           }
