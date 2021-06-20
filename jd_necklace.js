@@ -396,7 +396,8 @@ function necklace_homePage() {
                 $.signInfo = data.data.result.signInfo;
                 $.totalScore = data.data.result.totalScore;
                 $.exchangeGiftConfigs.map(item => {
-                  if (item['giftType'] === 1 || item['redpacketTitle'].includes('无门槛红包')) {
+                  console.log('item[\'redpacketTitle\']', item['redpacketTitle'])
+                  if (item['giftType'] === 1) {
                     $.giftConfigId = item['id'];
                   }
                 })
