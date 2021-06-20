@@ -396,7 +396,6 @@ function necklace_homePage() {
                 $.signInfo = data.data.result.signInfo;
                 $.totalScore = data.data.result.totalScore;
                 $.exchangeGiftConfigs.map(item => {
-                  console.log('item[\'redpacketTitle\']', item['redpacketTitle'])
                   if (item['giftType'] === 1) {
                     $.giftConfigId = item['id'];
                   }
