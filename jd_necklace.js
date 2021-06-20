@@ -1,6 +1,6 @@
 /*
 点点券，可以兑换无门槛红包（1元，5元，10元，100元，部分红包需抢购）
-Last Modified time: 2021-06-18 12:27:14
+Last Modified time: 2021-06-20 14:27:14
 活动入口：京东APP-领券中心/券后9.9-领点点券 [活动地址](https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html)
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===============Quantumultx===============
@@ -87,7 +87,12 @@ async function jd_necklace() {
     await necklace_homePage();
     await receiveBubbles();
     await necklace_homePage();
-    // await necklace_exchangeGift($.totalScore);//自动兑换多少钱的无门槛红包，1000代表1元，默认兑换全部点点券
+    if (formatInt($.totalScore)) {
+      if (new Date().getDate() === 20 && (new Date().getMonth() + 1 === 6)) {
+        //2021-06-21凌晨0点，点点券将要全部清零处理，故全部兑换
+        await necklace_exchangeGift(formatInt($.totalScore));//自动兑换多少钱的无门槛红包，1000代表1元，默认兑换全部点点券
+      }
+    }
     await showMsg();
   } catch (e) {
     $.logErr(e)
@@ -188,6 +193,19 @@ async function reportTask(item = {}) {
   if (item['taskType'] === 3) await doAppTask('3', item.id);
   if (item['taskType'] === 4) await doAppTask('4', item.id);
 }
+
+/**
+ * 将数字取整为10的倍数
+ * @param {Number} num 需要取整的值
+ * @param {Boolean} ceil 是否向上取整
+ * @param {Number} prec 需要用0占位的数量
+ */
+function formatInt(num, prec = 1, ceil = false) {
+  const len = String(num).length;
+  if (len <= prec) { return num }
+  const mult = Math.pow(10, prec);
+  return ceil ? Math.ceil(num / mult) * mult : Math.floor(num / mult) * mult;
+}
 //每日签到福利
 function necklace_sign() {
   return new Promise(async resolve => {
@@ -223,12 +241,9 @@ function necklace_sign() {
 }
 //兑换无门槛红包
 function necklace_exchangeGift(scoreNums) {
-  return new Promise(resolve => {
-    const body = {
-      scoreNums,
-      "giftConfigId": 31,
-      currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
-    }
+  return new Promise(async resolve => {
+    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'exchangeGift', 'id': scoreNums });
+    console.log(`\n使用${scoreNums}个点点券兑换${scoreNums / 1000}元无门槛红包`);
     $.post(taskPostUrl("necklace_exchangeGift", body), async (err, resp, data) => {
       try {
         if (err) {
@@ -243,7 +258,10 @@ function necklace_exchangeGift(scoreNums) {
                 message += `${result.redpacketTitle}：${result.redpacketAmount}元兑换成功\n`;
                 message += `红包有效期：${new Date(result.endTime + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000).toLocaleString('zh', {hour12: false})}`;
                 console.log(message)
+                if ($.isNode()) await notify.sendNotify($.name, message);
               }
+            } else {
+              console.log(`兑换失败：${JSON.stringify(data)}`)
             }
           }
         }
@@ -258,7 +276,7 @@ function necklace_exchangeGift(scoreNums) {
 //领取奖励
 function necklace_chargeScores(bubleId) {
   return new Promise(async resolve => {
-    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'chargeScores', 'id': bubleId });
+    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'chargeScores', 'id': bubleId, 'giftConfigId': $.giftConfigId });
     $.post(taskPostUrl("necklace_chargeScores", body), async (err, resp, data) => {
       try {
         if (err) {
@@ -372,11 +390,16 @@ function necklace_homePage() {
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
                 $.taskConfigVos = data.data.result.taskConfigVos;
-                $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
+                $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs || [];
                 $.lastRequestTime = data.data.result.lastRequestTime;
                 $.bubbles = data.data.result.bubbles;
                 $.signInfo = data.data.result.signInfo;
                 $.totalScore = data.data.result.totalScore;
+                $.exchangeGiftConfigs.map(item => {
+                  if (item['giftType'] === 1 || item['redpacketTitle'].includes('无门槛红包')) {
+                    $.giftConfigId = item['id'];
+                  }
+                })
               }
             }
           }
