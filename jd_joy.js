@@ -80,6 +80,9 @@ const weAppUrl = 'https://draw.jdfcloud.com//pet';
       }
       message = '';
       subTitle = '';
+      $.validate = '';
+      const zooFaker = require('./utils/JDJRValidator');
+      $.validate = await zooFaker.getResult();
       await jdJoy();
       await showMsg();
       // await joinTwoPeopleRun();
@@ -342,6 +345,7 @@ async function petTask() {
           };
           const scanMarketRes = await scanMarket('scan', body);
           console.log(`浏览频道-${followChannelItem.channelName}结果::${JSON.stringify(scanMarketRes)}`)
+          await $.wait(500);
         }
       }
     }
@@ -397,14 +401,14 @@ function getDeskGoodDetails() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/getDeskGoodDetails?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/getDeskGoodDetails?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -431,14 +435,14 @@ function followScan(sku) {
       sku
     }
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/scan?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/scan?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "POST",
       data: body,
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.post(taskPostUrl(url, JSON.stringify(body), reqSource, host, 'application/json'), (err, resp, data) => {
       try {
         if (err) {
@@ -462,13 +466,13 @@ function scanMarket(type, body, cType = 'application/json') {
     const reqSource = 'weapp';
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/${type}?reqSource=weapp&invokeKey=Oex5GmEuqGep1WLC`,
+      url: `//draw.jdfcloud.com/common/pet/${type}?reqSource=weapp&invokeKey=NRp8OPxZMFXmGkaE`,
       method: "POST",
       data: body,
       credentials: "include",
       header: {"content-type": cType}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     if (cType === 'application/json') {
       body = JSON.stringify(body)
     }
@@ -494,14 +498,14 @@ function appScanMarket(type, body) {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/${type}?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC`,
+      url: `//jdjoy.jd.com/common/pet/${type}?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "POST",
       data: body,
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.post(taskPostUrl(url, JSON.stringify(body), reqSource, host, 'application/json'), (err, resp, data) => {
       try {
         if (err) {
@@ -527,13 +531,13 @@ function getFood(type) {
     const reqSource = 'weapp';
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/getFood?reqSource=weapp&taskType=${type}&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC`,
+      url: `//draw.jdfcloud.com/common/pet/getFood?reqSource=weapp&taskType=${type}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -558,13 +562,13 @@ function followShop(shopId) {
     const host = 'draw.jdfcloud.com';
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: "//draw.jdfcloud.com/common/pet/followShop?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//draw.jdfcloud.com/common/pet/followShop?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       method: "POST",
       data: body,
       credentials: "include",
       header: {"content-type":"application/x-www-form-urlencoded"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.post(taskPostUrl(url, body, reqSource, host,'application/x-www-form-urlencoded'), (err, resp, data) => {
       try {
         if (err) {
@@ -587,13 +591,13 @@ function enterRoom() {
     const reqSource = 'weapp';
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?reqSource=h5&invitePin=&openId=&invokeKey=Oex5GmEuqGep1WLC`,
+      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?reqSource=h5&invitePin=&openId=&invokeKey=NRp8OPxZMFXmGkaE`,
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.post({...taskUrl(url, host, reqSource),body:'{}'}, (err, resp, data) => {
       try {
         if (err) {
@@ -622,14 +626,14 @@ function appGetPetTaskConfig() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       // url: `//draw.jdfcloud.com/common/pet/feed?feedCount=${feedNum}&reqSource=h5`,
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -657,13 +661,13 @@ function feedPets(feedNum) {
     const reqSource = 'weapp';
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC`,
+      url: `//draw.jdfcloud.com/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), async (err, resp, data) => {
       try {
         if (err) {
@@ -717,13 +721,13 @@ function getPetTaskConfig() {
     const reqSource = 'weapp';
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: "//draw.jdfcloud.com//common/pet/getPetTaskConfig?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//draw.jdfcloud.com//common/pet/getPetTaskConfig?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url.replace(/reqSource=h5/, 'reqSource=weapp'), host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -747,14 +751,14 @@ function getPetRace() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -778,14 +782,14 @@ function getRankList() {
     // const url = `${JD_API_HOST}/combat/getRankList`;
     $.raceUsers = [];
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/getRankList?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/combat/getRankList?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, `jdjoy.jd.com`, 'h5'), (err, resp, data) => {
       try {
         if (err) {
@@ -815,14 +819,14 @@ function runMatch(teamLevel, timeout = 5000) {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/combat/match?teamLevel=${teamLevel}&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC`,
+      url: `//jdjoy.jd.com/common/pet/combat/match?teamLevel=${teamLevel}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
       // url: `//draw.jdfcloud.com/common/pet/combat/match?teamLevel=${teamLevel}&reqSource=h5`,
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -847,14 +851,14 @@ function getBackupInfo() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/getBackupInfo?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/combat/getBackupInfo?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -878,13 +882,13 @@ function getWinCoin() {
     // const url = `${weAppUrl}/combat/detail/v2?help=false&reqSource=weapp`;
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: "//draw.jdfcloud.com/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//draw.jdfcloud.com/common/pet/combat/detail/v2?help=false&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, 'draw.jdfcloud.com', `weapp`), (err, resp, data) => {
       try {
         if (err) {
@@ -911,14 +915,14 @@ function receiveJoyRunAward() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/receive?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/combat/receive?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
       try {
         if (err) {
@@ -963,13 +967,13 @@ function getSupplyInfo(showOrder) {
     // const url = `${weAppUrl}/combat/getSupplyInfo?showOrder=${showOrder}`;
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/combat/getSupplyInfo?showOrder=${showOrder}&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC`,
+      url: `//draw.jdfcloud.com/common/pet/combat/getSupplyInfo?showOrder=${showOrder}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     $.get(taskUrl(url, 'draw.jdfcloud.com', `weapp`), (err, resp, data) => {
       try {
         if (err) {

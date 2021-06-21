@@ -84,6 +84,9 @@ Date.prototype.Format = function (fmt) { //author: meizz
         continue
       }
       // console.log(`本地时间与京东服务器时间差(毫秒)：${await get_diff_time()}`);
+      $.validate = '';
+      const zooFaker = require('./utils/JDJRValidator');
+      $.validate = await zooFaker.getResult();
       console.log(`脚本开始请求时间 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`);
       await joyReward();
     }
@@ -211,7 +214,7 @@ async function joyReward() {
 }
 function getExchangeRewards() {
   let opt = {
-    url: "//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+    url: "//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
     method: "GET",
     data: {},
     credentials: "include",
@@ -219,7 +222,7 @@ function getExchangeRewards() {
   }
   return new Promise((resolve) => {
     const option = {
-      url: "https:"+ taroRequest(opt)['url'],
+      url: "https:"+ taroRequest(opt)['url'] + $.validate,
       headers: {
         "Host": "jdjoy.jd.com",
         "Content-Type": "application/json",
@@ -255,13 +258,13 @@ function getExchangeRewards() {
 function exchange(saleInfoId, orderSource) {
   let body = {"buyParam":{"orderSource":orderSource,"saleInfoId":saleInfoId},"deviceInfo":{}}
   let opt = {
-    "url": "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+    "url": "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
     "data":body,
     "credentials":"include","method":"POST","header":{"content-type":"application/json"}
   }
   return new Promise((resolve) => {
     const option = {
-      url: "https:"+ taroRequest(opt)['url'],
+      url: "https:"+ taroRequest(opt)['url'] + $.validate,
       body: `${JSON.stringify(body)}`,
       headers: {
         "Host": "jdjoy.jd.com",

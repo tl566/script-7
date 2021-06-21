@@ -82,6 +82,9 @@ let FEED_NUM = ($.getdata('joyFeedCount') * 1) || 10;   //喂食数量默认10g,
           }
         }
       }
+      $.validate = '';
+      const zooFaker = require('./utils/JDJRValidator');
+      $.validate = await zooFaker.getResult();
       await feedPets(FEED_NUM);//喂食
       await ThreeMeals();//三餐
       await showMsg();
@@ -102,19 +105,19 @@ function showMsg() {
   }
 }
 function feedPets(feedNum) {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
     console.log(`您设置的喂食数量::${FEED_NUM}g\n`);
     if (FEED_NUM === 0) { console.log(`跳出喂食`);resolve();return }
     console.log(`实际的喂食数量::${feedNum}g\n`);
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC`,
-      // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: `//jdjoy.jd.com/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       method: "GET",
       data: {},
       credentials: "include",
       header: {"content-type": "application/json"}
     }
-    const url = "https:"+ taroRequest(opt)['url']
+    const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     const options = {
       url,
       headers: {
@@ -160,6 +163,8 @@ function feedPets(feedNum) {
           } else {
             console.log(`其他状态${$.data.errorCode}`)
           }
+        } else {
+          console.log(`喂食失败:${JSON.stringify($.data)}\n`);
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -174,8 +179,8 @@ function feedPets(feedNum) {
 function ThreeMeals() {
   return new Promise(resolve => {
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/getFood?taskType=ThreeMeals&reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
-      // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=Oex5GmEuqGep1WLC",
+      url: "//jdjoy.jd.com/common/pet/getFood?taskType=ThreeMeals&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
+      // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE",
       method: "GET",
       data: {},
       credentials: "include",
