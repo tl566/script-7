@@ -1,5 +1,5 @@
 /*
-小哥有礼 and 每日抽奖
+小歌有礼 and 每日抽奖
 活动入口：京东首页搜索 边玩边赚
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===================quantumultx================
@@ -210,10 +210,10 @@ function dealReturn(functionId, data) {
       break;
     case 'getDrawChance':
       if (data.success === true) {
-        console.log(`${title}，领取任务奖励成功`);
+        console.log(`${$.oneMissio.title}，领取任务奖励成功`);
       } else {
         console.log(JSON.stringify(data));
-        console.log(`${title}，领取任务执行失败`);
+        console.log(`${$.oneMissio.title}，领取任务执行失败`);
       }
       break;
     case 'draw':
