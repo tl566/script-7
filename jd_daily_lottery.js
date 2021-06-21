@@ -1,5 +1,5 @@
 /*
-小歌有礼 and 每日抽奖
+小哥有礼 and 每日抽奖
 活动入口：京东首页搜索 边玩边赚
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===================quantumultx================
@@ -23,7 +23,8 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let activityType = '';
 let activityCode = '';
 const activityInfoList = [
-  {'activityType':'WonderfulLuckDrawApi','activityCode':'1384416160044290048'}
+  {'activityType':'WonderfulLuckDrawApi','activityCode':'1384416160044290048','title':'小哥有礼'},
+  {'activityType':'luckdraw','activityCode':'1397744980537114624','title':'每日转盘'}
 ];
 $.helpCodeList = [];
 //IOS等用户直接用NobyDa的jd cookie
@@ -66,12 +67,38 @@ let allMessage = '';
       for (let j = 0; j < activityInfoList.length; j++) {
         activityType = activityInfoList[j].activityType;
         activityCode = activityInfoList[j].activityCode;
+        console.log(`=============${activityInfoList[j].title}=============`)
         await dailyLottery()
       }
     }
   }
+  console.log(`\=============每日抽奖互助=============`)
+  activityType = activityInfoList[1].activityType;
+  activityCode = activityInfoList[1].activityCode;
+  for (let i = 0; i < $.helpCodeList.length && cookiesArr.length > 0; i++) {
+    if ($.helpCodeList[i].needHelp === 0) {
+      continue;
+    }
+    for (let j = 0; j < cookiesArr.length && $.helpCodeList[i].needHelp !== 0; j++) {
+      $.helpFlag = '';
+      cookie = cookiesArr[j];
+      $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
+      if ($.helpCodeList[i].use === $.UserName) {
+        continue;
+      }
+      console.log(`${$.UserName}助力:${$.helpCodeList[i].helpCpde}`);
+      $.oneCode = $.helpCodeList[i].helpCpde;
+      //await helpFriend($.helpCodeList[i].helpCpde);
+      await takePosttRequest('helpFriend');
+      if ($.helpFlag === true) {
+        $.helpCodeList[i].needHelp -= 1;
+      }
+      cookiesArr.splice(j, 1);
+      j--;
+    }
+  }
   if(allMessage){
-    notify.sendNotify('小哥有礼',allMessage);
+    notify.sendNotify('小哥有礼-每日抽奖',allMessage);
   }
 })()
   .catch((e) => {
@@ -122,6 +149,7 @@ async function takePosttRequest(functionId) {
     case 'queryMissionList':
     case 'draw':
     case 'queryWinFlowList':
+    case 'createInvitation':
       body = `[{"userNo":"$cooMrdGatewayUid$","activityCode":"${activityCode}"}]`;
       break;
     case 'completeMission':
@@ -133,6 +161,9 @@ async function takePosttRequest(functionId) {
       break;
     case 'getDrawChance':
       body = `[{"userNo":"$cooMrdGatewayUid$","activityCode":"${activityCode}","getCode":"${$.oneRewardNos}"}]`;
+      break
+    case 'helpFriend':
+      body = `[{"userNo":"$cooMrdGatewayUid$","missionNo":"${$.oneCode }"}]`;
       break
     default:
       console.log(`错误${functionId}`);
@@ -197,12 +228,20 @@ function dealReturn(functionId, data) {
         let contentList = data.content;
         let bean = 0;
         for (let i = 0; i < contentList.length; i++) {
-          if(contentList[i].type === -2 || contentList[i].type === 4 || contentList[i].type === 3){
-            //-2  快递券
-            //4   维修券
-            //3   郎酒满减券
+          if(contentList[i].type === -2 || //快递券
+            contentList[i].type === 4 ||  //维修券
+            contentList[i].type === 3 ||  //郎酒满减券
+            contentList[i].type === 2 ||  //满减券
+            contentList[i].type === 31   //卡片
+          ){
+
+
           }else if(contentList[i].type === 102){
-            bean += 5;
+            if(activityType === 'WonderfulLuckDrawApi'){
+              bean += 5;
+            }else{
+              bean += 2;
+            }
           }else{
             console.log(contentList[i].name);
             allMessage += `第${$.index}个账号，${$.UserName},获得:${contentList[i].name}\n`;
@@ -211,6 +250,25 @@ function dealReturn(functionId, data) {
         console.log(`获得京豆总计${bean}`);
       } else {
         console.log(`获取奖品列表失败`);
+      }
+      break;
+    case 'createInvitation':
+      if (data.success === true) {
+        $.helpCodeList.push({
+          'use': $.UserName,
+          'helpCpde': data.data,
+          'needHelp': missionInfo['totalNum'] - missionInfo['completeNum']
+        });
+        console.log(`互助码(内部多账号自己互助)：${data.data}`);
+      }
+      break;
+    case 'helpFriend':
+      console.log(`助力结果:${JSON.stringify(data)}`);
+      if (data.success === true && data.content === true) {
+        console.log(`助力成功`);
+        $.helpFlag = true;
+      } else {
+        $.helpFlag = false;
       }
       break;
     default:
@@ -231,6 +289,9 @@ async function doMission() {
       await takePosttRequest('completeMission');
       await $.wait(1000);
       flag = true;
+    }else if ($.missionList[i].jumpType === 1) {
+      await takePosttRequest('createInvitation');
+      await $.wait(1000);
     }
   }
   if(flag){
