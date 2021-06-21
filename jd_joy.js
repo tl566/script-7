@@ -90,12 +90,12 @@ const weAppUrl = 'https://draw.jdfcloud.com//pet';
   }
   if ($.isNode() && joyRunNotify === 'true' && allMessage) await notify.sendNotify(`${$.name}`, `${allMessage}`)
 })()
-    .catch((e) => {
-      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-      $.done();
-    })
+  .catch((e) => {
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+  })
+  .finally(() => {
+    $.done();
+  })
 async function jdJoy() {
   try {
     await getPetTaskConfig();
@@ -126,21 +126,21 @@ async function jdJoy() {
 }
 //逛商品得100积分奖励任务
 async function deskGoodsTask() {
- const deskGoodsRes = await getDeskGoodDetails();
- if (deskGoodsRes && deskGoodsRes.success) {
-   if (deskGoodsRes.data && deskGoodsRes.data.deskGoods) {
-     const { deskGoods, taskChance, followCount = 0 } = deskGoodsRes.data;
-     console.log(`浏览货柜商品 ${followCount ? followCount : 0}/${taskChance}`);
-     if (taskChance === followCount) return
-     for (let item of deskGoods) {
-       if (!item['status'] && item['sku']) {
-         await followScan(item['sku'])
-       }
-     }
-   } else {
-     console.log(`\n限时商品货架已下架`);
-   }
- }
+  const deskGoodsRes = await getDeskGoodDetails();
+  if (deskGoodsRes && deskGoodsRes.success) {
+    if (deskGoodsRes.data && deskGoodsRes.data.deskGoods) {
+      const { deskGoods, taskChance, followCount = 0 } = deskGoodsRes.data;
+      console.log(`浏览货柜商品 ${followCount ? followCount : 0}/${taskChance}`);
+      if (taskChance === followCount) return
+      for (let item of deskGoods) {
+        if (!item['status'] && item['sku']) {
+          await followScan(item['sku'])
+        }
+      }
+    } else {
+      console.log(`\n限时商品货架已下架`);
+    }
+  }
 }
 //参加双人赛跑
 async function joinTwoPeopleRun() {
@@ -345,7 +345,7 @@ async function petTask() {
           };
           const scanMarketRes = await scanMarket('scan', body);
           console.log(`浏览频道-${followChannelItem.channelName}结果::${JSON.stringify(scanMarketRes)}`)
-          await $.wait(500);
+          await $.wait(5000);
         }
       }
     }
