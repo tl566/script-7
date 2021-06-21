@@ -389,6 +389,7 @@ async function appPetTask() {
           if (!scan.status && scan.showDest === 'h5') {
             const body = { marketLink: scan.marketLinkH5, taskType: 'ScanMarket', reqSource: 'h5' }
             await appScanMarket('scan', body);
+            await $.wait(5000);
           }
         }
       }
