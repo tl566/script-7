@@ -210,10 +210,10 @@ function dealReturn(functionId, data) {
       break;
     case 'getDrawChance':
       if (data.success === true) {
-        console.log(`${$.oneMissio.title}，领取任务奖励成功`);
+        console.log(`${$.oneMission.title}，领取任务奖励成功`);
       } else {
         console.log(JSON.stringify(data));
-        console.log(`${$.oneMissio.title}，领取任务执行失败`);
+        console.log(`${$.oneMission.title}，领取任务执行失败`);
       }
       break;
     case 'draw':
