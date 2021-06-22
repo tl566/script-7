@@ -134,8 +134,8 @@ async function main() {
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.validate = '';
-      const zooFaker = require('./utils/JDJRValidator');
-      $.validate = await zooFaker.getResult();
+      const zooFaker = require('./utils/JDJRValidator_Pure');
+      $.validate = await zooFaker.injectToRequest()
       if ($.isNode()) {
         if (process.env.JOY_RUN_HELP_MYSELF) {
           console.log(`\n赛跑会先给账号内部助力,如您当前账户有剩下助力机会则为lx0301作者助力\n`)

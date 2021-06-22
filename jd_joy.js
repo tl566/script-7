@@ -82,8 +82,8 @@ const weAppUrl = 'https://draw.jdfcloud.com//pet';
       message = '';
       subTitle = '';
       $.validate = '';
-      const zooFaker = require('./utils/JDJRValidator');
-      $.validate = await zooFaker.getResult();
+      const zooFaker = require('./utils/JDJRValidator_Pure');
+      $.validate = await zooFaker.injectToRequest()
       await jdJoy();
       await showMsg();
       // await joinTwoPeopleRun();

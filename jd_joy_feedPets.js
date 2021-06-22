@@ -83,8 +83,8 @@ let FEED_NUM = ($.getdata('joyFeedCount') * 1) || 10;   //喂食数量默认10g,
         }
       }
       $.validate = '';
-      const zooFaker = require('./utils/JDJRValidator');
-      $.validate = await zooFaker.getResult();
+      const zooFaker = require('./utils/JDJRValidator_Pure');
+      $.validate = await zooFaker.injectToRequest()
       await feedPets(FEED_NUM);//喂食
       await ThreeMeals();//三餐
       await showMsg();

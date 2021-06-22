@@ -95,8 +95,8 @@ if ($.isNode() && process.env.jdJoyStealCoin) {
       message = '';
       subTitle = '';
       $.validate = '';
-      const zooFaker = require('./utils/JDJRValidator');
-      $.validate = await zooFaker.getResult();
+      const zooFaker = require('./utils/JDJRValidator_Pure');
+      $.validate = await zooFaker.injectToRequest()
       await jdJoySteal();
       await showMsg();
     }
