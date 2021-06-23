@@ -1,6 +1,6 @@
 /*
 京东京喜工厂
-更新时间：2021-6-22
+更新时间：2021-6-23
 修复做任务、收集电力出现火爆，不能完成任务，重新计算h5st验证
 参考自 ：https://www.orzlee.com/web-development/2021/03/03/lxk0301-jingdong-signin-scriptjingxi-factory-solves-the-problem-of-unable-to-signin.html
 活动入口：京东APP-游戏与互动-查看更多-京喜工厂
@@ -62,12 +62,13 @@ if ($.isNode()) {
 }
 !(async () => {
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
-  await requestAlgo();
   await requireConfig();
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+  await requestAlgo();
+  await getActiveId();//自动获取每期拼团活动ID
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -95,27 +96,25 @@ if ($.isNode()) {
       await jdDreamFactory()
     }
   }
-  for (let i = 0; i < cookiesArr.length; i++) {
-    if (cookiesArr[i]) {
-      cookie = cookiesArr[i];
-      $.isLogin = true;
-      $.canHelp = true;//能否参团
-      await TotalBean();
-      if (!$.isLogin) {
-        continue
-      }
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-      
-      if ((cookiesArr && cookiesArr.length >= ($.tuanNum || 5)) && $.canHelp) {
-        console.log(`\n账号${$.UserName} 内部相互进团\n`);
-        for (let item of $.tuanIds) {
-          console.log(`\n${$.UserName} 去参加团 ${item}`);
-          if (!$.canHelp) break;
-          await JoinTuan(item);
-          await $.wait(1000);
+  if (tuanActiveId) {
+    for (let i = 0; i < cookiesArr.length; i++) {
+      if (cookiesArr[i]) {
+        cookie = cookiesArr[i];
+        $.isLogin = true;
+        $.canHelp = true;//能否参团
+        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+
+        if ((cookiesArr && cookiesArr.length >= ($.tuanNum || 5)) && $.canHelp) {
+          console.log(`\n账号${$.UserName} 内部相互进团\n`);
+          for (let item of $.tuanIds) {
+            console.log(`\n${$.UserName} 去参加团 ${item}`);
+            if (!$.canHelp) break;
+            await JoinTuan(item);
+            await $.wait(1000);
+          }
         }
+        if ($.canHelp) await joinLeaderTuan();//参团
       }
-      if ($.canHelp) await joinLeaderTuan();//参团
     }
   }
   if ($.isNode() && allMessage) {
@@ -143,8 +142,10 @@ async function jdDreamFactory() {
     await QueryHireReward();//收取招工电力
     await PickUp();//收取自家的地下零件
     await stealFriend();
-    await tuanActivity();
-    await QueryAllTuan();
+    if (tuanActiveId) {
+      await tuanActivity();
+      await QueryAllTuan();
+    }
     await exchangeProNotify();
     await showMsg();
   } catch (e) {
@@ -152,7 +153,53 @@ async function jdDreamFactory() {
   }
 }
 
-
+function getActiveId() {
+  return new Promise(async resolve => {
+    $.get({
+      url: 'https://wqsd.jd.com/pingou/dream_factory/',
+      "timeout": 10000,
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    }, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = data && data.match(/window\._CONFIG = (.*) ;var __getImgUrl/)
+          if (data) {
+            data = JSON.parse(data[1]);
+            const tuanConfigs = (data[0].skinConfig[0].adConfig || []).filter(vo => !!vo && vo['channel'] === 'h5');
+            if (tuanConfigs && tuanConfigs.length) {
+              for (let item of tuanConfigs) {
+                const start = item.start;
+                const end = item.end;
+                const link = item.link;
+                if (new Date(item.end).getTime() > Date.now()) {
+                  if (link && link.match(/activeId=(.*),/) && link.match(/activeId=(.*),/)[1]) {
+                    console.log(`\n获取团活动ID成功: ${link.match(/activeId=(.*),/)[1]}\n有效时段：${start} - ${end}`);
+                    tuanActiveId = link.match(/activeId=(.*),/)[1];
+                    break
+                  }
+                } else {
+                  if (link && link.match(/activeId=(.*),/) && link.match(/activeId=(.*),/)[1]) {
+                    console.log(`\n团活动ID: ${link.match(/activeId=(.*),/)[1]}\n有效时段：${start} - ${end}\n已过期团ID`);
+                    tuanActiveId = '';
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 // 收取发电机的电力
 function collectElectricity(facId = $.factoryId, help = false, master) {
   return new Promise(async resolve => {
@@ -1351,26 +1398,26 @@ function shareCodesFormat() {
 }
 function requireConfig() {
   return new Promise(async resolve => {
-    tuanActiveId = $.isNode() ? (process.env.TUAN_ACTIVEID || tuanActiveId) : ($.getdata('tuanActiveId') || tuanActiveId);
-    if (!tuanActiveId) {
-      await updateTuanIdsCDN();
-      if ($.tuanConfigs && $.tuanConfigs['tuanActiveId']) {
-        tuanActiveId = $.tuanConfigs['tuanActiveId'];
-        console.log(`拼团活动ID: 获取成功 ${tuanActiveId}\n`)
-      } else {
-        if (!$.tuanConfigs) {
-          await updateTuanIdsCDN('https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_updateFactoryTuanId.json');
-          if ($.tuanConfigs && $.tuanConfigs['tuanActiveId']) {
-            tuanActiveId = $.tuanConfigs['tuanActiveId'];
-            console.log(`拼团活动ID: 获取成功 ${tuanActiveId}\n`)
-          } else {
-            console.log(`拼团活动ID：获取失败，将采取脚本内置活动ID\n`)
-          }
-        }
-      }
-    } else {
-      console.log(`自定义拼团活动ID: 获取成功 ${tuanActiveId}`)
-    }
+    // tuanActiveId = $.isNode() ? (process.env.TUAN_ACTIVEID || tuanActiveId) : ($.getdata('tuanActiveId') || tuanActiveId);
+    // if (!tuanActiveId) {
+    //   await updateTuanIdsCDN();
+    //   if ($.tuanConfigs && $.tuanConfigs['tuanActiveId']) {
+    //     tuanActiveId = $.tuanConfigs['tuanActiveId'];
+    //     console.log(`拼团活动ID: 获取成功 ${tuanActiveId}\n`)
+    //   } else {
+    //     if (!$.tuanConfigs) {
+    //       await updateTuanIdsCDN('https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_updateFactoryTuanId.json');
+    //       if ($.tuanConfigs && $.tuanConfigs['tuanActiveId']) {
+    //         tuanActiveId = $.tuanConfigs['tuanActiveId'];
+    //         console.log(`拼团活动ID: 获取成功 ${tuanActiveId}\n`)
+    //       } else {
+    //         console.log(`拼团活动ID：获取失败，将采取脚本内置活动ID\n`)
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   console.log(`自定义拼团活动ID: 获取成功 ${tuanActiveId}`)
+    // }
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
     const shareCodes = $.isNode() ? require('./jdDreamFactoryShareCodes.js') : '';
