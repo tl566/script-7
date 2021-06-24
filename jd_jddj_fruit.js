@@ -25,8 +25,8 @@ if ($.isNode()) {
     $.cookie = cookiesArr[i];
     $.isLogin = true;
     $.nickName = '';
-    await TotalBean();
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    await TotalBean();
     console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     if (!$.isLogin) {
       $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -100,7 +100,7 @@ async function main() {
   let all = Math.floor($.waterBalance/10);
   console.log(`现有${$.waterBalance}滴水，可以浇${all}次`)
   for (let i = 0; i < all; i++) {
-    console.log(`第${i}次浇水`)
+    console.log(`第${i + 1}次浇水`)
     await takePostRequest('watering');
     await $.wait(2000);
   }
