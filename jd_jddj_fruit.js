@@ -106,6 +106,14 @@ async function main() {
     console.log(`水车当前水滴为：${$.waterWheelInfo['waterStorage']},大于10时会收取`);
   }
   await $.wait(2000);
+  $.waterRedPackInfo = {};
+  await takeGetRequest('getWaterRedPackInfo');
+  if($.waterRedPackInfo.status === 2){
+    console.log(`可以开红包`);
+    await $.wait(2000);
+    await takeGetRequest('receiveWaterRedPack');
+  }
+  await $.wait(2000);
   $.waterBottleInfo = {};
   await takeGetRequest('getWaterBottleInfo');
   if($.waterBottleInfo.receiveStatus === 0){
@@ -131,7 +139,12 @@ async function main() {
     await takePostRequest('watering');
     await $.wait(2000);
   }
-
+  await takeGetRequest('getWaterRedPackInfo');
+  if($.waterRedPackInfo.status === 2){
+    console.log(`可以开红包`);
+    await $.wait(2000);
+    await takeGetRequest('receiveWaterRedPack');
+  }
   console.log(`助力码:${JSON.stringify($.oneInvite)}`);
   inviteList.push($.oneInvite);
 }
@@ -198,6 +211,16 @@ function dealReturn(type,data) {
       if(data['code'] === '0'  && data['result']){
         $.waterBottleInfo = data['result'];
         console.log('获取水瓶信息成功')
+      }
+      break;
+    case 'getWaterRedPackInfo':
+      if(data['code'] === '0'  && data['result']){
+        $.waterRedPackInfo = data['result'];
+      }
+      break;
+    case 'receiveWaterRedPack':
+      if(data['code'] === '0'  && data['result']){
+        console.log(`打开成功，获得${data['result']['reward']}滴水`);
       }
       break;
     case 'collectWater':
@@ -271,6 +294,14 @@ async function takeGetRequest(type) {
     case 'receiveWaterBottle':
       body = `{}`;
       functionId = `fruit/receiveWaterBottle`;
+      break;
+    case 'getWaterRedPackInfo':
+      body = `{}`;
+      functionId = `fruit/getWaterRedPackInfo`;
+      break;
+    case 'receiveWaterRedPack':
+      body = `{}`;
+      functionId = `fruit/receiveWaterRedPack`;
       break;
     case 'userSigninNew':
       body = `{"channel":"daojiaguoyuan"}`;
