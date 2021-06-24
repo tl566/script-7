@@ -7,6 +7,9 @@ const $ = new Env('京东到家农场');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [];
+let inviteList = [];
+let jdjdCklist = {};
+let jdjdTokenList = {};
 $.modelId = 'M10007';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -38,9 +41,30 @@ if ($.isNode()) {
     }
     await main();
   }
+  console.log(`\n============开始账号内互助================\n`)
+  for (let i = 0; i < cookiesArr.length; i++) {
+    $.index = i + 1;
+    $.cookie = cookiesArr[i];
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    if(!jdjdCklist[$.UserName] || !jdjdTokenList[$.UserName]){
+      continue;
+    }
+    $.jddjCookie = jdjdCklist[$.UserName];
+    for (let j = 0; j < inviteList.length; j++) {
+      $.oneInvite = inviteList[j];
+      if($.UserName === $.oneInvite.usr){
+        continue;
+      }
+      $.token = jdjdTokenList[$.UserName];
+      console.log(`${$.UserName}去助力${$.oneInvite.usr},助力码：${JSON.stringify($.oneInvite)}`);
+      await takeGetRequest('help');
+      await $.wait(3000);
+    }
+  }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
 
 async function main() {
+  $.oneInvite = {'usr':$.UserName};
   $.lat = '30.' + Math.round(Math.random() * (99999 - 10000) + 10000);
   $.lng = '114.' + Math.round(Math.random() * (99999 - 10000) + 10000);
   $.cityid = 2;
@@ -53,6 +77,8 @@ async function main() {
   }
   $.token = $.deviceid_pdj_jd;
   $.jddjCookie = `deviceid_pdj_jd=${$.deviceid_pdj_jd};PDJ_H5_PIN=${$.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]};o2o_m_h5_sid=${$.o2o_m_h5_sid};`
+  jdjdCklist[$.UserName] = $.jddjCookie;
+  jdjdTokenList[$.UserName] = $.token;
   console.log($.jddjCookie )
   await $.wait(1000);
   $.treeInfo = {};
@@ -64,6 +90,7 @@ async function main() {
     $.userPin = $.treeInfo.activityInfoResponse.userPin;
     $.waterBalance =$.treeInfo .userResponse.waterBalance;
     console.log(`获取果树详情成功，当前有${$.waterBalance}滴水`);
+    $.oneInvite['userPin'] = $.userPin;
   }
   if ($.treeInfo.activityInfoResponse.curStageLeftProcess === 0) {
     console.log(`已经成熟`);
@@ -104,11 +131,18 @@ async function main() {
     await takePostRequest('watering');
     await $.wait(2000);
   }
+
+  console.log(`助力码:${JSON.stringify($.oneInvite)}`);
+  inviteList.push($.oneInvite);
 }
 
 async function doTask() {
   for (let i = 0; i < $.taskInfoList.length; i++) {
     $.oneTask = $.taskInfoList[i];
+
+    if($.oneTask.taskId === '23eee1c043c01bc'){
+      $.oneInvite['uniqueId'] = $.oneTask.uniqueId;
+    }
     if ($.oneTask.status === 3 || $.oneTask.status === 2) {
       console.log(`任务：${$.oneTask.taskTitle},已完成`)
     } else if ($.oneTask.taskId === '23dec596e901e11' && $.oneTask.status === 0) {
@@ -204,6 +238,10 @@ function dealReturn(type,data) {
     case 'watering':
       console.log(JSON.stringify(data));
       break;
+    case 'help':
+      console.log(`\n`);
+      console.log(JSON.stringify(data));
+      break;
     default:
       console.log(JSON.stringify(data));
   }
@@ -249,6 +287,10 @@ async function takeGetRequest(type) {
     case 'sendPrize':
       body = `{"modelId":"${$.modelId}","taskId":"${$.oneTask.taskId}","taskType":${$.oneTask.taskType},"plateCode":1,"subNode":null}`;
       functionId = `task/sendPrize`;
+      break;
+    case 'help':
+      body = `{"modelId":"${$.modelId}","taskType":1201,"taskId":"23eee1c043c01bc","plateCode":5,"assistTargetPin":"${$.oneInvite['userPin']}","uniqueId":"${$.oneInvite['uniqueId']}"}`;
+      functionId = `task/finished`;
       break;
     default:
       console.log(`错误${type}`);
