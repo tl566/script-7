@@ -1,3 +1,8 @@
+/*
+由于 canvas 依赖系统底层需要编译且预编译包在 github releases 上，改用另一个纯 js 解码图片。若想继续使用 canvas 可调用 runWithCanvas 。
+
+添加 injectToRequest 用以快速修复需验证的请求。eg: $.get=injectToRequest($.get.bind($))
+ */
 const https = require('https');
 const http = require('http');
 const stream = require('stream');
@@ -494,31 +499,31 @@ class MousePosFaker {
 // new JDJRValidator().report(1000);
 // console.log(getCoordinate(new MousePosFaker(100).run()));
 
-// function injectToRequest(fn) {
-//   return (opts, cb) => {
-//     fn(opts, async (err, resp, data) => {
-//       if (err) {
-//         console.error('Failed to request.');
-//         return;
-//       }
-//
-//       if (data.search('验证') > -1) {
-//         console.log('JDJRValidator trying......');
-//         const res = await new JDJRValidator().run();
-//
-//         opts.url += `&validate=${res.validate}`;
-//         fn(opts, cb);
-//       } else {
-//         cb(err, resp, data);
-//       }
-//     });
-//   };
-// }
+function injectToRequest2(fn) {
+  return (opts, cb) => {
+    fn(opts, async (err, resp, data) => {
+      if (err) {
+        console.error('Failed to request.');
+        return;
+      }
+      if (data.search('验证') > -1) {
+        console.log('JDJRValidator trying......');
+        const res = await new JDJRValidator().run();
+        opts.url += `&validate=${res.validate}`;
+        fn(opts, cb);
+      } else {
+        cb(err, resp, data);
+      }
+    });
+  };
+}
 
-async function injectToRequest(fn) {
+async function injectToRequest() {
   console.log('JDJRValidator trying......');
   const res = await new JDJRValidator().run();
   return `&validate=${res.validate}`
 }
-
-exports.injectToRequest = injectToRequest;
+module.exports = {
+  injectToRequest,
+  injectToRequest2
+}
