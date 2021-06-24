@@ -359,7 +359,12 @@ async function takeGetRequest(type) {
   return new Promise(async resolve => {
     $.get(myRequest, (err, resp, data) => {
       try {
-        dealReturn(type, data);
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`API请求失败，请检查网路重试`)
+        } else {
+          dealReturn(type, data);
+        }
       } catch (e) {
         console.log(data);
         $.logErr(e, resp)
@@ -383,17 +388,22 @@ function dealReturn(type, data) {
     case 'mowing':
     case 'jump':
     case 'cow':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        $.mowingInfo = data.data;
-        let add = ($.mowingInfo.addcoins || $.mowingInfo.addcoin) ? ($.mowingInfo.addcoins || $.mowingInfo.addcoin) : 0;
-        console.log(`获得金币：${add}`);
-        if(Number(add) >0 ){
-          $.runFlag = true;
-        }else{
-          $.runFlag = false;
-          console.log(`未获得金币暂停${type}`);
+      data = data.match(new RegExp(/jsonpCBK.?\((.*);*/));
+      if (data && data[1]) {
+        data = JSON.parse(data[1]);
+        if (data.ret === 0) {
+          $.mowingInfo = data.data;
+          let add = ($.mowingInfo.addcoins || $.mowingInfo.addcoin) ? ($.mowingInfo.addcoins || $.mowingInfo.addcoin) : 0;
+          console.log(`获得金币：${add}`);
+          if(Number(add) >0 ){
+            $.runFlag = true;
+          }else{
+            $.runFlag = false;
+            console.log(`未获得金币暂停${type}`);
+          }
         }
+      } else {
+        console.log(`cow 数据异常：${data}\n`);
       }
       break;
     case 'GetSelfResult':
