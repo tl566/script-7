@@ -50,7 +50,8 @@ if ($.isNode()) {
       continue;
     }
     $.jddjCookie = jdjdCklist[$.UserName];
-    for (let j = 0; j < inviteList.length; j++) {
+    $.canHelp = true;
+    for (let j = 0; j < inviteList.length &&  $.canHelp; j++) {
       $.oneInvite = inviteList[j];
       if($.UserName === $.oneInvite.usr){
         continue;
@@ -85,6 +86,8 @@ async function main() {
   await takePostRequest('initFruit');
   if(JSON.stringify($.treeInfo) === '{}'){
     console.log(`获取详情失败,可能还未种果树`);
+    jdjdCklist[$.UserName] = ``;
+    jdjdTokenList[$.UserName] = ``;
     return ;
   }else{
     $.userPin = $.treeInfo.activityInfoResponse.userPin;
@@ -145,6 +148,7 @@ async function main() {
     await $.wait(2000);
     await takeGetRequest('receiveWaterRedPack');
   }
+
   console.log(`助力码:${JSON.stringify($.oneInvite)}`);
   inviteList.push($.oneInvite);
 }
@@ -159,7 +163,7 @@ async function doTask() {
     if ($.oneTask.status === 3 || $.oneTask.status === 2) {
       console.log(`任务：${$.oneTask.taskTitle},已完成`)
     } else if ($.oneTask.taskId === '23dec596e901e11' && $.oneTask.status === 0) {
-      console.log(`执行任务:${$.oneTask.taskTitle}`)
+      console.log(`执行任务：${$.oneTask.taskTitle}`)
       await takeGetRequest('userSigninNew');
       await $.wait(2000);
     } else if ([307, 901, 1102, 1105, 1103, 0, 1101].includes($.oneTask.taskType)){
@@ -174,16 +178,16 @@ async function doTask() {
         }
       }else{
         await takeGetRequest('finished');
-        console.log(`完成任务:${$.oneTask.taskTitle}`);
+        console.log(`完成任务：${$.oneTask.taskTitle}`);
         await $.wait(Number(3000));
       }
     }
     if ($.oneTask.status === 2 || $.oneTask.taskTypes === 1102) {
-      console.log(`领取奖励:${$.oneTask.taskTitle}`);
+      console.log(`领取奖励：${$.oneTask.taskTitle}`);
       await takeGetRequest('sendPrize');
       await $.wait(Number(3000));
     } else if ($.oneTask.status == 3) {
-      console.log(`任务:${$.oneTask.taskTitle}，奖励已领取`);
+      console.log(`任务：${$.oneTask.taskTitle}，奖励已领取`);
     }
   }
 }
@@ -262,8 +266,16 @@ function dealReturn(type,data) {
       console.log(JSON.stringify(data));
       break;
     case 'help':
-      console.log(`\n`);
-      console.log(JSON.stringify(data));
+      if(data.code === '0'){
+        console.log(`助力成功`);
+        $.canHelp = false;//一个账号只能助力一次
+      }else if(data.code === '-1'){
+        //$.canHelp = false;
+        console.log(`助力失败`);
+      }else{
+        console.log(`\n`);
+        console.log(JSON.stringify(data));
+      }
       break;
     default:
       console.log(JSON.stringify(data));
