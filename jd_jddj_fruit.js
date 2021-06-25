@@ -135,10 +135,10 @@ async function main() {
   await $.wait(2000);
   await takePostRequest('initFruit');
   $.waterBalance =$.treeInfo .userResponse.waterBalance;
-  let all = Math.floor($.waterBalance/10);
-  console.log(`现有${$.waterBalance}滴水，可以浇${all}次`)
-  for (let i = 0; i < all; i++) {
-    console.log(`第${i + 1}次浇水`)
+  $.waterTime = Math.floor($.waterBalance/10);
+  console.log(`现有${$.waterBalance}滴水`);
+  if(Number($.waterTime) > 0){
+    console.log(`开始浇${$.waterTime*10}滴水`);
     await takePostRequest('watering');
     await $.wait(2000);
   }
@@ -359,8 +359,8 @@ async function takePostRequest(type) {
       myRequest = getPostRequest(url, body);
       break;
     case 'watering':
-      let bodyInfo = `{"waterTime":1}`;
-      let functionId = `fruit/watering`
+      let bodyInfo = `{"waterTime":${$.waterTime}}`;
+      let functionId = `fruit/watering`;
       url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}`;
       body = `functionId=${encodeURI(functionId)}&isNeedDealError=true&method=POST&body=${encodeURI(bodyInfo)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
       myRequest = getPostRequest(url, body);
