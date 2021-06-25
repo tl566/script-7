@@ -39,6 +39,7 @@ jobs:
       BOOKSHOP_SHARECODES: ${{ secrets.BOOKSHOP_SHARECODES}}
       JD_CASH_SHARECODES: ${{ secrets.JD_CASH_SHARECODES}}
       JXNC_SHARECODES: ${{ secrets.JXNC_SHARECODES}}
+      JXGC_NOTIFY_LEVEL: ${{ secrets.JXGC_NOTIFY_LEVEL}}
       JDSGMH_SHARECODES: ${{ secrets.JDSGMH_SHARECODES}}
       JDCFD_SHARECODES: ${{ secrets.JDCFD_SHARECODES}}
       JDHEALTH_SHARECODES: ${{ secrets.JDHEALTH_SHARECODES}}
@@ -133,6 +134,7 @@ jobs:
           if [ $BOOKSHOP_SHARECODES ]; then sed -i "/variables/a\      BOOKSHOP_SHARECODES: $BOOKSHOP_SHARECODES" serverless.yml; fi;
           if [ $JD_CASH_SHARECODES ]; then sed -i "/variables/a\      JD_CASH_SHARECODES: $JD_CASH_SHARECODES" serverless.yml; fi;
           if [ $JXNC_SHARECODES ]; then sed -i "/variables/a\      JXNC_SHARECODES: $JXNC_SHARECODES" serverless.yml; fi;
+          if [ $JXGC_NOTIFY_LEVEL ]; then sed -i "/variables/a\      JXGC_NOTIFY_LEVEL: $JXGC_NOTIFY_LEVEL" serverless.yml; fi;
           if [ $JDSGMH_SHARECODES ]; then sed -i "/variables/a\      JDSGMH_SHARECODES: $JDSGMH_SHARECODES" serverless.yml; fi;
           if [ $JDCFD_SHARECODES ]; then sed -i "/variables/a\      JDCFD_SHARECODES: $JDCFD_SHARECODES" serverless.yml; fi;
           if [ $JDHEALTH_SHARECODES ]; then sed -i "/variables/a\      JDHEALTH_SHARECODES: $JDHEALTH_SHARECODES" serverless.yml; fi;
