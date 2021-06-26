@@ -189,7 +189,6 @@ async function doTask() {
       console.log(`任务：${$.oneTask.taskTitle},已完成`);
       continue;
     }
-
     switch ($.oneTask.taskType) {
       case 1201:
         $.oneInvite['uniqueId'] = $.oneTask.uniqueId;
@@ -201,13 +200,14 @@ async function doTask() {
           await takeGetRequest('userSigninNew');
           await $.wait(2000);
         }else{
-          //console.log(`不执行任务：${$.oneTask.taskTitle}`);
+          console.log(`任务：${$.oneTask.taskTitle}，不执行（10点之前执行）`);
         }
         break;
       case 1102:
         if($.oneTask.ifCanFinishTask === 1){
           console.log(`完成任务：${$.oneTask.taskTitle}`);
           await takeGetRequest('finished');
+          await $.wait(2000);
         }else{
           console.log(`任务：${$.oneTask.taskTitle},未到领取时间`);
         }
@@ -217,6 +217,7 @@ async function doTask() {
         if($.oneTask.ifCanFinishTask === 1){
           console.log(`完成任务：${$.oneTask.taskTitle}`);
           await takeGetRequest('finished');
+          await $.wait(2000);
         }else{
           console.log(`任务：${$.oneTask.taskTitle},暂不能执行`);
         }
@@ -225,9 +226,13 @@ async function doTask() {
         if($.oneTask.status === 2){
           console.log(`领取奖励：${$.oneTask.taskTitle}`);
           await takeGetRequest('sendPrize');
+          await $.wait(2000);
         }else if($.oneTask.status === 0){
           console.log(`领取任务：${$.oneTask.taskTitle}`);
           await takeGetRequest('received');
+          await $.wait(2000);
+        }else{
+          console.log(`任务：${$.oneTask.taskTitle}，未完成`);
         }
         break;
       case 307:
@@ -246,10 +251,11 @@ async function doTask() {
           case 1:
             console.log(`完成任务：${$.oneTask.taskTitle}`);
             await takeGetRequest('finished');
-            await $.wait(Number(2000));
+            await $.wait(Number(500));
           case 2:
             console.log(`领取奖励：${$.oneTask.taskTitle}`);
             await takeGetRequest('sendPrize');
+            await $.wait(2000);
             break;
           default:
             console.log(JSON.stringify($.oneTask.status));
