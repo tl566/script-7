@@ -1,6 +1,6 @@
 /*
 东东小窝 jd_small_home.js
-Last Modified time: 2021-1-22 14:27:20
+Last Modified time: 2021-6-27 13:27:20
 现有功能：
 做日常任务任务，每日抽奖（有机会活动京豆，使用的是免费机会，不消耗WO币）
 自动使用WO币购买装饰品可以获得京豆，分别可获得5,20，50,100,200,400,700，1200京豆）
@@ -89,7 +89,6 @@ const JD_API_HOST = 'https://lkyl.dianpusoft.cn/api';
         console.log(`\n${$.UserName} 去给自己的下一账号 ${decodeURIComponent($.newShareCodes[(i + 1) % $.newShareCodes.length]['cookie'].match(/pt_pin=([^; ]+)(?=;?)/) && $.newShareCodes[(i + 1) % $.newShareCodes.length]['cookie'].match(/pt_pin=([^; ]+)(?=;?)/)[1])}助力，助力码为 ${code}\n`)
         await createAssistUser(code, $.createAssistUserID);
       }
-      console.log(`\n去帮助作者\n`)
       await helpFriends();
     }
   }
@@ -141,6 +140,7 @@ async function helpFriends() {
   // await updateInviteCode();
   // if (!$.inviteCodes) await updateInviteCodeCDN();
   if ($.inviteCodes && $.inviteCodes['inviteCode']) {
+    console.log(`\n去帮助作者\n`)
     for (let item of $.inviteCodes.inviteCode) {
       if (!item) continue
       await createAssistUser(item, $.createAssistUserID);
@@ -718,11 +718,15 @@ function loginHome() {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${$.name} encrypt/pin API请求失败，请检查网路重试`)
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            await login(data.data);
+            if (data.success) {
+              await login(data.data.lkEPin);
+            } else {
+              console.log(`异常：${JSON.stringify(data)}\n`)
+            }
           }
         }
       } catch (e) {
