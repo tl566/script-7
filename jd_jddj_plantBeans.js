@@ -61,9 +61,6 @@ async function main() {
     $.token = $.deviceid_pdj_jd;
     $.jddjCookie = `deviceid_pdj_jd=${$.deviceid_pdj_jd};PDJ_H5_PIN=${$.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]};o2o_m_h5_sid=${$.o2o_m_h5_sid};`
   }
-  jdjdCklist[$.UserName] = $.jddjCookie;
-  $.setdata(jdjdCklist, 'jdjdCklist');
-  jdjdTokenList[$.UserName] = $.token;
   console.log($.jddjCookie );
   await $.wait(1000);
   $.activityInfo = {};
