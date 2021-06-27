@@ -87,7 +87,7 @@ const JD_API_HOST = 'https://lkyl.dianpusoft.cn/api';
         // console.log('----', (i + 1) % $.newShareCodes.length)
         let code = $.newShareCodes[(i + 1) % $.newShareCodes.length]['code']
         console.log(`\n${$.UserName} 去给自己的下一账号 ${decodeURIComponent($.newShareCodes[(i + 1) % $.newShareCodes.length]['cookie'].match(/pt_pin=([^; ]+)(?=;?)/) && $.newShareCodes[(i + 1) % $.newShareCodes.length]['cookie'].match(/pt_pin=([^; ]+)(?=;?)/)[1])}助力，助力码为 ${code}`)
-        await createAssistUser(code, $.createAssistUserID);
+        // await createAssistUser(code, $.createAssistUserID);
       }
       await helpFriends();
     }
@@ -161,20 +161,20 @@ async function doAllTask() {
     if (item.ssjjTaskInfo.type === 1) {
       //邀请好友助力自己
       $.createAssistUserID = item.ssjjTaskInfo.id;
-      console.log(`createAssistUserID:${item.ssjjTaskInfo.id}`)
-      console.log(`\n\n助力您的好友:${item.doneNum}人`)
+      // console.log(`createAssistUserID:${item.ssjjTaskInfo.id}`)
+      console.log(`\n\n助力您的好友:${item.doneNum}人\n\n`);
     }
     if (item.ssjjTaskInfo.type === 2) {
       //每日打卡
-      if (item.doneNum === (item.ssjjTaskInfo.awardOfDayNum || 1)) {
-        console.log(`${item.ssjjTaskInfo.name}已完成（${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum || 1}）`)
+      if (item.doneNum >= (item.ssjjTaskInfo.awardOfDayNum || 1)) {
+        console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum || 1}]`)
         continue
       }
       await clock(item.ssjjTaskInfo.id, item.ssjjTaskInfo.awardWoB)
     }
     // 限时连连看
     if (item.ssjjTaskInfo.type === 3) {
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
@@ -184,7 +184,7 @@ async function doAllTask() {
     }
     if (item.ssjjTaskInfo.type === 4) {
       //关注店铺
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
@@ -195,7 +195,7 @@ async function doAllTask() {
     }
     if (item.ssjjTaskInfo.type === 5) {
       //浏览店铺
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
@@ -205,7 +205,7 @@ async function doAllTask() {
     }
     if (item.ssjjTaskInfo.type === 6) {
       //关注4个频道
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
@@ -213,7 +213,7 @@ async function doAllTask() {
     }
     if (item.ssjjTaskInfo.type === 7) {
       //浏览3个频道
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
@@ -224,7 +224,7 @@ async function doAllTask() {
     isPurchaseShops = $.isNode() ? (process.env.PURCHASE_SHOPS ? process.env.PURCHASE_SHOPS : isPurchaseShops) : ($.getdata("isPurchaseShops") ? $.getdata("isPurchaseShops") : isPurchaseShops);
     if (isPurchaseShops && item.ssjjTaskInfo.type === 9) {
       //加购商品
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
@@ -235,7 +235,7 @@ async function doAllTask() {
     }
     if (item.ssjjTaskInfo.type === 10) {
       //浏览商品
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
@@ -245,7 +245,7 @@ async function doAllTask() {
     }
     if (item.ssjjTaskInfo.type === 11) {
       //浏览会场
-      if (item.doneNum === item.ssjjTaskInfo.awardOfDayNum) {
+      if (item.doneNum >= item.ssjjTaskInfo.awardOfDayNum) {
         console.log(`${item.ssjjTaskInfo.name}已完成[${item.doneNum}/${item.ssjjTaskInfo.awardOfDayNum}]`)
         continue
       }
