@@ -214,12 +214,12 @@ async function doTask() {
         break;
       case 1103:
       case 1101:
-        if($.oneTask.ifCanFinishTask === 1){
+        if($.oneTask.ifCanFinishTask === 1 && $.oneTask.todayFinishNum === 0){
           console.log(`完成任务：${$.oneTask.taskTitle}`);
           await takeGetRequest('finished');
           await $.wait(2000);
         }else{
-          console.log(`任务：${$.oneTask.taskTitle},暂不能执行`);
+          console.log(`任务：${$.oneTask.taskTitle},已完成`);
         }
         break;
       case 0:
