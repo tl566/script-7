@@ -1,5 +1,5 @@
 /*
- Last Modified time: 2021-4-3 16:00:54
+ Last Modified time: 2021-6-27 16:00:54
  */
 /**
  * sendNotify 推送通知功能
@@ -150,7 +150,7 @@ if (process.env.PUSH_PLUS_USER) {
  */
 async function sendNotify(text, desp, params = {}, author = '\n\n仅供用于学习') {
   //提供6种通知
-  desp += author;//增加作者信息，防止被贩卖等
+  //desp += author;//增加作者信息，防止被贩卖等
   await Promise.all([
     serverNotify(text, desp),//微信server酱
     pushPlusNotify(text, desp)//pushplus(推送加)
