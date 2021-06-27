@@ -1,6 +1,6 @@
 /*
 * 京东到家鲜豆任务
-* cron 10 6 * * *
+* cron 10 10 * * *
 * */
 const $ = new Env('京东到家鲜豆任务');
 const notify = $.isNode() ? require('./sendNotify') : '';
