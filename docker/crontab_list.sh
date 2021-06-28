@@ -134,3 +134,5 @@
 10 10 * * * node /scripts/jd_jddj_dailyTask.js >> /scripts/logs/jd_jddj_dailyTask.log 2>&1
 #京东到家鲜豆庄园
 10 7,10,16 * * * node /scripts/jd_jddj_plantBeans.js >> /scripts/logs/jd_jddj_plantBeans.log 2>&1
+#京东到家鲜豆庄园收水车水滴
+20 0-5/1,6-23/3 * * * node /scripts/jd_jddj_plantBeans_collect.js >> /scripts/logs/jd_jddj_plantBeans_collect.log 2>&1
