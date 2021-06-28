@@ -99,38 +99,6 @@ async function doTask() {
       continue;
     }
     switch ($.oneTask.taskType) {
-      // case 1201:
-      //     $.oneInvite['uniqueId'] = $.oneTask.uniqueId;
-      //     $.oneInvite['needTime'] = Number($.oneTask.totalNum ) - Number($.oneTask.finishNum);
-      //     break;
-      // case 502:
-      //     if(new Date().getHours() < 10){
-      //         console.log(`执行任务：${$.oneTask.taskTitle}`);
-      //         await takeGetRequest('userSigninNew');
-      //         await $.wait(2000);
-      //     }else{
-      //         console.log(`任务：${$.oneTask.taskTitle}，不执行（10点之前执行）`);
-      //     }
-      //     break;
-      // case 1102:
-      //     if($.oneTask.ifCanFinishTask === 1){
-      //         console.log(`完成任务：${$.oneTask.taskTitle}`);
-      //         await takeGetRequest('finished');
-      //         await $.wait(2000);
-      //     }else{
-      //         console.log(`任务：${$.oneTask.taskTitle},未到领取时间`);
-      //     }
-      //     break;
-      // case 1103:
-      // case 503:
-      //     if($.oneTask.ifCanFinishTask === 1){
-      //         console.log(`完成任务：${$.oneTask.taskTitle}`);
-      //         await takeGetRequest('finished');
-      //         await $.wait(2000);
-      //     }else{
-      //         console.log(`任务：${$.oneTask.taskTitle},暂不能执行`);
-      //     }
-      //     break;
       case 0:
         if($.oneTask.status === 2){
           console.log(`领取奖励：${$.oneTask.taskTitle}`);
@@ -139,6 +107,15 @@ async function doTask() {
         }else if($.oneTask.status === 0){
           console.log(`领取任务：${$.oneTask.taskTitle}`);
           await takeGetRequest('received');
+          await $.wait(2000);
+        }else{
+          console.log(`任务：${$.oneTask.taskTitle}，未完成`);
+        }
+        break;
+      case 505:
+        if($.oneTask.status === 2){
+          console.log(`领取奖励：${$.oneTask.taskTitle}`);
+          await takeGetRequest('sendPrize');
           await $.wait(2000);
         }else{
           console.log(`任务：${$.oneTask.taskTitle}，未完成`);
