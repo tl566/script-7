@@ -9,7 +9,6 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const saveRunFlag =  $.isNode() ? (process.env.SAVE_RUN_INFO ? process.env.SAVE_RUN_INFO : false):false;
 let cookiesArr = [];
 let jdjdCklist = {};
-let jdjdTokenList = {};
 $.modelId = 'M10003';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -69,7 +68,13 @@ async function main() {
     console.log(`获取详情失败`);
     return ;
   }else{
+    $.activityId = $.activityInfo.cur.activityId;
     console.log(`获详情成功，当前有${$.activityInfo.cur.water}滴水`);
+  }
+  console.log(`点击3次果树`);
+  for (let i = 0; i < 3; i++) {
+    await takePostRequest('beansLottery');
+    await $.wait(2000);
   }
   await $.wait(1000);
   console.log(`收集风车水滴`);
@@ -150,9 +155,6 @@ async function doTask() {
             console.log(JSON.stringify($.oneTask.status));
         }
         break;
-      // case 401:
-      //   console.log(`领取任务：${$.oneTask.taskTitle}`);
-      //   await takeGetRequest('received');
       default:
         console.log(`任务：${$.oneTask.taskTitle},不执行`);
     }
@@ -165,6 +167,15 @@ function dealReturn(type,data) {
     console.log(data);
   }
   switch (type) {
+    case 'beansLottery':
+      if(data['code'] === '0'  && data['result']){
+        if(Number(data['result']['water']) > 0){
+          console.log(`${data['result']['title']}，获得了${data['result']['water']}滴水`);
+        }else{
+          console.log(`${data['result']['text']}`);
+        }
+      }
+      break;
     case 'getActivityInfo':
       if(data['code'] === '0'  && data['result']){
         $.activityInfo =  data['result'];
@@ -241,30 +252,29 @@ async function takeGetRequest(type) {
 }
 
 async function takePostRequest(type) {
-  let url = ``;
-  let myRequest = ``;
-  let body = ``;
+  let bodyInfo = `{}`;
+  let functionId = ``;
   switch (type) {
     case 'getActivityInfo':
-      url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&functionId=plantBeans/getActivityInfo`;
-      body = `body=%7B%22cityId%22%3A${$.cityid}%2C%22longitude%22%3A${$.lng}%2C%22latitude%22%3A${$.lat}%7D&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityid}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
-      myRequest = getPostRequest(url, body);
+      functionId = `plantBeans/getActivityInfo`;
       break;
     case 'getWater':
-      url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&_funid_=plantBeans/getWater`;
-      body = `functionId=plantBeans%2FgetWater&isNeedDealError=true&method=POST&body=%7B%22activityId%22%3A%22240672ba944539b%22%7D&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityid}&channel=h5&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
-      myRequest = getPostRequest(url, body);
+      functionId = `plantBeans/getWater`;
       break;
     case 'watering':
-      let bodyInfo = `{"activityId":"240672ba944539b","waterAmount":${$.waterTime*100}}`;
-      let functionId = `plantBeans/watering`;
-      url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&_funid_=plantBeans/watering`;
-      body = `functionId=${encodeURI(functionId)}&isNeedDealError=true&method=POST&body=${encodeURI(bodyInfo)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
-      myRequest = getPostRequest(url, body);
+      bodyInfo = `{"activityId":"${$.activityId}","waterAmount":${$.waterTime*100}}`;
+      functionId = `plantBeans/watering`;
+      break;
+    case 'beansLottery':
+      bodyInfo = `{"activityId":"${$.activityId}"}`;
+      functionId = `plantBeans/beansLottery`;
       break;
     default:
       console.log(`错误${type}`);
   }
+  let url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&_funid_=${functionId}`;
+  let body = `functionId=${encodeURI(functionId)}&isNeedDealError=true&method=POST&body=${encodeURI(bodyInfo)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
+  let myRequest = getPostRequest(url, body);
   return new Promise(async resolve => {
     $.post(myRequest, (err, resp, data) => {
       try {
