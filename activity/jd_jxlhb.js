@@ -20,8 +20,8 @@ cron "4 10 * * *" script-path=jd_jxlhb.js,tag=京喜领88元红包
 京喜领88元红包 = type=cron,script-path=jd_jxlhb.js, cronexpr="4 10 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京喜领88元红包');
-const notify = $.isNode() ? require('./sendNotify') : {};
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : {};
+const notify = $.isNode() ? require('../sendNotify') : {};
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : {};
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
