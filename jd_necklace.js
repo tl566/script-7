@@ -1,6 +1,6 @@
 /*
 点点券，可以兑换无门槛红包（1元，5元，10元，100元，部分红包需抢购）
-Last Modified time: 2021-06-20 14:27:14
+Last Modified time: 2021-06-28 18:27:14
 活动入口：京东APP-领券中心/券后9.9-领点点券 [活动地址](https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html)
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===============Quantumultx===============
@@ -68,7 +68,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       await jd_necklace();
     }
   }
-  nods('./utils');
+  nods(process.cwd());
   if ($.isNode() && allMessage) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: openUrl })
   }
@@ -435,6 +435,7 @@ async function doAppTask(type = '3', id) {
     "taskId": "necklace_" + id,
     "lng": "",
   }
+  console.log(`\n领券浏览任务：type:${type},id:${id}\n`);
   if (type === '4') {
     console.log('需等待30秒')
     await $.wait(15000);
@@ -450,8 +451,8 @@ function getCcTaskList(functionId, body, type = '3') {
     if (functionId === 'getCcTaskList') {
       url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1614320848090&sign=d3259c0c19f6c792883485ae65f8991c&sv=111`
     }
-    if (type === '3' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1624015818068&sign=c1b8e88ce7f039b93b885ffe4c23e2cb&sv=112`
-    if (type === '4' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1624015678054&sign=ea1350f93e7d4f7f0457372741470b72&sv=112`
+    if (type === '3' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1624874606089&sign=268db25a0300e83652066f5dc4c495e7&sv=111`
+    if (type === '4' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1624875002081&sign=2a9f69fd001b2d46de23e3ef5cc85a01&sv=111`
     // if (functionId === 'reportCcTask') {
     //   url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1614320901023&sign=26e637ba072ddbcfa44c5273ef928696&sv=111`
     // }
