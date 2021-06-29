@@ -58,12 +58,12 @@ inputs:
           cronExpression: "0 8 */3 * * * *"
           enable: true
           argument: jd_daily_egg&jd_jxmc&jd_jddj_fruit&jd_jddj_plantBeans&jd_jddj_dailyTask
-    - timer: #东东超市 #十元街 #京东到家收集水滴
+    - timer: #东东超市 #十元街 #京东到家收集水滴 #京东到家鲜豆庄园收水车水滴
         parameters:
-          name: superMarket_syj_jddjfruitcollect
+          name: superMarket_syj_jddjfruitcollect_jddjplantBeanscollect
           cronExpression: "0 15 */1 * * * *"
           enable: true
-          argument: jd_superMarket&jd_syj&jd_jddj_fruit_collect
+          argument: jd_superMarket&jd_syj&jd_jddj_fruit_collect&jd_jddj_plantBeans_collect
     - timer: #京豆变动通知 #疯狂的joy #监控crazyJoy分红 #京东排行榜 #领京豆额外奖励 #京东保价 #闪购盲盒
         parameters:
           name: beanchange_crazyjoy_crazyjoybonus_rankingList_beanhome_price_sgmh
