@@ -1,6 +1,6 @@
 /*
 点点券，可以兑换无门槛红包（1元，5元，10元，100元，部分红包需抢购）
-Last Modified time: 2021-06-28 18:27:14
+Last Modified time: 2021-06-29 10:27:14
 活动入口：京东APP-领券中心/券后9.9-领点点券 [活动地址](https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html)
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===============Quantumultx===============
@@ -31,7 +31,7 @@ const openUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%
 let message = '';
 let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000);
 //IOS等用户直接用NobyDa的jd cookie
-let cookiesArr = [], cookie = '';
+let cookiesArr = [], cookie = '', hasSend = false;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -482,7 +482,20 @@ function getCcTaskList(functionId, body, type = '3') {
           if (safeGet(data)) {
             if (type === '3' && functionId === 'reportCcTask') console.log(`点击首页领券图标(进入领券中心浏览15s)任务:${data}`)
             if (type === '4' && functionId === 'reportCcTask') console.log(`点击“券后9.9”任务:${data}`)
-            // data = JSON.parse(data);
+            data = JSON.parse(data);
+            //异常情况：{"code":"600","echo":"signature verification failed"}
+            if (data['code'] === '600' && !hasSend) {
+              hasSend = true;
+              $.msg(
+                $.name,
+                '',
+                `${type === '3' ? '点击首页领券图标(进入领券中心浏览15s)任务' : '点击“券后9.9”任务'}ID已变更\n请联系作者等待更新`
+              )
+              if ($.isNode()) await notify.sendNotify(
+                $.name,
+                `${type === '3' ? '点击首页领券图标(进入领券中心浏览15s)任务' : '点击“券后9.9”任务'}ID已变更\n请联系作者等待更新`
+              )
+            }
           }
         }
       } catch (e) {
