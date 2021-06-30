@@ -119,7 +119,7 @@
 # 跳跳乐瓜分京豆
 15 0,12,22 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
 #京喜牧场
-15 0,12,22 * * * node /scripts/jd_jxmc.js >> /scripts/logs/jd_jxmc.log 2>&1
+25 6-21/3 * * * node /scripts/jd_jxmc.js >> /scripts/logs/jd_jxmc.log 2>&1
 #点点券
 10 0,1,20,21 * * * node /scripts/jd_necklace.js >> /scripts/logs/jd_necklace.log 2>&1
 #京小鸽

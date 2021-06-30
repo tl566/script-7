@@ -1,5 +1,6 @@
 /*
 惊喜牧场
+cron 25 6-21/3 * * *
 */
 // prettier-ignore
 !function (t, r) { "object" == typeof exports ? module.exports = exports = r() : "function" == typeof define && define.amd ? define([], r) : t.CryptoJS = r() }(this, function () {
