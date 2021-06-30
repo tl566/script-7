@@ -124,6 +124,8 @@
 10 0,1,20,21 * * * node /scripts/jd_necklace.js >> /scripts/logs/jd_necklace.log 2>&1
 #京小鸽
 30 2,20 * * * node /scripts/jd_jxg.js >> /scripts/logs/jd_jxg.log 2>&1
+#天天加速
+30 12 * * * node /scripts/jd_speed.js >> /scripts/logs/jd_speed.log 2>&1
 #电竞经理
 30 3,12,22 * * * node /scripts/jd_esManager.js >> /scripts/logs/jd_esManager.log 2>&1
 #京东到家-免费水果
