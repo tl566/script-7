@@ -1,11 +1,13 @@
 /*
 * 路径：京东APP-》美食馆-》右侧瓜分京豆
-*
-*
+* cron 18 7,20 * * *
 * */
 const $ = new Env('零食街');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+$.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
+$.helpCodes = [];
+$.useInfo = {};
 //是否加购物车
 //const addCarFlag =  $.isNode() ? (process.env.ADD_CAR ? process.env.ADD_CAR : true):true;
 let cookiesArr = [];
@@ -26,7 +28,7 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < cookiesArr.length; i++) {
     $.index = i + 1;
     $.cookie = cookiesArr[i];
     $.isLogin = true;
@@ -44,6 +46,24 @@ if ($.isNode()) {
     await main();
     await $.wait(2000);
   }
+
+  // console.log(`\n开始账号内互助\n`);
+  // for (let i = 0; i < cookiesArr.length; i++) {
+  //   $.cookie = cookiesArr[i];
+  //   $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+  //   if(!$.useInfo[$.UserName]) continue;
+  //   $.thisNick = $.useInfo[$.UserName];
+  //   $.canHelp = true;
+  //   for (let j = 0; j < $.helpCodes.length && $.canHelp; j++) {
+  //     $.oneCodeInfo = $.helpCodes[j];
+  //     if($.UserName === $.oneCodeInfo.usr || $.oneCodeInfo.max){
+  //       continue;
+  //     }
+  //     console.log(`${$.UserName}去助力${$.oneCodeInfo.usr}`);
+  //     await takePostRequest('help');
+  //     await $.wait(5000)
+  //   }
+  // }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
 
 async function main() {
@@ -61,16 +81,31 @@ async function main() {
   await $.wait(500);
   $.missionType = 'pv';
   await takePostRequest('foodRunningStats');
+  await $.wait(2000);
   if($.thisNick){
     console.log(`助力码：${$.thisNick}`);
+    $.useInfo[$.UserName] = $.thisNick;
   }else{
     console.log(`获取活动详情失败`);
     return;
   }
+  // let todayString = new Date(new Date().toLocaleDateString()).getTime();
+  // $.myInviteList = [];
+  // await takePostRequest('MyInviteList');
+  // let needHelpTime = 3;
+  // for ( i = 0; i < $.myInviteList.length; i++) {
+  //   if(Number($.myInviteList[i].created) > Number(todayString)){
+  //     needHelpTime--;
+  //   }
+  // }
+  // if(Number(needHelpTime)>0){
+  //   console.log(`还需要3次助力`)
+  //   $.helpCodes.push({'usr':$.UserName, 'code':$.thisNick, 'max':false,'needHelpTime':needHelpTime});
+  // }
   await $.wait(2000);
   $.taskList = [];
   await takePostRequest('DailyTask');
-  console.log(JSON.stringify($.taskList));
+  //console.log(JSON.stringify($.taskList));
   await doTask();
   await $.wait(2000);
   $.sendCoinInfo = {};
@@ -88,12 +123,36 @@ async function main() {
           console.log(`首页树金币，第${i+1}次，已领取`);
           continue;
         }
+        console.log(`首页树金币，开始第${i+1}次，领取`);
         await takePostRequest('dotree');
         await $.wait(500);
         $.missionType = 'treeCoin';
         await takePostRequest('foodRunningStats');
-        await $.wait(2000);
+        await $.wait(5000);
       }
+    }
+  }
+  console.log(`开始玩一次游戏,等待10S`);
+  await $.wait(10000);
+  await takePostRequest('SendCoin');
+  $.missionType = 'finishGame';
+  await takePostRequest('foodRunningStats');
+  await $.wait(2000);
+  $.boxStatusList = [];
+  await takePostRequest('ThreeBoxStatus');
+  //console.log(JSON.stringify($.boxStatusList));
+  await $.wait(2000);
+  await openBox();
+}
+async function openBox(){
+  for (let i = 0; i < $.boxStatusList.length; i++) {
+    $.oneBoxInfo = $.boxStatusList[i];
+    if($.oneBoxInfo.openStatus && !$.oneBoxInfo.sendStatus){
+      console.log(`打开第${i+1}个宝箱；`);
+      await takePostRequest('OpenBox');
+      await $.wait(5000);
+    }else{
+      console.log(`第${i+1}个宝箱,已经打开`);
     }
   }
 }
@@ -114,7 +173,7 @@ async function doTask(){
           $.runId = '';
           await takePostRequest(($.oneTaskInfo.type).replace(/( |^)[a-z]/g,(L)=>L.toUpperCase()));
           await $.wait(2000);
-          console.log(`runId，${$.runId}`);
+          //console.log(`runId，${$.runId}`);
           if($.runId){
             await takePostRequest('complete/mission');
             await $.wait(2000);
@@ -150,6 +209,7 @@ async function takePostRequest(type){
       break;
     case 'HotGoodsList':
     case 'SendCoinNum':
+    case 'ThreeBoxStatus':
       url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
       body =  {"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
       break;
@@ -160,6 +220,22 @@ async function takePostRequest(type){
     case 'foodRunningStats':
       url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
       body =  {"missionType":$.missionType,"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
+      break;
+    case 'SendCoin':
+      url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
+      body =  {"coin":randomNum(5000,6000),"point":randomNum(10000,15000),"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
+      break;
+    case 'OpenBox':
+      url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
+      body =  {"awardId":$.oneBoxInfo.id,"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":10299171};
+      break;
+    case 'help':
+      url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/complete/mission?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
+      body =  {"inviterNick":$.oneCodeInfo.code,"missionType":"inviteFriend","method":"/foodRunning/complete/mission","actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":10299171};
+      break;
+    case 'MyInviteList':
+      url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
+      body =  {"pageNo":1,"pageSize":5,"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":10299171};
       break;
     default:
       console.log(`错误${type}`);
@@ -177,6 +253,20 @@ async function takePostRequest(type){
       }
     })
   })
+}
+
+function randomNum(minNum,maxNum){
+  switch(arguments.length){
+    case 1:
+      return parseInt(Math.random()*minNum+1,10);
+      break;
+    case 2:
+      return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+      break;
+    default:
+      return 0;
+      break;
+  }
 }
 
 function dealReturn(type, data) {
@@ -199,7 +289,6 @@ function dealReturn(type, data) {
     case 'ViewShop':
     case 'ViewBanner':
     case 'ViewGoods':
-      console.log(JSON.stringify(data));
       if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
         $.runId = data.data.data.id;
       }else{
@@ -235,10 +324,52 @@ function dealReturn(type, data) {
       break;
     case 'foodRunningStats':
       //if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
-
       //}else{
       console.log(JSON.stringify(data));
       //}
+      break;
+    case 'SendCoin':
+      if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+        console.log(`游戏完成`);
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'ThreeBoxStatus':
+      if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+        $.boxStatusList = data.data.data;
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'OpenBox':
+      if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+        console.log(`打开宝箱获得：${data.data.data.msg}`);
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'MyInviteList':
+      if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+        $.myInviteList = data.data.data;
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'help':
+      console.log(JSON.stringify(data))
+      if(data.success && data.errorCode === '200'){
+        if(data.data.data.remark === `好友助力数量已达上限，无法为好友助力！`){
+          $.oneCodeInfo.max = true;
+        }else if(data.data.data.remark === `已经助力，不能再次助力哦！`){
+          //$.oneCodeInfo.max = true;
+        }else{
+          $.canHelp = false;
+        }
+        console.log(`${data.data.data.remark}`)
+      }else if(data.errorCode === '500') {
+        console.log(data.errorMessage)
+      }
       break;
     default:
       console.log(JSON.stringify(data));
@@ -295,7 +426,6 @@ async function getToken() {
 }
 
 function getSign(t) {
-  $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
   var e = Date.now()
     , i = '0282266f9a794112a0ab4ab6c78f8a09'
     , o = $.appkey
