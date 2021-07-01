@@ -23,8 +23,8 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let activityType = '';
 let activityCode = '';
 const activityInfoList = [
-  {'activityType':'WonderfulLuckDrawApi','activityCode':'1384416160044290048','title':'小哥有礼'},
-  {'activityType':'luckdraw','activityCode':'1397744980537114624','title':'每日转盘'}
+  //{'activityType':'WonderfulLuckDrawApi','activityCode':'1384416160044290048','title':'小哥有礼'},
+  {'activityType':'luckdraw','activityCode':'1407251415377641472','title':'每日转盘'}
 ];
 $.helpCodeList = [];
 //IOS等用户直接用NobyDa的jd cookie
