@@ -1,10 +1,13 @@
 /*
 * 路径：京东APP-》美食馆-》右侧瓜分京豆
 *
+*
 * */
 const $ = new Env('零食街');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+//是否加购物车
+//const addCarFlag =  $.isNode() ? (process.env.ADD_CAR ? process.env.ADD_CAR : true):true;
 let cookiesArr = [];
 $.appkey = `51B59BB805903DA4CE513D29EC448375`;
 if ($.isNode()) {
@@ -23,7 +26,7 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  for (let i = 0; i < cookiesArr.length; i++) {
+  for (let i = 0; i < 1; i++) {
     $.index = i + 1;
     $.cookie = cookiesArr[i];
     $.isLogin = true;
@@ -55,6 +58,9 @@ async function main() {
   await $.wait(500);
   $.thisNick = "";
   await takePostRequest('setMixNick');
+  await $.wait(500);
+  $.missionType = 'pv';
+  await takePostRequest('foodRunningStats');
   if($.thisNick){
     console.log(`助力码：${$.thisNick}`);
   }else{
@@ -65,13 +71,37 @@ async function main() {
   $.taskList = [];
   await takePostRequest('DailyTask');
   console.log(JSON.stringify($.taskList));
-  await doTask()
+  await doTask();
+  await $.wait(2000);
+  $.sendCoinInfo = {};
+  await takePostRequest('SendCoinNum');
+  if(JSON.stringify($.sendCoinInfo) === '{}'){
+    console.log(`获取首页树数据失败`)
+  }else{
+    $.getWhich = $.sendCoinInfo.which;
+    if($.getWhich.length === 3){
+      console.log(`首页树金币已全领取`);
+    }else{
+      for (let i = 0; i < 3; i++) {
+        $.treeNumber = i;
+        if($.getWhich.includes(i)){
+          console.log(`首页树金币，第${i+1}次，已领取`);
+          continue;
+        }
+        await takePostRequest('dotree');
+        await $.wait(500);
+        $.missionType = 'treeCoin';
+        await takePostRequest('foodRunningStats');
+        await $.wait(2000);
+      }
+    }
+  }
 }
 
 async function doTask(){
   for (let i = 0; i < $.taskList.length; i++) {
     $.oneTaskInfo = $.taskList[i];
-    if($.oneTaskInfo.id === '2' && $.oneTaskInfo.missionName === '浏览店铺'){
+    if($.oneTaskInfo.id === '1' || $.oneTaskInfo.id === '2' || $.oneTaskInfo.id === '3'){
       if($.oneTaskInfo.dayTop === $.oneTaskInfo.hasGotNum){
         console.log(`任务：${$.oneTaskInfo.missionName},已完成`);
       }else{
@@ -80,9 +110,9 @@ async function doTask(){
           start = $.oneTaskInfo.hasGotNum;
         }
         for (let j = start; j < $.oneTaskInfo.dayTop; j++){
-          console.log(`执行任务，${$.oneTaskInfo.missionName}`);
+          console.log(`执行任务，第${j+1}次，${$.oneTaskInfo.missionName}`);
           $.runId = '';
-          await takePostRequest('ViewShop');
+          await takePostRequest(($.oneTaskInfo.type).replace(/( |^)[a-z]/g,(L)=>L.toUpperCase()));
           await $.wait(2000);
           console.log(`runId，${$.runId}`);
           if($.runId){
@@ -91,7 +121,14 @@ async function doTask(){
           }
         }
       }
+    }else {
+      console.log(`任务：${$.oneTaskInfo.missionName},不执行`);
     }
+    // else if(addCarFlag && $.oneTaskInfo.id === '4'){
+    //
+    //   $.hotGoodsList = [];
+    //   await takePostRequest('HotGoodsList');
+    // }
   }
 }
 
@@ -102,12 +139,27 @@ async function takePostRequest(type){
     case 'setMixNick':
     case 'DailyTask':
     case 'ViewShop':
+    case 'ViewBanner':
+    case 'ViewGoods':
       url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
       body =  {"source":"01","strTMMixNick":$.token,"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
       break;
     case 'complete/mission':
       url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
-      body =  {"goodsNumId":$.runId,"missionType":"viewShop","method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
+      body =  {"goodsNumId":$.runId,"missionType":$.oneTaskInfo.type,"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
+      break;
+    case 'HotGoodsList':
+    case 'SendCoinNum':
+      url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
+      body =  {"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
+      break;
+    case 'dotree':
+      url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/complete/mission?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
+      body =  {"which":$.treeNumber,"missionType":"treeCoin","method": "/foodRunning/complete/mission","actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
+      break;
+    case 'foodRunningStats':
+      url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
+      body =  {"missionType":$.missionType,"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
       break;
     default:
       console.log(`错误${type}`);
@@ -145,6 +197,8 @@ function dealReturn(type, data) {
       }
       break;
     case 'ViewShop':
+    case 'ViewBanner':
+    case 'ViewGoods':
       console.log(JSON.stringify(data));
       if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
         $.runId = data.data.data.id;
@@ -158,6 +212,33 @@ function dealReturn(type, data) {
       }else{
         console.log(JSON.stringify(data));
       }
+    case 'SendCoinNum':
+      if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+        $.sendCoinInfo = data.data.data
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'HotGoodsList':
+      if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+        $.hotGoodsList = data.data.data;
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'dotree':
+      if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+        console.log(`任务完成,获得${data.data.data.sendNum}`);
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'foodRunningStats':
+      //if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
+
+      //}else{
+      console.log(JSON.stringify(data));
+      //}
       break;
     default:
       console.log(JSON.stringify(data));

@@ -72,31 +72,31 @@ let allMessage = '';
       }
     }
   }
-  console.log(`\=============每日抽奖互助=============`)
-  activityType = activityInfoList[1].activityType;
-  activityCode = activityInfoList[1].activityCode;
-  for (let i = 0; i < $.helpCodeList.length && cookiesArr.length > 0; i++) {
-    if ($.helpCodeList[i].needHelp === 0) {
-      continue;
-    }
-    for (let j = 0; j < cookiesArr.length && $.helpCodeList[i].needHelp !== 0; j++) {
-      $.helpFlag = '';
-      cookie = cookiesArr[j];
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
-      if ($.helpCodeList[i].use === $.UserName) {
-        continue;
-      }
-      console.log(`${$.UserName}助力:${$.helpCodeList[i].helpCpde}`);
-      $.oneCode = $.helpCodeList[i].helpCpde;
-      //await helpFriend($.helpCodeList[i].helpCpde);
-      await takePosttRequest('helpFriend');
-      if ($.helpFlag === true) {
-        $.helpCodeList[i].needHelp -= 1;
-      }
-      cookiesArr.splice(j, 1);
-      j--;
-    }
-  }
+  // console.log(`\=============每日抽奖互助=============`)
+  // activityType = activityInfoList[1].activityType;
+  // activityCode = activityInfoList[1].activityCode;
+  // for (let i = 0; i < $.helpCodeList.length && cookiesArr.length > 0; i++) {
+  //   if ($.helpCodeList[i].needHelp === 0) {
+  //     continue;
+  //   }
+  //   for (let j = 0; j < cookiesArr.length && $.helpCodeList[i].needHelp !== 0; j++) {
+  //     $.helpFlag = '';
+  //     cookie = cookiesArr[j];
+  //     $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
+  //     if ($.helpCodeList[i].use === $.UserName) {
+  //       continue;
+  //     }
+  //     console.log(`${$.UserName}助力:${$.helpCodeList[i].helpCpde}`);
+  //     $.oneCode = $.helpCodeList[i].helpCpde;
+  //     //await helpFriend($.helpCodeList[i].helpCpde);
+  //     await takePosttRequest('helpFriend');
+  //     if ($.helpFlag === true) {
+  //       $.helpCodeList[i].needHelp -= 1;
+  //     }
+  //     cookiesArr.splice(j, 1);
+  //     j--;
+  //   }
+  // }
   if(allMessage){
     notify.sendNotify('小哥有礼-每日抽奖',allMessage);
   }
