@@ -102,12 +102,12 @@ async function main() {
   //   console.log(`还需要3次助力`)
   //   $.helpCodes.push({'usr':$.UserName, 'code':$.thisNick, 'max':false,'needHelpTime':needHelpTime});
   // }
-  await $.wait(2000);
+  await $.wait(3000);
   $.taskList = [];
   await takePostRequest('DailyTask');
   //console.log(JSON.stringify($.taskList));
   await doTask();
-  await $.wait(2000);
+  await $.wait(3000);
   $.sendCoinInfo = {};
   await takePostRequest('SendCoinNum');
   if(JSON.stringify($.sendCoinInfo) === '{}'){
@@ -141,7 +141,7 @@ async function main() {
   $.boxStatusList = [];
   await takePostRequest('ThreeBoxStatus');
   //console.log(JSON.stringify($.boxStatusList));
-  await $.wait(2000);
+  await $.wait(3000);
   await openBox();
 }
 async function openBox(){
@@ -176,7 +176,7 @@ async function doTask(){
           //console.log(`runId，${$.runId}`);
           if($.runId){
             await takePostRequest('complete/mission');
-            await $.wait(2000);
+            await $.wait(5000);
           }
         }
       }
