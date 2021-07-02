@@ -92,7 +92,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       if (helpAuthor && $.authorCode2) {
         for (let code of $.authorCode2) {
           const helpRes = await help(code.shareCode, code.groupCode);
-          if (helpRes && helpRes.data.respCode === 'SG209') {
+          if (helpRes && helpRes.data && helpRes.data.respCode === 'SG209') {
             break;
           }
         }
@@ -113,24 +113,28 @@ const JD_API_HOST = 'https://api.m.jd.com/';
   })
 
 async function jdBeanHome() {
-  $.doneState = false
-  // for (let i = 0; i < 3; ++i) {
-  //   await doTask2()
-  //   await $.wait(1000)
-  //   if ($.doneState) break
-  // }
-  do {
-    await doTask2()
-    await $.wait(3000)
-  } while (!$.doneState)
-  await $.wait(1000)
-  await award("feeds")
-  await $.wait(1000)
-  await getUserInfo()
-  await $.wait(1000)
-  await getTaskList();
-  await receiveJd2();
-  await showMsg();
+  try {
+    $.doneState = false
+    // for (let i = 0; i < 3; ++i) {
+    //   await doTask2()
+    //   await $.wait(1000)
+    //   if ($.doneState) break
+    // }
+    do {
+      await doTask2()
+      await $.wait(3000)
+    } while (!$.doneState)
+    await $.wait(1000)
+    await award("feeds")
+    await $.wait(1000)
+    await getUserInfo()
+    await $.wait(1000)
+    await getTaskList();
+    await receiveJd2();
+    await showMsg();
+  } catch (e) {
+    $.logErr(e)
+  }
 }
 
 function getRandomInt(min, max) {
@@ -304,7 +308,9 @@ function help(shareCode, groupCode, isTask = 0) {
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            console.log(`【抢京豆】${data.data.helpToast}`)
+            if (data.code === '0') {
+              console.log(`【抢京豆】${data.data.helpToast}`)
+            }
           }
         }
       } catch (e) {
