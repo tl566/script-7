@@ -92,8 +92,13 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       if (helpAuthor && $.authorCode2) {
         for (let code of $.authorCode2) {
           const helpRes = await help(code.shareCode, code.groupCode);
-          if (helpRes && helpRes.data && helpRes.data.respCode === 'SG209') {
-            break;
+          if (helpRes && helpRes['code'] === '0') {
+            if (helpRes && helpRes.data && helpRes.data.respCode === 'SG209') {
+              console.log(`${helpRes.data.helpToast}\n`);
+              break;
+            }
+          } else {
+            console.log(`助力异常:${JSON.stringify(helpRes)}\n`);
           }
         }
       }
