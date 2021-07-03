@@ -237,11 +237,7 @@ function dealReturn(functionId, data) {
 
 
           }else if(contentList[i].type === 102){
-            if(activityType === 'WonderfulLuckDrawApi'){
-              bean += 5;
-            }else{
               bean += 2;
-            }
           }else{
             console.log(contentList[i].name);
             allMessage += `第${$.index}个账号，${$.UserName},获得:${contentList[i].name}\n`;
