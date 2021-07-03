@@ -119,7 +119,9 @@ async function main() {
     console.log(`获取果树详情成功，当前有${$.waterBalance}滴水`);
     $.oneInvite['userPin'] = $.userPin;
   }
-  if ($.treeInfo.activityInfoResponse.curStageLeftProcess === 0) {
+  if (Number($.treeInfo.activityInfoResponse.curStageLeftProcess) === 0 && $.treeInfo.activityInfoResponse.stageName === '成熟') {
+    let sendMessage = `【第${$.index}个账号】，${$.UserName},果树已经成熟`;
+    notify.sendNotify('京东到家水果',sendMessage);
     console.log(`已经成熟`);
     return;
   }
@@ -344,6 +346,10 @@ function dealReturn(type,data) {
       }
       break;
     case 'watering':
+      if(data.code === '-5'){
+        let sendMessage = `【第${$.index}个账号】，${$.UserName},果树已经成熟`;
+        notify.sendNotify('京东到家水果',sendMessage);
+      }
       console.log(JSON.stringify(data));
       break;
     case 'help':
