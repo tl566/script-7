@@ -55,35 +55,35 @@ if "QQ_SKEY" in os.environ and os.environ["QQ_SKEY"] and "QQ_MODE" in os.environ
 if "PUSH_PLUS_TOKEN" in os.environ:
     if len(os.environ["PUSH_PLUS_TOKEN"]) > 1:
         PUSH_PLUS_TOKEN = os.environ["PUSH_PLUS_TOKEN"]
-        print("已获取并使用Env环境 PUSH_PLUS_TOKEN")
+        # print("已获取并使用Env环境 PUSH_PLUS_TOKEN")
 # 获取企业微信应用推送 QYWX_AM
 if "QYWX_AM" in os.environ:
     if len(os.environ["QYWX_AM"]) > 1:
         QYWX_AM = os.environ["QYWX_AM"]
-        print("已获取并使用Env环境 QYWX_AM")
+        # print("已获取并使用Env环境 QYWX_AM")
 
 if BARK:
     notify_mode.append('bark')
-    print("BARK 推送打开")
+    # print("BARK 推送打开")
 if SCKEY:
     notify_mode.append('sc_key')
-    print("Server酱 推送打开")
+    # print("Server酱 推送打开")
 if TG_BOT_TOKEN and TG_USER_ID:
     notify_mode.append('telegram_bot')
-    print("Telegram 推送打开")
+    # print("Telegram 推送打开")
 if DD_BOT_ACCESS_TOKEN and DD_BOT_SECRET:
     notify_mode.append('dingding_bot')
-    print("钉钉机器人 推送打开")
+    # print("钉钉机器人 推送打开")
 if QQ_SKEY and QQ_MODE:
     notify_mode.append('coolpush_bot')
-    print("QQ机器人 推送打开")
+    # print("QQ机器人 推送打开")
 
 if PUSH_PLUS_TOKEN:
     notify_mode.append('pushplus_bot')
-    print("微信推送Plus机器人 推送打开")
+    # print("微信推送Plus机器人 推送打开")
 if QYWX_AM:
     notify_mode.append('wecom_app')
-    print("企业微信机器人 推送打开")
+    # print("企业微信机器人 推送打开")
 
 
 def message(str_msg):
