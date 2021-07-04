@@ -299,6 +299,7 @@ def send(title, content):
     :param content:
     :return:
     """
+    content = content + "\n\n" + "开源免费By：https://github.com/curtinlv/JD-Script"
     for i in notify_mode:
         if i == 'bark':
             if BARK:
