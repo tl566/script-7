@@ -100,7 +100,7 @@ def bark(title, content):
     print("bark服务启动")
     try:
         response = requests.get(
-            f"""https://api.day.app/{BARK}/{title}/{content}""").json()
+            f"""https://api.day.app/{BARK}/{title}/{urllib.parse.quote_plus(content)}""").json()
         if response['code'] == 200:
             print('推送成功！')
         else:
@@ -124,33 +124,37 @@ def serverJ(title, content):
     else:
         print('推送失败！')
 
+# tg通知
 def telegram_bot(title, content):
-    print("\n")
-    bot_token = TG_BOT_TOKEN
-    user_id = TG_USER_ID
-    if not bot_token or not user_id:
-        print("tg服务的bot_token或者user_id未设置!!\n取消推送")
-        return
-    print("tg服务启动")
-    if TG_API_HOST:
-        url = f"{TG_API_HOST}/bot{TG_BOT_TOKEN}/sendMessage"
-    else:
-        url=f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
-
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    payload = {'chat_id': str(TG_USER_ID), 'parse_mode': 'MarkdownV2', 'text': f'{title}\n\n{content}', 'disable_web_page_preview': 'true'}
-    proxies = None
-    if TG_PROXY_IP and TG_PROXY_PORT:
-        proxyStr = "http://{}:{}".format(TG_PROXY_IP, TG_PROXY_PORT)
-        proxies = {"http": proxyStr, "https": proxyStr}
     try:
-        response = requests.post(url=url, headers=headers, params=payload, proxies=proxies).json()
-    except:
-        print('推送失败！')
-    if response['ok']:
-        print('推送成功！')
-    else:
-        print('推送失败！')
+        print("\n")
+        bot_token = TG_BOT_TOKEN
+        user_id = TG_USER_ID
+        if not bot_token or not user_id:
+            print("tg服务的bot_token或者user_id未设置!!\n取消推送")
+            return
+        print("tg服务启动")
+        if TG_API_HOST:
+            url = f"{TG_API_HOST}/bot{TG_BOT_TOKEN}/sendMessage"
+        else:
+            url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
+
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        payload = {'chat_id': str(TG_USER_ID), 'text': f'{title}\n\n{content}', 'disable_web_page_preview': 'true'}
+        proxies = None
+        if TG_PROXY_IP and TG_PROXY_PORT:
+            proxyStr = "http://{}:{}".format(TG_PROXY_IP, TG_PROXY_PORT)
+            proxies = {"http": proxyStr, "https": proxyStr}
+        try:
+            response = requests.post(url=url, headers=headers, params=payload, proxies=proxies).json()
+        except:
+            print('推送失败！')
+        if response['ok']:
+            print('推送成功！')
+        else:
+            print('推送失败！')
+    except Exception as e:
+        print(e)
 
 def dingding_bot(title, content):
     timestamp = str(round(time.time() * 1000))  # 时间戳
@@ -299,7 +303,7 @@ def send(title, content):
     :param content:
     :return:
     """
-    content = content + "\n\n" + "开源免费By：https://github.com/curtinlv/JD-Script"
+    content += '\n\n开源免费By: https://github.com/curtinlv/JD-Script'
     for i in notify_mode:
         if i == 'bark':
             if BARK:
