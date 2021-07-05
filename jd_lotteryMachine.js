@@ -18,9 +18,10 @@ Object.keys(jdCookieNode).forEach((item) => {
 if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0);
 
-const appIdArr = ['1EFRRxA','1EFRQwA','1EFRYxQ','1EFRXxg','1EFVRwA','1EFVRxw','1EFRZwA','1EFRZwQ','1EFRYwA','1EFVRxg','1EFVRxQ']
-const homeDataFunPrefixArr = ['interact_template','interact_template','harmony_template','','','','','','','','','','','','','','','interact_template','interact_template']
-const collectScoreFunPrefixArr = ['','','','','','','','','','','','','','','','','','interact_template','interact_template']
+const appIdArr = ['1EFRRxA','1EFRQwA','1EFRYxQ','1EFRXxg','1EFVRxg','1EFVQwQ']
+const homeDataFunPrefixArr = ['interact_template','interact_template','harmony_template','','','','']
+const collectScoreFunPrefixArr = ['','','','','',''] //interact_template
+
 
 $.allShareId = {};
 main();
@@ -201,6 +202,7 @@ function harmony_collectScore(timeout = 0) {
             } else {
               if (data['data']['bizCode'] === 108) $.canHelp = false;
               if (data['data']['bizCode'] === 103) $.item['max'] = true;
+              if (data['data']['bizCode'] === -2002) $.canHelp = false;
               console.log(`助力失败：${data.data.bizMsg}\n`);
             }
           } else {
