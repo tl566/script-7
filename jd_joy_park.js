@@ -5,7 +5,8 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [],
   cookie = '',
   message;
-
+const linkId = 'LsQNxL7iWDlXUs6cFl-AAg';
+$.invitePinList = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -71,6 +72,22 @@ $.helpAuthor = true;
       await main();
     }
   }
+  for (let i = 0; i < cookiesArr.length; i++) {
+    cookie = cookiesArr[i];
+    $.UserName = decodeURIComponent(
+        cookie.match(/pt_pin=([^; ]+)(?=;?)/) &&
+        cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]
+    );
+    $.index = i + 1;
+    for (let item of $.invitePinList) {
+      if (!item['invitePin']) continue;
+      if (!$.inviteTaskId) continue;
+      if ($.UserName === item['userName']) continue;
+      console.log(`\n账号 ${$.index} ${$.UserName} 助力好友 ${item['userName']}`)
+      await $.wait(500);
+      await help(item.invitePin, '1', `${$.inviteTaskId}`);
+    }
+  }
 })()
   .catch((e) => {
     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
@@ -87,18 +104,21 @@ function showMsg() {
 }
 
 async function main() {
-  let taskVos = await api('apTaskList', {
-    linkId: 'LsQNxL7iWDlXUs6cFl-AAg',
-  });
-  let tasks = taskVos.data;
+  await help();
+  let taskVos = await api('apTaskList', { linkId });
+  let tasks = taskVos.data.filter(vo => vo['taskLimitTimes'] !== vo['taskDoTimes']);
   for (let t of tasks) {
-    if (t.taskTitle === '汪汪乐园签到') {
+    if (t['taskType'] === 'SHARE_INVITE') {
+      console.log(`${t['taskShowTitle']}任务：${t['taskDoTimes']}/${t['taskLimitTimes']}`);
+      $.inviteTaskId = t['id'];
+    } else if (t.taskType === 'SIGN') {
       // res = await api('apDoTask', {"taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg"})
       // console.log(res)
       // await wait(1000)
+      console.log(`${t['taskShowTitle']}任务：${t['taskDoTimes']}/${t['taskLimitTimes']}`);
     } else if (
-      t.taskTitle === '汪汪乐园浏览会场' ||
-      t.taskTitle === '汪汪乐园浏览商品'
+      t.taskType === 'BROWSE_CHANNEL' ||
+      t.taskType === 'BROWSE_PRODUCT'
     ) {
       let arr = ['汪汪乐园浏览会场', '汪汪乐园浏览商品'];
       for (let name of arr) {
@@ -107,7 +127,7 @@ async function main() {
           taskType: t.taskType,
           taskId: t.id,
           channel: 4,
-          linkId: 'LsQNxL7iWDlXUs6cFl-AAg',
+          linkId,
         });
         let apTaskDetail, taskResult, awardRes;
 
@@ -118,7 +138,7 @@ async function main() {
             taskType: t.taskType,
             taskId: t.id,
             channel: 4,
-            linkId: 'LsQNxL7iWDlXUs6cFl-AAg',
+            linkId,
             itemId: encodeURIComponent(apTaskDetail.itemId),
           });
           console.log('doTask: ', JSON.stringify(taskResult));
@@ -127,7 +147,7 @@ async function main() {
           awardRes = await api('apTaskDrawAward', {
             taskType: t.taskType,
             taskId: t.id,
-            linkId: 'LsQNxL7iWDlXUs6cFl-AAg',
+            linkId,
           });
           if (awardRes.success && awardRes.code === 0)
             console.log(awardRes.data[0].awardGivenNumber);
@@ -184,6 +204,64 @@ function api(fn, body = {}) {
   });
 }
 
+function help(inviterPin = '', inviteType = '', taskId = '') {
+  return new Promise(async (resolve) => {
+    let options = {
+      method: 'POST',
+      url: 'https://api.m.jd.com',
+      headers: {
+        Host: 'api.m.jd.com',
+        Cookie: cookie,
+        Origin: 'https://joypark.jd.com',
+        'Accept-Language': 'zh-cn',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': `jdltapp;android;10.0.5;10;${randPhoneId()};network/wifi;model/VOG-AL00;addressid/137878570;aid/ae3f1e405513f69c;oaid/58e681c7-25cd-4756-b0b5-0a01afac5c73;osVer/29;appBuild/1446;psn/YpzKtOANGRiQ8DSf43yI9iwHJuw20rjt|107;psq/37;adk/;ads/;pap/JA2020_3112531|3.2.0|ANDROID 10;osv/10;pv/35.212;jdv/0|iosapp|t_335139774|liteshare|Qqfriends|1612799035830|1612799104;ref/com.jingdong.common.reactnative.view.JDReactMainActivity;partner/android;apprpd/;eufv/1;Mozilla/5.0 (Linux; Android 10; VOG-AL00 Build/HUAWEIVOG-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/83.0.4103.106 Mobile Safari/537.36`,
+        Accept: 'application/json, text/plain, */*',
+        Referer: `https://joypark.jd.com/?activityId=${linkId}&enter=defaultshare`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      form: {
+        functionId: 'joyBaseInfo',
+        body: `{"taskId":"${taskId}","inviteType":"${inviteType}","inviterPin":"${inviterPin}","linkId":"${linkId}"}`,
+        _t: +new Date(),
+        appid: 'activities_platform',
+      },
+    };
+    $.post(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
+        } else {
+          // console.error(data)
+          data = JSON.parse(data);
+          if (data['code'] === 0) {
+            if (!taskId) {
+              console.log(`\n账号 ${$.UserName || $.nickName} 邀请码：${data['data']['invitePin']}\n`);
+              if (data['data']['invitePin']) {
+                $.invitePinList.push({
+                  userName: $.UserName,
+                  invitePin: data['data']['invitePin']
+                })
+              }
+            }
+            if (data.data.helpState === 3) {
+              console.log('助力失败。不是新用户或已经助力过')
+            } else if(data.data.helpState === 1){
+              console.log(`助力【${inviterPin}】成功`)
+            }else if(data.data.helpState === 2){
+              console.log('助力完成')
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
 function TotalBean() {
   return new Promise(async (resolve) => {
     const options = {
@@ -235,7 +313,17 @@ function TotalBean() {
     });
   });
 }
-
+/**
+ * 生成随机 iPhoneID
+ * @returns {string}
+ */
+function randPhoneId() {
+  return Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10);
+}
 function safeGet(data) {
   try {
     if (typeof JSON.parse(data) == 'object') {
