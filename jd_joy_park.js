@@ -112,10 +112,9 @@ async function main() {
       console.log(`${t['taskShowTitle']}任务：${t['taskDoTimes']}/${t['taskLimitTimes']}`);
       $.inviteTaskId = t['id'];
     } else if (t.taskType === 'SIGN') {
-      // res = await api('apDoTask', {"taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg"})
-      // console.log(res)
-      // await wait(1000)
       console.log(`${t['taskShowTitle']}任务：${t['taskDoTimes']}/${t['taskLimitTimes']}`);
+      let res = await api('apDoTask', {"taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg"})
+      console.log('签到结果', res)
     } else if (
       t.taskType === 'BROWSE_CHANNEL' ||
       t.taskType === 'BROWSE_PRODUCT'
@@ -123,7 +122,7 @@ async function main() {
       let arr = ['汪汪乐园浏览会场', '汪汪乐园浏览商品'];
       for (let name of arr) {
         let times = name === '汪汪乐园浏览会场' ? 5 : 10;
-        res = await api('apTaskDetail', {
+        let res = await api('apTaskDetail', {
           taskType: t.taskType,
           taskId: t.id,
           channel: 4,
@@ -143,19 +142,24 @@ async function main() {
           });
           console.log('doTask: ', JSON.stringify(taskResult));
           if (taskResult.errMsg === '任务已完成') break;
-          await $.wait(2000);
-          awardRes = await api('apTaskDrawAward', {
-            taskType: t.taskType,
-            taskId: t.id,
-            linkId,
-          });
-          if (awardRes.success && awardRes.code === 0)
-            console.log(awardRes.data[0].awardGivenNumber);
-          else console.log('领取奖励出错:', JSON.stringify(awardRes));
-          await $.wait(1000);
         }
       }
     }
+  }
+  //领取做完任务的奖励
+  taskVos = await api('apTaskList', { linkId });
+  tasks = taskVos.data.filter(vo => vo['canDrawAwardNum'] === 1) || [];
+  if (tasks && tasks.length) console.log(`开始领取任务奖励金币\n`)
+  for (let t of tasks) {
+    console.log(`${t['taskShowTitle']}任务：${t['taskDoTimes']}/${t['taskLimitTimes']}`);
+    let awardRes = await api('apTaskDrawAward', {
+      taskType: t.taskType,
+      taskId: t.id,
+      linkId,
+    });
+    if (awardRes.success && awardRes.code === 0)
+      console.log(`${t['taskShowTitle']}任务 获得${awardRes.data[0].awardGivenNumber}`);
+    else console.log('领取奖励出错:', JSON.stringify(awardRes));
   }
 }
 
