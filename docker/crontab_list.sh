@@ -142,3 +142,5 @@
 20 * * * * node /scripts/jd_jddj_plantBeans_collect.js >> /scripts/logs/jd_jddj_plantBeans_collect.log 2>&1
 #送豆得豆
 24 0 * * * node /scripts/jd_sendBeans.js >> /scripts/logs/jd_sendBeans.log 2>&1
+#汪汪乐园（京东极速版APP）
+44 3,22 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
