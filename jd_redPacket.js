@@ -85,7 +85,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       }
     }
     if ($.canHelp) {
-      console.log(`\n\n有剩余助力机会则给作者lxk0301进行助力`);
+      console.log(`\n\n有剩余助力机会则给作者进行助力`);
       for (let item of $.authorMyShareIds || []) {
         console.log(`\n账号 ${$.index} ${$.UserName} 开始给作者lxk0301 ${item} 进行助力`)
         await jinli_h5assist(item);
@@ -106,7 +106,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
 
 async function redPacket() {
   try {
-    await doLuckDrawFun();//券后9.9抽奖
+    //await doLuckDrawFun();//券后9.9抽奖
     await taskHomePage();//查询任务列表
     await doTask();//领取任务，做任务，领取红包奖励
     await h5activityIndex();//查询红包基础信息
@@ -127,8 +127,9 @@ async function doLuckDrawFun() {
 }
 function doLuckDrawEntrance() {
   return new Promise(resolve => {
+    const data = {"platformType":"1","extend":"D465EFE9F0DDD77A8CAEE5C3B6E60D1CFACB9ADD3A1E72C6946BFB0C8092E5D42E4DAA6974C03E2C555E33D424634CF6B0552ACB172E217F8608E096AC4CF4D3"};
     const options = {
-      url: 'https://api.m.jd.com/client.action?functionId=doLuckDrawEntrance&body=%7B%22platformType%22%3A%221%22%7D&appid=XPMSGC2019&client=m&clientVersion=1.0.0&area=19_1601_50258_62858&geo=%5Bobject%20Object%5D&uuid=88732f840b77821b345bf07fd71f609e6ff12f43',
+      url: `https://api.m.jd.com/client.action?functionId=doLuckDrawEntrance&body=${encodeURIComponent(JSON.stringify(data))}&appid=XPMSGC2019&client=m&clientVersion=1.0.0&area=18_1501_1504_52593&geo=%5Bobject%20Object%5D&uuid=88732f840b77821b345bf07fd71f609e6ff12f43`,
       headers: {
         "Host": "api.m.jd.com",
         "Origin": "https://h5.m.jd.com",
@@ -136,7 +137,7 @@ function doLuckDrawEntrance() {
         "Content-Length": "0",
         "Connection": "keep-alive",
         "Accept": "application/json, text/plain, */*",
-        "User-Agent": "jdapp;iPhone;9.5.4;14.3;88732f840b77821b345bf07fd71f609e6ff12f43;network/4g;model/iPhone11,8;addressid/2005183373;appBuild/167668;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+        "User-Agent": "jdapp;iPhone;10.0.5;14.3;88732f840b77821b345bf07fd71f609e6ff12f43;network/4g;model/iPhone11,8;addressid/2005183373;appBuild/167668;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
         "Accept-Language": "zh-cn",
         "Referer": "https://h5.m.jd.com/babelDiy/Zeus/yj8mbcm6roENn7qhNdhiekyeqtd/index.html",
         "Accept-Encoding": "gzip, deflate, br"
@@ -160,6 +161,8 @@ function doLuckDrawEntrance() {
               } else {
                 console.log(`券后9.9抽奖获失败：今日3次抽奖机会已用完\n`)
               }
+            } else {
+              console.log(`${JSON.stringify(data)}`)
             }
           }
         }
