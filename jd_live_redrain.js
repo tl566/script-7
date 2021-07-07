@@ -1,6 +1,6 @@
 /*
 超级直播间红包雨
-更新时间：2021-06-24
+更新时间：2021-07-6
 下一场超级直播间时间:06月25日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4515551
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
@@ -20,7 +20,7 @@ cron "0,30 0-23/1 * * *" script-path=jd_live_redrain.js,tag=超级直播间红�
 */
 const $ = new Env('超级直播间红包雨');
 let allMessage = '', id = 'RRA2cUocg5uYEyuKpWNdh4qE4NW1bN2';
-let bodyList = {"6":{"url":"https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1625294597071&sign=55a8f9c9bc715d89fb3e4443b80d8f26&sv=111","body":"body=%7B%22liveId%22%3A%224586031%22%7D"}}
+let bodyList = {"9":{"url":"https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1625619951002&sign=e749030ed4675f490549a856ec4fdd9c&sv=120","body":"body=%7B%22liveId%22%3A%224613498%22%7D"}}
 let ids = {}
 for (let i = 0; i < 24; i++) {
   ids[i] = id;
