@@ -103,7 +103,7 @@ async function removeJoy(){
   await $.wait(2000);
   $.joyList = [...$.joyListInfo.activityJoyList];
   $.joyList = $.joyList.sort(function (a, b) {
-    return (a.level - b.level);
+    return (b.level - a.level);
   })
   for (let i = 0; i < $.joyList.length; i++) {
     for (let j = 0; j < $.joyListInfo.workJoyInfoList.length; j++) {
