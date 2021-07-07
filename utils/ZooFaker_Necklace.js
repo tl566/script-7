@@ -147,10 +147,11 @@ async function getBody($ = {}) {
     case 'chargeScores':
       riskData = {bubleId: $.id};
       break;
-    case 'sign':
-      riskData = {};
     case 'exchangeGift':
       riskData = { scoreNums: $.id, giftConfigId: $.giftConfigId || 198 };
+      break;
+    case 'sign':
+      riskData = {};
     default:
       break;
   }
