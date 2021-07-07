@@ -2,7 +2,7 @@
 jd宠汪汪 搬的https://github.com/uniqueque/QuantumultX/blob/4c1572d93d4d4f883f483f907120a75d925a693e/Script/jd_joy.js
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 IOS用户支持京东双账号,NodeJs用户支持N个京东账号
-更新时间：2021-6-6
+更新时间：2021-7-7
 活动入口：京东APP我的-更多工具-宠汪汪
 建议先凌晨0点运行jd_joy.js脚本获取狗粮后，再运行此脚本(jd_joy_steal.js)可偷好友积分，6点运行可偷好友狗粮
 feedCount:自定义 每次喂养数量; 等级只和喂养次数有关，与数量无关
@@ -291,7 +291,7 @@ async function petTask() {
     }
     //每日三餐
     if (item['taskType'] === 'ThreeMeals') {
-      console.log('-----每日三餐-----');
+      console.log('\n-----每日三餐-----');
       if (item['receiveStatus'] === 'unreceive') {
         const ThreeMealsRes = await getFood('ThreeMeals');
         if (ThreeMealsRes.success) {
@@ -302,20 +302,9 @@ async function petTask() {
         }
       }
     }
-    //关注店铺
-    if (item['taskType'] === 'FollowShop') {
-      console.log('-----关注店铺-----');
-      const followShops = item.followShops;
-      for (let shop of followShops) {
-        if (!shop.status) {
-          const followShopRes = await followShop(shop.shopId);
-          console.log(`关注店铺${shop.name}结果::${JSON.stringify(followShopRes)}`)
-        }
-      }
-    }
     //逛会场
     if (item['taskType'] === 'ScanMarket') {
-      console.log('----逛会场----');
+      console.log('\n----逛会场----');
       const scanMarketList = item.scanMarketList;
       for (let scanMarketItem of scanMarketList) {
         if (!scanMarketItem.status) {
@@ -329,39 +318,58 @@ async function petTask() {
         }
       }
     }
+    //关注店铺
+    if (item['taskType'] === 'FollowShop') {
+      console.log('\n-----关注店铺-----');
+      const followShops = item.followShops;
+      for (let shop of followShops) {
+        if (!shop.status) {
+          await iconClick('follow_shop', shop.shopId);
+          await $.wait(1000);
+          const followShopRes = await followShop(shop.shopId);
+          console.log(`关注店铺${shop.name}结果::${followShopRes['errorCode']}`)
+          await $.wait(3000);
+        }
+      }
+    }
     //浏览频道
     if (item['taskType'] === 'FollowChannel') {
-      console.log('----浏览频道----');
+      console.log('\n----浏览频道----');
       const followChannelList = item.followChannelList;
       for (let followChannelItem of followChannelList) {
         if (!followChannelItem.status) {
+          await iconClick('follow_channel', followChannelItem.channelId);
+          await $.wait(1000);
           const body = {
             "channelId": followChannelItem.channelId,
             "taskType": "FollowChannel",
             "reqSource": "weapp"
           };
           const scanMarketRes = await scanMarket('scan', body);
-          console.log(`浏览频道-${followChannelItem.channelName}结果::${JSON.stringify(scanMarketRes)}`)
+          console.log(`浏览频道-${followChannelItem.channelName}结果::${scanMarketRes['errorCode']}`)
           await $.wait(5000);
         }
       }
     }
     //关注商品
     if (item['taskType'] === 'FollowGood') {
-      console.log('----关注商品----');
+      console.log('\n----关注商品----');
       const followGoodList = item.followGoodList;
       for (let followGoodItem of followGoodList) {
         if (!followGoodItem.status) {
-          const body = `sku=${followGoodItem.sku}&reqSource=h5`;
+          await iconClick('follow_good', followGoodItem.sku)
+          await $.wait(1000);
+          const body = `sku=${followGoodItem.sku}`;
           const scanMarketRes = await scanMarket('followGood', body, 'application/x-www-form-urlencoded');
           // const scanMarketRes = await appScanMarket('followGood', `sku=${followGoodItem.sku}&reqSource=h5`, 'application/x-www-form-urlencoded');
-          console.log(`关注商品-${followGoodItem.skuName}结果::${JSON.stringify(scanMarketRes)}`)
+          console.log(`关注商品-${followGoodItem.skuName}结果::${scanMarketRes['errorCode']}`)
+          await $.wait(3000);
         }
       }
     }
     //看激励视频
     if (item['taskType'] === 'ViewVideo') {
-      console.log('----浏览频道----');
+      console.log('\n----看激励视频----');
       if (item.taskChance === joinedCount) {
         console.log('今日激励视频已看完')
       } else {
@@ -369,7 +377,8 @@ async function petTask() {
           console.log(`开始第${i+1}次看激励视频`);
           const body = {"taskType":"ViewVideo","reqSource":"weapp"}
           let sanVideoRes = await scanMarket('scan', body);
-          console.log(`看视频激励结果--${JSON.stringify(sanVideoRes)}`);
+          console.log(`看视频激励结果--${sanVideoRes['errorCode']}`);
+          await $.wait(15 * 1000);
         }
       }
     }
@@ -461,7 +470,7 @@ function scanMarket(type, body, cType = 'application/json') {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: `//draw.jdfcloud.com/common/pet/${type}?invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `//jdjoy.jd.com/common/pet/${type}?invokeKey=NRp8OPxZMFXmGkaE`,
       method: "POST",
       data: body,
       credentials: "include",
@@ -471,7 +480,8 @@ function scanMarket(type, body, cType = 'application/json') {
     if (cType === 'application/json') {
       body = JSON.stringify(body)
     }
-    $.post(taskPostUrl(url.replace(/reqSource=h5/, 'reqSource=weapp'), body, reqSource, host, cType), (err, resp, data) => {
+    const options = taskPostUrl(url, body, reqSource, host, cType)
+    $.post(options, (err, resp, data) => {
       try {
         if (err) {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
@@ -554,14 +564,16 @@ function followShop(shopId) {
     const reqSource = 'weapp';
     const host = 'draw.jdfcloud.com';
     let opt = {
-      url: "//draw.jdfcloud.com/common/pet/followShop?invokeKey=NRp8OPxZMFXmGkaE",
+      url: "//jdjoy.jd.com/common/pet/followShop?invokeKey=NRp8OPxZMFXmGkaE",
       method: "POST",
       data: body,
       credentials: "include",
       header: {"content-type":"application/x-www-form-urlencoded"}
     }
     const url = "https:"+ taroRequest(opt)['url'] + $.validate;
-    $.post(taskPostUrl(url.replace(/reqSource=h5/, 'reqSource=weapp'), body, reqSource, host,'application/x-www-form-urlencoded'), (err, resp, data) => {
+    const options = taskPostUrl(url, body, reqSource, host,'application/x-www-form-urlencoded');
+    // const options = taskPostUrl('https://jdjoy.jd.com/common/pet/followShop?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE', body, reqSource, host,'application/x-www-form-urlencoded');
+    $.post(options, (err, resp, data) => {
       try {
         if (err) {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
@@ -981,6 +993,47 @@ function showMsg() {
     $.log(`\n${message}\n`);
   }
 }
+//点击领取任务API
+function iconClick(functionId, id) {
+  return new Promise(resolve => {
+    $.get({
+      url: `https://jdjoy.jd.com/common/pet/icon/click?iconCode=${functionId}&linkAddr=${id}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      headers: {
+        'Accept': '*/*',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json',
+        'Origin': 'https://h5.m.jd.com',
+        'Accept-Language': 'zh-cn',
+        'Host': 'jdjoy.jd.com',
+        'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+        'Referer': 'https://h5.m.jd.com/babelDiy/Zeus/2wuqXrZrhygTQzYA7VufBEpj4amH/index.html',
+        'cookie': cookie
+      },
+      timeout: 10000,
+    }, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data.success) {
+              console.log('点击领取任务:成功!');
+            } else {
+              console.log(`点击领取任务:失败`, $.toStr(data))
+            }
+          } else {
+            console.log(`点击领取任务:失败`, $.toStr(data))
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
@@ -1041,20 +1094,21 @@ function taskUrl(url, Host, reqSource) {
     }
   }
 }
-function taskPostUrl(url, body, reqSource, Host, ContentType) {
+function taskPostUrl(url, body, reqSource, Host = 'jdjoy.jd.com', ContentType) {
   return {
     url: url,
     body: body,
     headers: {
       'Cookie': cookie,
       'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-      'reqSource': reqSource,
+      // 'reqSource': reqSource,
       'Content-Type': ContentType,
-      'Host': Host,
+      // 'Host': Host,
       'Referer': 'https://jdjoy.jd.com/pet/index',
       'Accept-Language': 'zh-cn',
       'Accept-Encoding': 'gzip, deflate, br',
-    }
+    },
+    timeout: 10000
   }
 }
 function jsonParse(str) {

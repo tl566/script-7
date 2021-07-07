@@ -146,3 +146,5 @@
 24 0 * * * node /scripts/jd_sendBeans.js >> /scripts/logs/jd_sendBeans.log 2>&1
 #汪汪乐园（京东极速版APP）
 44 3,22 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
+#汪汪乐园合并汪汪
+14 0-23/3 * * * node /scripts/jd_joy_park_merge.js >> /scripts/logs/jd_joy_park_merge.log 2>&1
