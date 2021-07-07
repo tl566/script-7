@@ -25,9 +25,6 @@ cron "15 0-23/2 * * *" script-path=jd_joy.js,tag=京东宠汪汪
 京东宠汪汪 = type=cron,script-path=jd_joy.js, cronexpr="15 0-23/2 * * *", timeout=3600, enable=true
 */
 const $ = new Env('宠汪汪');
-const zooFaker = require('./utils/JDJRValidator_Pure');
-$.get = zooFaker.injectToRequest($.get.bind($));
-$.post = zooFaker.injectToRequest($.post.bind($));
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -35,6 +32,9 @@ let allMessage = '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
+  const zooFaker = require('./utils/JDJRValidator_Pure');
+  $.get = zooFaker.injectToRequest($.get.bind($));
+  $.post = zooFaker.injectToRequest($.post.bind($));
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
   })

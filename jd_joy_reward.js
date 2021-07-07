@@ -23,9 +23,6 @@ cron "0 0-16/8 * * *" script-path=jd_joy_reward.js,tag=宠汪汪积分兑换奖�
  */
 // prettier-ignore
 const $ = new Env('宠汪汪积分兑换奖品');
-const zooFaker = require('./utils/JDJRValidator_Pure');
-$.get = zooFaker.injectToRequest($.get.bind($));
-$.post = zooFaker.injectToRequest($.post.bind($));
 let allMessage = '';
 let joyRewardName = 0;//是否兑换京豆，默认0不兑换京豆，其中20为兑换20京豆,500为兑换500京豆，0为不兑换京豆.数量有限先到先得
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -35,6 +32,9 @@ let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品�
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
+  const zooFaker = require('./utils/JDJRValidator_Pure');
+  $.get = zooFaker.injectToRequest($.get.bind($));
+  $.post = zooFaker.injectToRequest($.post.bind($));
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
   })

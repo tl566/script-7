@@ -23,8 +23,6 @@ cron "10 0-21/3 * * *" script-path=jd_joy_steal.js,tag=宠汪汪偷好友积分�
 宠汪汪偷好友积分与狗粮 = type=cron,script-path=jd_joy_steal.js, cronexpr="10 0-21/3 * * *", timeout=3600, enable=true
 */
 const $ = new Env('宠汪汪偷好友积分与狗粮');
-const zooFaker = require('./utils/JDJRValidator_Pure');
-$.get = zooFaker.injectToRequest($.get.bind($));
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -32,6 +30,9 @@ let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset()*60
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
+  const zooFaker = require('./utils/JDJRValidator_Pure');
+  $.get = zooFaker.injectToRequest($.get.bind($));
+  $.post = zooFaker.injectToRequest($.post.bind($));
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
   })
