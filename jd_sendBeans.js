@@ -95,7 +95,7 @@ if ($.isNode()) {
     await helpMain();
   }
   console.log(`\n开始领取奖励\n`);
-  for (let i = 0; i < cookiesArr.length && i < openCount && $.openTuanList.length > 0; i++) {
+  for (let i = 0; i < cookiesArr.length ; i++) {
     $.cookie = cookiesArr[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1])
     $.index = i + 1;
@@ -122,6 +122,7 @@ async function getActivityInfo(){
   if($.activityList.length === 0){
     return ;
   }
+  console.log(JSON.stringify($.activityList))
   for (let i = 0; i < $.activityList.length; i++) {
     if($.activityList[i].status !== 'NOT_BEGIN'){
       $.activityId = $.activityList[i].activeId;
@@ -246,16 +247,65 @@ async function rewardMain(){
     $.rewardRecordId = $.detail.rewardRecordId;
     console.log(`获取活动详情成功`);
   }
-  await $.wait(3000);
-  if($.rewardRecordId && $.detail.completed && !$.detail.rewardOk){
-    await rewardBean();
-    await $.wait(2000);
-  }else if($.rewardRecordId && $.detail.completed && $.detail.rewardOk){
-    console.log(`奖励已领取`);
-  }else{
-    console.log(`未满足条件，不可领取奖励`);
+  $.myRewardList = [];
+  await getMyReward();
+  // await $.wait(3000);
+  // if($.rewardRecordId && $.detail.completed && !$.detail.rewardOk){
+  //   await rewardBean();
+  //   await $.wait(2000);
+  // }else if($.rewardRecordId && $.detail.completed && $.detail.rewardOk){
+  //   console.log(`奖励已领取`);
+  // }else{
+  //   console.log(`未满足条件，不可领取奖励`);
+  // }
+  for (let i = 0; i < $.myRewardList.length; i++) {
+    if($.myRewardList[i].status === 3){
+      $.rewardRecordId = $.myRewardList[i].id;
+      console.log(`领取${$.myRewardList[i].beanQuantity}个京豆`);
+      rewardBean();
+      await $.wait(3000);
+    }else if($.myRewardList[i].status === 4){
+      console.log(`已领取${$.myRewardList[i].beanQuantity}个京豆`);
+    }
   }
 }
+
+async function getMyReward(){
+  return new Promise((resolve) => {
+    let options = {
+      "url": `https://draw.jdfcloud.com/common/api/bean/activity/myReward?itemsPerPage=20&currentPage=1&sendType=0&appId=wxccb5c536b0ecd1bf&invokeKey=NRp8OPxZMFXmGkaE`,
+      "headers":  {
+        'content-type' : `application/json`,
+        'Connection' : `keep-alive`,
+        'Accept-Encoding' : `gzip,compress,br,deflate`,
+        'App-Id' : ``,
+        'Lottery-Access-Signature' : ``,
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+        'openId' : ``,
+        'Host' : `draw.jdfcloud.com`,
+        'Referer' : `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
+        'cookie' : $.cookie,
+      }
+    };
+    $.get(options, (err, resp, data) => {
+      try {
+        //console.log(data);
+        data = JSON.parse(data);
+        if(data.success){
+          $.myRewardList = data.datas;
+          //console.log(`领取豆子奖励成功`);
+        }else{
+          console.log(JSON.stringify(data));
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        resolve(data);
+      }
+    })
+  });
+}
+
 async function rewardBean(){
   return new Promise((resolve) => {
     let options = {
