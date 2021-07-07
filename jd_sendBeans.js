@@ -26,7 +26,7 @@ if ($.isNode()) {
   }
   $.activityId = '';
   $.completeNumbers = '';
-  console.log(`开始获取活动信息`);
+  console.log(`开始获取活动信息\n`);
   for (let i = 0; i < cookiesArr.length && $.activityId === '' && i < 3; i++) {
     $.cookie = cookiesArr[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
@@ -122,7 +122,11 @@ async function getActivityInfo(){
   if($.activityList.length === 0){
     return ;
   }
-  console.log(JSON.stringify($.activityList))
+  // console.log(JSON.stringify($.activityList))
+  for (let i = 0; i < $.activityList.length; i++) {
+    console.log(`活动ID【${$.activityList[i].activeId}】：${$.activityList[i].status === 'COMPLETE' ? '已完成' : $.activityList[i].status === 'FINISH' ? '已结束' : $.activityList[i].status === 'NOT_BEGIN' ? '未开始，开始时间 ' + $.time('yyyy-MM-dd HH:mm:ss', $.activityList[i].beginTime) : '未知状态' + $.activityList[i].status}`);
+  }
+
   for (let i = 0; i < $.activityList.length; i++) {
     if($.activityList[i].status !== 'NOT_BEGIN'){
       $.activityId = $.activityList[i].activeId;
@@ -136,7 +140,7 @@ async function getActivityInfo(){
     console.log(`获取活动详情失败`);
     return;
   }else{
-    console.log(`获取活动详情成功`);
+    console.log(`\n获取活动详情成功`);
   }
   $.completeNumbers = $.detail.activityInfo.completeNumbers;
   console.log(`获取到的活动ID：${$.activityId},需要邀请${$.completeNumbers}人瓜分`);
