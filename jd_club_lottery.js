@@ -1,5 +1,5 @@
 /*
-Last Modified time: 2021-5-11 09:27:09
+Last Modified time: 2021-7-7 12:27:09
 活动入口：京东APP首页-领京豆-摇京豆/京东APP首页-我的-京东会员-摇京豆
 增加京东APP首页超级摇一摇(不定时有活动)
 增加超级品牌日做任务及抽奖
@@ -1255,9 +1255,13 @@ function getNewLotteryInfo() {
               if (result['isLottery'] === 0) {
                 console.log(`京东小魔方抽奖：${result['toast']}`);
               } else if (result['isLottery'] === 1) {
-                console.log(`京东小魔方抽奖：${result['lotteryInfo']['quantity']}京豆`);
-                // allMessage += `【京东小魔方】获得：${result['lotteryInfo']['quantity']}京豆\n`;
-                $.moFangBeanNum += parseInt(result['lotteryInfo']['quantity']);
+                if (result['lotteryInfo']['lotteryStyle'] === 1) {
+                  console.log(`京东小魔方抽奖：获得${result['lotteryInfo']['quantity']}京豆`);
+                  // allMessage += `【京东小魔方】获得：${result['lotteryInfo']['quantity']}京豆\n`;
+                  if (result['lotteryInfo']['quantity']) $.moFangBeanNum += parseInt(result['lotteryInfo']['quantity']);
+                } else {
+                  console.log(`京东小魔方抽奖：获得${result['lotteryInfo']['name']}京豆`);
+                }
               } else {
                 console.log(`京东小魔方抽奖：${JSON.stringify(data)}`);
               }
