@@ -43,11 +43,11 @@ if ($.isNode()) {
     }
     await getActivityInfo();
   }
-  if($.activityId === ''){
+  if ($.activityId === '') {
     console.log(`获取活动ID失败`);
-    return ;
+    return;
   }
-  let openCount = Math.floor((Number(cookiesArr.length)-1)/Number($.completeNumbers));
+  let openCount = Math.floor((Number(cookiesArr.length) - 1) / Number($.completeNumbers));
   console.log(`\n共有${cookiesArr.length}个账号，前${openCount}个账号可以开团\n`);
   $.openTuanList = [];
   console.log(`前${openCount}个账号开始开团\n`);
@@ -57,7 +57,7 @@ if ($.isNode()) {
     $.index = i + 1;
     $.isLogin = true;
     $.nickName = $.UserName;
-    if(!$.isLoginInfo[$.UserName]){
+    if (!$.isLoginInfo[$.UserName]) {
       await TotalBean();
       console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
       $.isLoginInfo[$.UserName] = $.isLogin;
@@ -68,20 +68,20 @@ if ($.isNode()) {
         }
         continue;
       }
-    }else {
+    } else {
       console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     }
     await openTuan();
   }
-  console.log('\n开团信息\n'+JSON.stringify($.openTuanList));
+  console.log('\n开团信息\n' + JSON.stringify($.openTuanList));
   console.log(`\n开始互助\n`);
-  let ckList = getRandomArrayElements(cookiesArr,cookiesArr.length);
+  let ckList = getRandomArrayElements(cookiesArr, cookiesArr.length);
   for (let i = 0; i < ckList.length && $.openTuanList.length > 0; i++) {
     $.cookie = ckList[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1])
     $.index = i + 1;
     $.isLogin = true;
-    if(!$.isLoginInfo[$.UserName]){
+    if (!$.isLoginInfo[$.UserName]) {
       await TotalBean();
       $.isLoginInfo[$.UserName] = $.isLogin;
       if (!$.isLogin) {
@@ -95,12 +95,12 @@ if ($.isNode()) {
     await helpMain();
   }
   console.log(`\n开始领取奖励\n`);
-  for (let i = 0; i < cookiesArr.length ; i++) {
+  for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookiesArr[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1])
     $.index = i + 1;
     $.isLogin = true;
-    if(!$.isLoginInfo[$.UserName]){
+    if (!$.isLoginInfo[$.UserName]) {
       await TotalBean();
       $.isLoginInfo[$.UserName] = $.isLogin;
       if (!$.isLogin) {
@@ -114,13 +114,17 @@ if ($.isNode()) {
     console.log(`\n*****开始【京东账号${$.index}】${$.UserName}*****\n`);
     await rewardMain();
   }
-})().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
+})().catch((e) => {
+  $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+}).finally(() => {
+  $.done();
+});
 
-async function getActivityInfo(){
+async function getActivityInfo() {
   $.activityList = [];
   await getActivityList();
-  if($.activityList.length === 0){
-    return ;
+  if ($.activityList.length === 0) {
+    return;
   }
   // console.log(JSON.stringify($.activityList))
   for (let i = 0; i < $.activityList.length; i++) {
@@ -128,7 +132,7 @@ async function getActivityInfo(){
   }
 
   for (let i = 0; i < $.activityList.length; i++) {
-    if($.activityList[i].status !== 'NOT_BEGIN'){
+    if ($.activityList[i].status !== 'NOT_BEGIN') {
       $.activityId = $.activityList[i].activeId;
       break;
     }
@@ -136,17 +140,17 @@ async function getActivityInfo(){
   await $.wait(3000);
   $.detail = {};
   await getActivityDetail();
-  if(JSON.stringify($.detail) === '{}'){
+  if (JSON.stringify($.detail) === '{}') {
     console.log(`获取活动详情失败`);
     return;
-  }else{
+  } else {
     console.log(`\n获取活动详情成功`);
   }
   $.completeNumbers = $.detail.activityInfo.completeNumbers;
   console.log(`获取到的活动ID：${$.activityId},需要邀请${$.completeNumbers}人瓜分`);
 }
 
-async function getActivityList(){
+async function getActivityList() {
   return new Promise((resolve) => {
     let options = {
       "url": `https://sendbeans.jd.com/common/api/bean/activity/get/entry/list/by/channel?channelId=14&channelType=H5&sendType=0&singleActivity=false&invokeKey=NRp8OPxZMFXmGkaE`,
@@ -166,9 +170,9 @@ async function getActivityList(){
     $.get(options, (err, resp, data) => {
       try {
         data = JSON.parse(data);
-        if(data.success){
+        if (data.success) {
           $.activityList = data.data.items;
-        }else{
+        } else {
           console.log(JSON.stringify(data));
         }
       } catch (e) {
@@ -181,20 +185,20 @@ async function getActivityList(){
 }
 
 
-async function openTuan(){
+async function openTuan() {
   $.detail = {};
   $.rewardRecordId = '';
   await getActivityDetail();
-  if(JSON.stringify($.detail) === '{}'){
+  if (JSON.stringify($.detail) === '{}') {
     console.log(`获取活动详情失败`);
     return;
-  }else{
+  } else {
     $.rewardRecordId = $.detail.rewardRecordId;
     console.log(`获取活动详情成功`);
   }
   await $.wait(3000);
-  if(!$.rewardRecordId){
-    if(!$.detail.invited){
+  if (!$.rewardRecordId) {
+    if (!$.detail.invited) {
       await invite();
       await $.wait(1000);
       await getActivityDetail();
@@ -202,35 +206,35 @@ async function openTuan(){
       $.rewardRecordId = $.detail.rewardRecordId;
       console.log(`【京东账号${$.index}】${$.UserName} 瓜分ID:${$.rewardRecordId}`);
     }
-  }else{
+  } else {
     console.log(`【京东账号${$.index}】${$.UserName} 瓜分ID:${$.rewardRecordId}`);
   }
   $.openTuanList.push({
-    'user':$.UserName,
-    'rewardRecordId':$.rewardRecordId,
-    'completed':$.detail.completed,
-    'rewardOk':$.detail.rewardOk
+    'user': $.UserName,
+    'rewardRecordId': $.rewardRecordId,
+    'completed': $.detail.completed,
+    'rewardOk': $.detail.rewardOk
   });
 }
 
-async function helpMain(){
+async function helpMain() {
   $.canHelp = true;
   for (let j = 0; j < $.openTuanList.length && $.canHelp; j++) {
-    $.oneTuanInfo =  $.openTuanList[j];
-    if( $.UserName === $.oneTuanInfo['user']){
+    $.oneTuanInfo = $.openTuanList[j];
+    if ($.UserName === $.oneTuanInfo['user']) {
       continue;
     }
-    if( $.oneTuanInfo['completed']){
+    if ($.oneTuanInfo['completed']) {
       continue;
     }
     console.log(`${$.UserName}去助力${$.oneTuanInfo['user']}`);
     $.detail = {};
     $.rewardRecordId = '';
     await getActivityDetail();
-    if(JSON.stringify($.detail) === '{}'){
+    if (JSON.stringify($.detail) === '{}') {
       console.log(`获取活动详情失败`);
       return;
-    }else{
+    } else {
       $.rewardRecordId = $.detail.rewardRecordId;
       console.log(`获取活动详情成功`);
     }
@@ -240,14 +244,14 @@ async function helpMain(){
   }
 }
 
-async function rewardMain(){
+async function rewardMain() {
   $.detail = {};
   $.rewardRecordId = '';
   await getActivityDetail();
-  if(JSON.stringify($.detail) === '{}'){
+  if (JSON.stringify($.detail) === '{}') {
     console.log(`获取活动详情失败`);
     return;
-  }else{
+  } else {
     $.rewardRecordId = $.detail.rewardRecordId;
     console.log(`获取活动详情成功`);
   }
@@ -263,42 +267,42 @@ async function rewardMain(){
   //   console.log(`未满足条件，不可领取奖励`);
   // }
   for (let i = 0; i < $.myRewardList.length; i++) {
-    if($.myRewardList[i].status === 3){
+    if ($.myRewardList[i].status === 3) {
       $.rewardRecordId = $.myRewardList[i].id;
       console.log(`领取${$.myRewardList[i].beanQuantity}个京豆`);
       rewardBean();
       await $.wait(3000);
-    }else if($.myRewardList[i].status === 4){
+    } else if ($.myRewardList[i].status === 4) {
       console.log(`已领取${$.myRewardList[i].beanQuantity}个京豆`);
     }
   }
 }
 
-async function getMyReward(){
+async function getMyReward() {
   return new Promise((resolve) => {
     let options = {
       "url": `https://draw.jdfcloud.com/common/api/bean/activity/myReward?itemsPerPage=20&currentPage=1&sendType=0&appId=wxccb5c536b0ecd1bf&invokeKey=NRp8OPxZMFXmGkaE`,
-      "headers":  {
-        'content-type' : `application/json`,
-        'Connection' : `keep-alive`,
-        'Accept-Encoding' : `gzip,compress,br,deflate`,
-        'App-Id' : ``,
-        'Lottery-Access-Signature' : ``,
+      "headers": {
+        'content-type': `application/json`,
+        'Connection': `keep-alive`,
+        'Accept-Encoding': `gzip,compress,br,deflate`,
+        'App-Id': ``,
+        'Lottery-Access-Signature': ``,
         "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-        'openId' : ``,
-        'Host' : `draw.jdfcloud.com`,
-        'Referer' : `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
-        'cookie' : $.cookie,
+        'openId': ``,
+        'Host': `draw.jdfcloud.com`,
+        'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
+        'cookie': $.cookie,
       }
     };
     $.get(options, (err, resp, data) => {
       try {
         //console.log(data);
         data = JSON.parse(data);
-        if(data.success){
+        if (data.success) {
           $.myRewardList = data.datas;
           //console.log(`领取豆子奖励成功`);
-        }else{
+        } else {
           console.log(JSON.stringify(data));
         }
       } catch (e) {
@@ -310,29 +314,29 @@ async function getMyReward(){
   });
 }
 
-async function rewardBean(){
+async function rewardBean() {
   return new Promise((resolve) => {
     let options = {
       "url": `https://draw.jdfcloud.com/common/api/bean/activity/sendBean?rewardRecordId=${$.rewardRecordId}&jdChannelId=&userSource=mp&appId=wxccb5c536b0ecd1bf&invokeKey=NRp8OPxZMFXmGkaE`,
-      "headers":  {
-        'content-type' : `application/json`,
-        'Connection' : `keep-alive`,
-        'Accept-Encoding' : `gzip,compress,br,deflate`,
-        'App-Id' : ``,
-        'Lottery-Access-Signature' : ``,
+      "headers": {
+        'content-type': `application/json`,
+        'Connection': `keep-alive`,
+        'Accept-Encoding': `gzip,compress,br,deflate`,
+        'App-Id': ``,
+        'Lottery-Access-Signature': ``,
         "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-        'openId' : ``,
-        'Host' : `draw.jdfcloud.com`,
-        'Referer' : `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
-        'cookie' : $.cookie,
+        'openId': ``,
+        'Host': `draw.jdfcloud.com`,
+        'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
+        'cookie': $.cookie,
       }
     };
     $.get(options, (err, resp, data) => {
       try {
         data = JSON.parse(data);
-        if(data.success){
+        if (data.success) {
           console.log(`领取豆子奖励成功`);
-        }else{
+        } else {
           console.log(JSON.stringify(data));
         }
       } catch (e) {
@@ -359,26 +363,26 @@ async function help() {
   await new Promise((resolve) => {
     let options = {
       "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?activityId=${$.activityId}&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&invokeKey=NRp8OPxZMFXmGkaE&timestap=${Date.now()}`,
-      "headers":  {
-        'content-type' : `application/json`,
-        'Connection' : `keep-alive`,
-        'Accept-Encoding' : `gzip,compress,br,deflate`,
-        'App-Id' : ``,
-        'Lottery-Access-Signature' : ``,
+      "headers": {
+        'content-type': `application/json`,
+        'Connection': `keep-alive`,
+        'Accept-Encoding': `gzip,compress,br,deflate`,
+        'App-Id': ``,
+        'Lottery-Access-Signature': ``,
         "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-        'openId' : ``,
-        'Host' : `draw.jdfcloud.com`,
-        'Referer' : `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
-        'cookie' : $.cookie,
+        'openId': ``,
+        'Host': `draw.jdfcloud.com`,
+        'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
+        'cookie': $.cookie,
       }
     };
     $.post(options, (err, resp, res) => {
       try {
         if (res) {
           res = JSON.parse(res);
-          if(res.data.result === 5){
+          if (res.data.result === 5) {
             $.oneTuanInfo['completed'] = true;
-          }else if(res.data.result === 0 || res.data.result === 1){
+          } else if (res.data.result === 0 || res.data.result === 1) {
             $.canHelp = false;
           }
           console.log(JSON.stringify(res));
@@ -396,16 +400,16 @@ async function invite() {
   const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?openId=oPcgJ4_X7uCMeTgGmar-rmiWst1Y&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=NRp8OPxZMFXmGkaE`;
   const method = `POST`;
   const headers = {
-    'content-type' : `application/json`,
-    'Connection' : `keep-alive`,
-    'Accept-Encoding' : `gzip,compress,br,deflate`,
-    'App-Id' : ``,
-    'Lottery-Access-Signature' : ``,
+    'content-type': `application/json`,
+    'Connection': `keep-alive`,
+    'Accept-Encoding': `gzip,compress,br,deflate`,
+    'App-Id': ``,
+    'Lottery-Access-Signature': ``,
     "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-    'openId' : ``,
-    'Host' : `draw.jdfcloud.com`,
-    'Referer' : `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
-    'cookie' : $.cookie,
+    'openId': ``,
+    'Host': `draw.jdfcloud.com`,
+    'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
+    'cookie': $.cookie,
   };
   const body = `{}`;
   const myRequest = {
@@ -418,9 +422,9 @@ async function invite() {
     $.post(myRequest, (err, resp, data) => {
       try {
         data = JSON.parse(data);
-        if(data.success){
+        if (data.success) {
           console.log(`发起瓜分成功`);
-        }else{
+        } else {
           console.log(JSON.stringify(data));
         }
       } catch (e) {
@@ -438,16 +442,16 @@ async function getActivityDetail() {
   const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityId=${$.activityId}&userOpenId=oPcgJ4_X7uCMeTgGmar-rmiWst1Y&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=NRp8OPxZMFXmGkaE`;
   const method = `GET`;
   const headers = {
-    'cookie' : $.cookie,
-    'openId' : ``,
-    'Connection' : `keep-alive`,
-    'App-Id' : ``,
-    'content-type' : `application/json`,
-    'Host' : `draw.jdfcloud.com`,
-    'Accept-Encoding' : `gzip,compress,br,deflate`,
+    'cookie': $.cookie,
+    'openId': ``,
+    'Connection': `keep-alive`,
+    'App-Id': ``,
+    'content-type': `application/json`,
+    'Host': `draw.jdfcloud.com`,
+    'Accept-Encoding': `gzip,compress,br,deflate`,
     "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-    'Lottery-Access-Signature' : ``,
-    'Referer' : `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
+    'Lottery-Access-Signature': ``,
+    'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
   };
   const myRequest = {url: url, method: method, headers: headers};
   return new Promise(async resolve => {
@@ -455,7 +459,7 @@ async function getActivityDetail() {
       try {
         //console.log(data);
         data = JSON.parse(data);
-        if(data.success){
+        if (data.success) {
           $.detail = data.data;
         }
       } catch (e) {
@@ -467,6 +471,7 @@ async function getActivityDetail() {
     })
   })
 }
+
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
