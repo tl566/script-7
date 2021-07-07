@@ -223,7 +223,7 @@ async function takePostRequest(type){
       break;
     case 'SendCoin':
       url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
-      body =  {"coin":randomNum(5000,6000),"point":randomNum(10000,15000),"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
+      body =  {"coin":randomNum(4500,5000),"point":randomNum(4000,5000),"method":"/foodRunning/"+type,"actId":"jd_food_running","buyerNick":$.thisNick,"pushWay":1,"userId":"10299171"};
       break;
     case 'OpenBox':
       url = `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/${type}?open_id=&mix_nick=&bizExtString=&user_id=10299171`;
@@ -330,7 +330,7 @@ function dealReturn(type, data) {
       break;
     case 'SendCoin':
       if(data.success && data.errorCode === '200' && data.data && data.data.status && data.data.status === 200){
-        console.log(`游戏完成`);
+        console.log(`游戏完成`, data);
       }else{
         console.log(JSON.stringify(data));
       }
