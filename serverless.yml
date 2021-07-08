@@ -52,12 +52,12 @@ inputs:
           cronExpression: "0 10 0 * * * *"
           enable: true
           argument: jd_redPacket&jd_shop&jd_unsubscribe&jd_lotteryMachine&jd_car&jd_ms
-    - timer: #天天提鹅 #京喜牧场 #京东到家农场 #京东到家鲜豆庄园 #京东到家鲜豆任务
+    - timer: #天天提鹅 #京喜牧场 #京东到家农场 #京东到家鲜豆庄园 #京东到家鲜豆任务 #汪汪乐园合成
         parameters:
-          name: dailyegg_jxmc_jddjfruit_jddjplantBeans_jddjdailyTask
+          name: dailyegg_jxmc_jddjfruit_jddjplantBeans_jddjdailyTask_joyparkmerge
           cronExpression: "0 8 */3 * * * *"
           enable: true
-          argument: jd_daily_egg&jd_jxmc&jd_jddj_fruit&jd_jddj_plantBeans&jd_jddj_dailyTask
+          argument: jd_daily_egg&jd_jxmc&jd_jddj_fruit&jd_jddj_plantBeans&jd_jddj_dailyTask&jd_joy_park_merge
     - timer: #东东超市 #十元街 #京东到家收集水滴 #京东到家鲜豆庄园收水车水滴
         parameters:
           name: superMarket_syj_jddjfruitcollect_jddjplantBeanscollect
