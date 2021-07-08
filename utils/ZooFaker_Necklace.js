@@ -24,7 +24,7 @@ class ZooFakerNecklace {
     }
 
     const t = Math.floor(1e+6 * Math.random()).toString().padEnd(6, '8');
-    const pin = this.cookie.match(REG_PIN)[1];
+    const pin = decodeURIComponent(this.cookie.match(REG_PIN)[1]);
     const {log} = smashUtils.get_risk_result({
       id: this.action,
       data: {
@@ -44,7 +44,7 @@ class ZooFakerNecklace {
   }
 
   async init() {
-    // console.time('ZooFakerNecklace');
+    console.time('ZooFakerNecklace');
     process.chdir(__dirname);
     const html = await ZooFakerNecklace.httpGet(URL);
     const script = REG_SCRIPT.exec(html);
@@ -80,7 +80,7 @@ class ZooFakerNecklace {
 
     // console.log(html);
     // console.log(script[1],script[2]);
-    // console.timeEnd('ZooFakerNecklace');
+    console.timeEnd('ZooFakerNecklace');
   }
 
   async getJSContent(cacheKey, url) {
@@ -138,7 +138,6 @@ class ZooFakerNecklace {
 }
 
 async function getBody($ = {}) {
-  // console.log('$', $);
   let riskData;
   switch ($.action) {
     case 'startTask':

@@ -309,8 +309,7 @@ function necklace_chargeScores(bubleId) {
 function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = "") {
   return new Promise(async resolve => {
     let body = {
-      taskId,
-      currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
+      taskId
     }
     if (functionId === 'necklace_startTask') {
       body = await zooFaker.getBody({ 'id': taskId, 'cookie': cookie, 'action': 'startTask' })
@@ -329,8 +328,6 @@ function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = 
                 // $.taskConfigVos = data.data.result.taskConfigVos;
                 // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
               }
-            } else if (data.rtn_code === 403) {
-              console.log(`${functionId === 'necklace_startTask' ? '领取任务失败' : '做任务失败'}：活动太火爆了,还是去买买买吧~\n`);
             } else {
               console.log(`${functionId === 'necklace_startTask' ? '领取任务失败' : '做任务失败'}：${JSON.stringify(data)}\n`);
             }
@@ -347,8 +344,7 @@ function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = 
 function necklace_getTask(taskId) {
   return new Promise(resolve => {
     const body = {
-      taskId,
-      currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
+      taskId
     }
     $.taskItems = [];
     $.post(taskPostUrl("necklace_getTask", body), async (err, resp, data) => {
@@ -508,7 +504,6 @@ function getCcTaskList(functionId, body, type = '3') {
   })
 }
 function taskPostUrl(function_id, body = {}) {
-  const time = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
   return {
     url: `https://api.m.jd.com/api?appid=coupon-necklace&functionId=${function_id}&loginType=2&client=coupon-necklace&t=${Date.now()}&uuid=fc13275e23b2613e6aae772533ca6f349d2e0a86`,
     body: `body=${escape(JSON.stringify(body))}`,
