@@ -135,6 +135,7 @@ async function jdBeanHome() {
     //   await $.wait(1000)
     //   if ($.doneState) break
     // }
+    await morningGetBean();//早起福利领京豆
     do {
       await doTask2()
       await $.wait(3000)
@@ -469,6 +470,57 @@ function receiveJd2() {
             } else {
               console.log(`强制开启新版领京豆结果:${JSON.stringify(data)}\n`)
             }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+function morningGetBean() {
+  var headers = {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "zh-Hans-CN;q=1",
+    "Connection": "keep-alive",
+    "Content-Length": "1039",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Cookie": cookie
+  };
+  var dataString = 'adid=696F8BD2-0820-405C-AFC0-3C6D028040E5&area=19_1655_5869_0&body=%7B%22rnVersion%22%3A%224.7%22%2C%22fp%22%3A%22-1%22%2C%22eid%22%3A%22%22%2C%22shshshfp%22%3A%22-1%22%2C%22userAgent%22%3A%22-1%22%2C%22shshshfpa%22%3A%22-1%22%2C%22referUrl%22%3A%22-1%22%2C%22jda%22%3A%22-1%22%7D&build=167724&client=apple&clientVersion=10.0.6&d_brand=apple&d_model=iPhone12%2C1&eid=eidI8c388120e5s19VjPul4qT82JDfeWci5EkfVY0S0He3xQP5aZr1FEOOd8Dy9fN/Re5ER1Fr2P8iX6COLsdC9JkBNiZnjtTVxn0UUp8/jk0bG3avda&isBackground=N&joycious=87&lang=zh_CN&networkType=4g&networklibtype=JDNetworkBaseAF&openudid=fe74663a2c4c2936d55f6ec7040d1b2388760b6a&osVersion=14.4&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=e06b360d83a5a3a0a78e5dff11f9b8ab&st=1625701563859&sv=112&uemps=0-0&uts=0f31TVRjBSsqndu4/jgUPz6uymy50MQJiWJdmm3NrVe%2Bz%2B0fWpN5UKE2meo9DWSKzOnedf9NLCEzuH0olW/oO89hGjJ7mZZz/at86rxTvUJZnPLWCTCsl9PeRdXfhrJbJ2TYXV3ilc7KBghM6ZYuQOp4Q8vxfL%2BNESMzrbf6WbGv1L6bG%2BYi4oSQ9twArJdXaFV0ILbxVFtIQcPOBifu8w%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=unknown'
+  var options = {
+    url: 'https://api.m.jd.com/client.action?functionId=morningGetBean',
+    headers: headers,
+    body: dataString
+  };
+  return new Promise(resolve => {
+    $.post(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['code'] === '0') {
+              if (data['data']['awardResultFlag'] === '1') {
+                console.log(`早起福利领京豆：${data['data']['beanNum']} ${data['data']['bizMsg']}`);
+                message += `早起福利领京豆：${data['data']['beanNum']} ${data['data']['bizMsg']}\n`;
+              } else if (data['data']['awardResultFlag'] === '2') {
+                console.log(`早起福利领京豆：${data['data']['bizMsg']}`);
+              } else if (data['data']['awardResultFlag'] === '3') {
+                console.log(`早起福利领京豆：${data['data']['bizMsg']}`);
+              } else {
+                console.log(`早起福利领京豆：未知状态 ${data['data']['awardResultFlag']}`);
+              }
+            } else {
+              console.log(`早起福利领京豆：异常 ${$.toStr(data)}\n`);
+            }
+          } else {
+            console.log(`早起福利领京豆：异常 ${$.toStr(data)}\n`);
           }
         }
       } catch (e) {
