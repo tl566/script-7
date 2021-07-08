@@ -123,6 +123,7 @@ if ($.isNode()) {
 async function getActivityInfo() {
   $.activityList = [];
   await getActivityList();
+  await getWXActivityList();
   if ($.activityList.length === 0) {
     return;
   }
@@ -132,7 +133,7 @@ async function getActivityInfo() {
   }
 
   for (let i = 0; i < $.activityList.length; i++) {
-    if ($.activityList[i].status !== 'NOT_BEGIN') {
+    if ($.activityList[i].status !== 'NOT_BEGIN' && $.activityList[i].status !== 'COMPLETE') {
       $.activityId = $.activityList[i].activeId;
       break;
     }
@@ -184,6 +185,50 @@ async function getActivityList() {
   });
 }
 
+async function getWXActivityList() {
+  return new Promise((resolve) => {
+    let options = {
+      "url": `https://draw.jdfcloud.com//api/lottery/home/v2?openId=oPcgJ40Ol7BSTczZ2ok0WmfLWoAs&unionid=oCwKwuML_gIYxUAK20Xd5poYVuy0&appId=wxccb5c536b0ecd1bf`,
+      "headers": {
+        "Accept-Encoding": "gzip,compress,br,deflate",
+        "App-Id": "wxccb5c536b0ecd1bf",
+        "Connection": "keep-alive",
+        "Host": "draw.jdfcloud.com",
+        "LKYLToken": "",
+        "Lottery-Access-Signature": "wxccb5c536b0ecd1bf1537237540544h79HlfU",
+        "Referer": "https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html",
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.7(0x18000731) NetType/4G Language/zh_CN",
+        "content-type": "application/json",
+        "cookie": $.cookie,
+        "openId": "oPcgJ40Ol7BSTczZ2ok0WmfLWoAs"
+      }
+    };
+    $.get(options, (err, resp, data) => {
+      try {
+        if (err) {
+          $.log($.toStr(err));
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data.success) {
+              let newArr = [];
+              if (data.data.beanActivityEntry.items && data.data.beanActivityEntry.items.length) {
+                newArr = data.data.beanActivityEntry.items.filter((item) => $.activityList.every(item1 => item.activeId !== item1.activeId))
+              }
+              $.activityList = [...$.activityList, ...newArr];
+            } else {
+              console.log(JSON.stringify(data));
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        resolve();
+      }
+    })
+  });
+}
 
 async function openTuan() {
   $.detail = {};
