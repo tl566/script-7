@@ -128,7 +128,7 @@ async function getActivityInfo() {
   }
   // console.log(JSON.stringify($.activityList))
   for (let i = 0; i < $.activityList.length; i++) {
-    console.log(`活动ID【${$.activityList[i].activeId}】：${$.activityList[i].status === 'COMPLETE' ? '已完成' : $.activityList[i].status === 'FINISH' ? '已结束' : $.activityList[i].status === 'NOT_BEGIN' ? '未开始，开始时间 ' + $.time('yyyy-MM-dd HH:mm:ss', $.activityList[i].beginTime) : '未知状态' + $.activityList[i].status}`);
+    console.log(`活动ID【${$.activityList[i].activeId}】：${$.activityList[i].status === 'COMPLETE' ? '已完成' : $.activityList[i].status === 'FINISH' ? '已结束' : $.activityList[i].status === 'NOT_BEGIN' ? '未开始，开始时间 ' + $.time('yyyy-MM-dd HH:mm:ss', $.activityList[i].beginTime) : $.activityList[i].status === 'ON_GOING' ? '活动火热进行中' : '未知状态 ' + $.activityList[i].status}`);
   }
 
   for (let i = 0; i < $.activityList.length; i++) {

@@ -277,7 +277,7 @@ function necklace_exchangeGift(scoreNums) {
 //领取奖励
 function necklace_chargeScores(bubleId) {
   return new Promise(async resolve => {
-    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'chargeScores', 'id': bubleId, 'giftConfigId': $.giftConfigId });
+    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'chargeScores', 'id': bubleId });
     $.post(taskPostUrl("necklace_chargeScores", body), async (err, resp, data) => {
       try {
         if (err) {

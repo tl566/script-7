@@ -1,6 +1,6 @@
 /*
 东东水果:脚本更新地址 jd_fruit.js
-更新时间：2021-5-18
+更新时间：2021-7-8
 活动入口：京东APP我的-更多工具-东东农场
 东东农场活动链接：https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html
 已支持IOS双京东账号,Node.js支持N个京东账号
@@ -110,6 +110,7 @@ async function jdFruit() {
         }
         return
       }
+      await ddPark();//
       await doDailyTask();
       await doTenWater();//浇水十次
       await getFirstWaterAward();//领取首次浇水奖励
@@ -1220,6 +1221,115 @@ async function awardInviteFriendForFarm() {
 async function waterFriendForFarm(shareCode) {
   const body = {"shareCode": shareCode, "version": 6, "channel": 1}
   $.waterFriendForFarmRes = await request('waterFriendForFarm', body);
+}
+async function ddPark() {
+  const parkInitRes = await request("ddnc_farmpark_Init", `{"version":"1","channel":1}`)
+  if (parkInitRes && parkInitRes.code === '0') {
+    const taskList = parkInitRes.buildings.filter(vo => vo['topResource']['task']);
+    for (const task of taskList) {
+      if (task.topResource.task.status === 3) {
+        console.log(`东东乐园任务 【${task.topResource.title}】 已完成`)
+      }  else if (task.topResource.task.status === 1) {
+        console.log("东东乐园 去浏览任务：" + task.topResource.title)
+        const index = Number(task.name.split('-')[0]) - 1;
+        await browse(task.topResource.task.advertId)
+        console.log(`东东乐园 开始领取水滴奖励`)
+        await $.wait(1000);
+        await browseAward(task.topResource.task.advertId, index, task.type)
+      } else if (task.topResource.task.status === 2) {
+        console.log(`东东乐园 开始领取水滴奖励`)
+        const index = Number(task.name.split('-')[0]) - 1;
+        await browseAward(task.topResource.task.advertId, index, task.type)
+      } else {
+        console.log(`东东乐园 未知状态:${task.topResource.task.status}\n`)
+      }
+    }
+  } else {
+    console.log(`东东乐园 数据异常:${$.toStr(parkInitRes)}\n`);
+  }
+}
+async function browse(advertId) {
+  const body = `{"version":"1","channel":1,"advertId":"${advertId}"}`;
+  return new Promise(resolve => {
+    const option =  {
+      url: `${JD_API_HOST}`,
+      body: `functionId=ddnc_farmpark_markBrowser&body=${encodeURIComponent(body)}&client=wh5&clientVersion=1.0.0&uuid=`,
+      headers: {
+        Accept: "application/json,text/plain, */*",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-cn",
+        Connection: "keep-alive",
+        Cookie: cookie,
+        Host: "api.m.jd.com",
+        Referer: "https://h5.m.jd.com/babelDiy/Zeus/J1C5d6E7VHb2vrb5sJijMPuj29K/index.html",
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      },
+      timeout: 10000,
+    };
+    $.post(option, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n东东农场: API查询请求失败 ‼️‼️');
+          console.log(JSON.stringify(err));
+          $.logErr(err);
+        } else {
+          if (safeGet(data)) {
+            console.log('东东乐园做任务结果', data);
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+async function browseAward(advertId, index, type) {
+  const body = `{"version":"1","channel":1,"advertId":"${advertId}","index":${index},"type":${type}}`;
+  return new Promise(resolve => {
+    const option =  {
+      url: `${JD_API_HOST}`,
+      body: `functionId=ddnc_farmpark_browseAward&body=${encodeURIComponent(body)}&client=wh5&clientVersion=1.0.0&uuid=`,
+      headers: {
+        Accept: "application/json,text/plain, */*",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-cn",
+        Connection: "keep-alive",
+        Cookie: cookie,
+        Host: "api.m.jd.com",
+        Referer: "https://h5.m.jd.com/babelDiy/Zeus/J1C5d6E7VHb2vrb5sJijMPuj29K/index.html",
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      },
+      timeout: 10000,
+    };
+    $.post(option, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n东东农场: API查询请求失败 ‼️‼️');
+          console.log(JSON.stringify(err));
+          $.logErr(err);
+        } else {
+          data = $.toObj(data)
+          if (data) {
+            if (data['code'] === '0') {
+              console.log(`东东乐园领取成功,获得水滴:${data['result']['waterEnergy']}g\n`);
+            } else {
+              console.log(`东东乐园领取水滴失败:${$.toStr(data)}`)
+            }
+          } else {
+            console.log(`东东乐园领取水滴失败:${$.toStr(data)}`)
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
 }
 async function showMsg() {
   if ($.isNode() && process.env.FRUIT_NOTIFY_CONTROL) {
