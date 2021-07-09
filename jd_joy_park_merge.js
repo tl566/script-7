@@ -155,6 +155,14 @@ async function dealJoyTwo(){
   $.joyList = $.joyList.sort(function (a, b) {
     return (a.level - b.level);
   })
+  if($.joyList.length>1 && Number($.joyList[0].level)< Number($.fastBuyLevel) && Number($.joyList[0].level) !== Number($.joyList[1].level)){
+    let max = $.fastBuyLevel;
+    $.fastBuyLevel = $.joyList[0].level;
+    console.log(`存在一只低等级汪汪，购买一只相同等级的汪汪进行合成，购买等级为：${$.fastBuyLevel}的汪汪`);
+    await buyJoy();
+    await $.wait(2000);
+    $.fastBuyLevel = max;
+  }
   //console.log(`已有汪汪信息\n`+JSON.stringify($.joyList));
   for (let i = 0; i < $.joyList.length - 1; i++) {
     if($.joyList[i].level === $.joyList[i+1].level){
@@ -223,8 +231,7 @@ async function takeRequest(type) {
     case 'joyMerge':
       console.log(`准备合成汪汪`)
       await $.wait(2000);
-      url = `https://api.m.jd.com/`;
-      body = `functionId=${type}&body={"joyOneId":${$.joyOneId},"joyTwoId":${$.joyTwoId},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=${Date.now()}&appid=activities_platform`;
+      url = `https://api.m.jd.com/?functionId=joyMergeGet&body={%22joyOneId%22:${$.joyOneId},%22joyTwoId%22:${$.joyTwoId},%22linkId%22:%22LsQNxL7iWDlXUs6cFl-AAg%22}&_t=${Date.now()}&appid=activities_platform`
       break;
     case 'joyBuy':
       url = `https://api.m.jd.com/`;
@@ -245,7 +252,7 @@ async function takeRequest(type) {
     default:
       console.log(`错误${type}`);
   }
-  if(type === 'joyList' || type === 'getStaticResource' || type === 'treasureShortUrl' || type === 'gameHeartbeat'){
+  if(type === 'joyList' || type === 'getStaticResource' || type === 'treasureShortUrl' || type === 'gameHeartbeat' || type === 'joyMerge'){
     myRequest = getGetRequest(url);
     return new Promise(async resolve => {
       $.get(myRequest, (err, resp, data) => {
@@ -299,7 +306,6 @@ function dealReturn(type, data) {
         $.joyListInfo = data.data;
         $.joyListFlag = false;
         console.log(`获取汪汪列表`);
-        //console.log(JSON.stringify(data));
       } else {
         console.log(`joyList异常：${JSON.stringify(data)}\n`);
       }
