@@ -1,6 +1,5 @@
 /**
  *  燃动夏季下注
- *  一天跑一次，抽中血赚
  * */
 const $ = new Env('燃动夏季下注');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -143,15 +142,23 @@ async function main(){
     runBet = false;
     for (let i = 0; i < $.betGoodsList.length; i++) {
       $.oneGoodsInfo = $.betGoodsList[i];
-      $.betInfo = {}
-      await takePostRequest('olympicgames_pawnshopBetPop');
-      if($.oneGoodsInfo.score < 7){
-        console.log(`\n奖品：${$.oneGoodsInfo.skuName}，${$.betInfo.betText},去下注`);
-        await takePostRequest('olympicgames_pawnshopBet');
+      $.betInfo = {};
+      if($.oneGoodsInfo.status === 0){
+        await takePostRequest('olympicgames_pawnshopBetPop');
+        if($.oneGoodsInfo.score < 7){
+          console.log(`\n奖品：${$.oneGoodsInfo.skuName}，${$.betInfo.betText},去下注`);
+          await takePostRequest('olympicgames_pawnshopBet');
+          await $.wait(2000);
+          runBet = true;
+        }else{
+          console.log(`\n奖品：${$.oneGoodsInfo.skuName},已下${$.oneGoodsInfo.score}注`);
+        }
+      }else if($.oneGoodsInfo.status === 1){
+        console.log(`\n奖品：${$.oneGoodsInfo.skuName}，去开奖`);
+        await takePostRequest('olympicgames_pawnshopRewardPop');
         await $.wait(2000);
-        runBet = true;
-      }else{
-        console.log(`\n奖品：${$.oneGoodsInfo.skuName},已下${$.oneGoodsInfo.score}注`);
+      }else if($.oneGoodsInfo.status === 3){
+        console.log(`\n奖品：${$.oneGoodsInfo.skuName}，已开奖`);
       }
     }
     if(runBet){
@@ -160,6 +167,8 @@ async function main(){
     }
     maxRun ++;
   }while (runBet && $.continueRun && maxRun<4)
+  await $.wait(2000);
+  await takePostRequest('olympicgames_pawnshopBetRecord');
 }
 
 async function getBody($) {const zf = new MovementFaker($.cookie);const ss = await zf.run();return ss;}
@@ -185,12 +194,24 @@ async function takePostRequest(type) {
       body = await getPostBody(type);
       myRequest = await getPostRequest( body);
       break;
+    case 'olypicgames_guradHome':
+      body = `functionId=olypicgames_guradHome&body={}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
+      myRequest = await getPostRequest( body);
+      break
     case 'olympicgames_pawnshopBet':
       body = `functionId=olympicgames_pawnshopBet&body={"skuId":${$.oneGoodsInfo.skuId}}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
       myRequest = await getPostRequest( body);
       break;
     case 'olympicgames_pawnshopBetPop':
       body = `functionId=olympicgames_pawnshopBetPop&body={"skuId":${$.oneGoodsInfo.skuId}}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
+      myRequest = await getPostRequest( body);
+      break;
+    case 'olympicgames_pawnshopRewardPop':
+      body = `functionId=olympicgames_pawnshopRewardPop&body={"skuId":${$.oneGoodsInfo.skuId}}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
+      myRequest = await getPostRequest( body);
+      break;
+    case 'olympicgames_pawnshopBetRecord':
+      body =  `functionId=olympicgames_pawnshopBetRecord&body={}&client=wh5&clientVersion=1.0.0&uuid=&uuid=${uuid}&appid=o2_act`;
       myRequest = await getPostRequest( body);
       break;
     default:
@@ -253,6 +274,15 @@ async function dealReturn(type, data) {
         console.log(JSON.stringify(data));
       }
       break;
+    case 'olypicgames_guradHome':
+      //console.log(JSON.stringify(data));
+      if (data.data && data.data.result && data.data.bizCode === 0) {
+        console.log(`百元守卫战互助码：${ data.data.result.inviteId || '助力已满，获取助力码失败'}`);
+        $.guradHome = data.data;
+      }else {
+        console.log(JSON.stringify(data));
+      }
+      break;
     case 'olympicgames_pawnshopBet':
       if (data.code === 0 && data.data && data.data.result) {
         console.log(`下注成功，已下注${data.data.result.score}次`);
@@ -264,6 +294,28 @@ async function dealReturn(type, data) {
     case 'olympicgames_pawnshopBetPop':
       if (data.code === 0 && data.data && data.data.result) {
         $.betInfo = data.data.result;
+      }else{
+        console.log(JSON.stringify(data));
+      }
+      break;
+    case 'olympicgames_pawnshopRewardPop':
+      console.log(`开奖结果`);
+      console.log(JSON.stringify(data));
+      break;
+    case 'olympicgames_pawnshopBetRecord':
+      if (data.code === 0 && data.data && data.data.result && data.data.result[0]) {
+        let rewardList = data.data.result[0].betRecordVOList;
+        console.log(`\n下注记录`);
+        for (let i = 0; i < rewardList.length; i++) {
+          let oneInfo = rewardList[i];
+          if(oneInfo.status === 0){
+            console.log(`奖品：${oneInfo.skuName},已下注${oneInfo.score}次，未开奖`);
+          }else if(oneInfo.status === 3){
+            console.log(`奖品：${oneInfo.skuName},未中奖`);
+          }else {
+            console.log(`奖品：${oneInfo.skuName},其他情况，进APP查看`);
+          }
+        }
       }else{
         console.log(JSON.stringify(data));
       }
