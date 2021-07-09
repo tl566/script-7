@@ -1,3 +1,6 @@
+/*
+* 活动入口：https://xinruidddj-isv.isvjcloud.com
+* */
 const $ = new Env('东东电竞经理');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
