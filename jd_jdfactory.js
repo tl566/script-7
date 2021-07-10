@@ -292,6 +292,35 @@ async function doTask() {
           console.log(`${item.taskName}已做完`)
         }
       }
+      if (item.taskType === 9) {
+        //逛会场任务
+        if (item.status === 1) {
+          console.log(`准备做此任务：${item.taskName}`);
+          for (let task of item.shoppingActivityVos) {
+            console.log(`做此任务：${task.title}，需等待5秒`);
+            if (task.status === 1) {
+              await jdfactory_collectScore(task.taskToken, '1');
+              await $.wait(5 * 1000);
+              await jdfactory_collectScore(task.taskToken);
+            }
+          }
+        } else {
+          console.log(`${item.taskName}已做完`)
+        }
+      }
+      if (item.taskType === 15) {
+        //加购任务
+        if (item.status === 1) {
+          console.log(`准备做此任务：${item.taskName}`);
+          for (let task of item.productInfoVos) {
+            if (task.status === 1) {
+              await jdfactory_collectScore(task.taskToken);
+            }
+          }
+        } else {
+          console.log(`${item.taskName}已做完`)
+        }
+      }
       if (item.taskType === 10) {
         if (item.status === 1) {
           if (item.threeMealInfoVos[0].status === 1) {
@@ -351,10 +380,14 @@ async function doTask() {
 }
 
 //领取做完任务的奖励
-function jdfactory_collectScore(taskToken) {
+function jdfactory_collectScore(taskToken, actionType = '') {
   return new Promise(async resolve => {
     await $.wait(1000);
-    $.post(taskPostUrl("jdfactory_collectScore", { taskToken }, "jdfactory_collectScore"), async (err, resp, data) => {
+    let body = { taskToken };
+    if (actionType) {
+      body['actionType'] = actionType;
+    }
+    $.post(taskPostUrl("jdfactory_collectScore", body, "jdfactory_collectScore"), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -363,10 +396,16 @@ function jdfactory_collectScore(taskToken) {
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
-              $.taskVos = data.data.result.taskVos;//任务列表
-              console.log(`领取做完任务的奖励：${JSON.stringify(data.data.result)}`);
+              if (data.data.result) {
+                $.taskVos = data.data.result.taskVos;//任务列表
+                console.log(`领取做完任务的奖励：${JSON.stringify(data.data.result)}`);
+              }
+            } else if (data.data.bizCode === -7001) {
+              //蓄电池已满
+              console.log('任务失败：', data.data.bizMsg)
+              await jdfactory_addEnergy()
             } else {
-              console.log(JSON.stringify(data))
+              console.log('任务失败：', JSON.stringify(data))
             }
           }
         }
