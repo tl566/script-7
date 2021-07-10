@@ -6,7 +6,7 @@
 入口：京东APP我的-更多工具-东东农场
 来源：https://gitee.com/lxk0301/jd_scripts/raw/master/jd_fruit.js
 依赖脚本：
-    1. JS_USER_AGENTS.js
+    1. USER_AGENTS.js
     2. jdFruitShareCodes.js
 
 
