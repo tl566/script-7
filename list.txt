@@ -10,39 +10,32 @@
     2. jdFruitShareCodes.js
     3. jdCookie.js
 
-2. jd_dreamFactory.js【todo代码加密，暂不开启】
-京东-京喜工厂-电力造水果
-入口：京东APP我的-更多工具-京喜工厂
-来源：https://gitee.com/lxk0301/jd_scripts/raw/master/jd_dreamFactory.js
-依赖脚本：
-    1.
-
-3. jd_priceProtect.js【已开启】
+2. jd_priceProtect.js【已开启】
 京东价格保护自动申请
 入口：京东app-我的-客户服务-价格保护
 来源：https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_priceProtect.js
 依赖脚本：
     1.jdCookie.js
 
-4. jd_try.js【已开启】
+3. jd_try.js【已开启】
 京东试用脚本
 入口：京东app-首页-更多频道-特色频道-新品试用
 依赖脚本：
     1.jdCookie.js
 
-5. jd_bean_change.js
+4. jd_bean_change.js
 京东资产变动通知脚本
 依赖脚本：
     1.jdCookie.js
 
-6. jd_pet.js【已开启】
+5. jd_pet.js【已开启】
 东东萌宠生产实物
 入口：京东APP我的-更多工具-东东萌宠
 依赖脚本：
     1.jdCookie.js
     2.jdPetShareCodes.js
 
-7. jd_jdfactory.js【已开启】
+6. jd_jdfactory.js【已开启】
 东东工厂生产电器产品等实物
 入口：京东APP首页-数码电器-东东工厂
 依赖脚本：
