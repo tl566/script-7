@@ -42,7 +42,10 @@
     1.jdCookie.js
     2.jdPetShareCodes.js
 
+7. jd_jdfactory.js【已开启】
+东东工厂生产电器产品等实物
+入口：京东APP首页-数码电器-东东工厂
+依赖脚本：
+    1.jdCookie.js
+    2.jdFactoryShareCodes.js
 
-依赖脚本
-1. jdCookie.js
-用于从后台环境变量中读取cookie使用
