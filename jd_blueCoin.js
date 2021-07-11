@@ -1,7 +1,7 @@
 /*
 东东超市兑换奖品 脚本地址：jd_blueCoin.js
 感谢@yangtingxiao提供PR
-更新时间：2021-6-7
+更新时间：2021-7-11
 活动入口：京东APP我的-更多工具-东东超市
 支持京东多个账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
@@ -25,7 +25,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let allMessage = '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-let coinToBeans = $.getdata('coinToBeans') || 0; //兑换多少数量的京豆（20或者1000），0表示不兑换，默认不兑换京豆，如需兑换把0改成20或者1000，或者'商品名称'(商品名称放到单引号内)即可
+let coinToBeans = $.getdata('coinToBeans') || 1000; //兑换多少数量的京豆（20或者1000），0表示不兑换，默认不兑换京豆，如需兑换把0改成20或者1000，或者'商品名称'(商品名称放到单引号内)即可
 let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
@@ -104,10 +104,11 @@ async function PrizeIndex() {
   //   smtg_materialPrizeIndex()
   // ])
   // const prizeList = [...$.queryPrizeData, ...$.materialPrizeIndex];
-  const prizeList = [...$.queryPrizeData];
+  let prizeList = [...$.queryPrizeData];
   if (prizeList && prizeList.length) {
     if (`${coinToBeans}` === '1000') {
-      if (prizeList[0] && prizeList[0].type === 3) {
+      prizeList = prizeList.filter(vo => vo['amount'] === 1000);
+      if (prizeList && prizeList.length) {
         console.log(`查询换${prizeList[0].name}ID成功，ID:${prizeList[0].prizeId}`)
         $.title = prizeList[0].name;
         $.blueCost = prizeList[0].cost;
@@ -132,10 +133,11 @@ async function PrizeIndex() {
         $.beanerr = `兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`;
       }
     } else if (`${coinToBeans}` === '20') {
-      if (prizeList[1] && prizeList[1].type === 3) {
-        console.log(`查询换${prizeList[1].name}ID成功，ID:${prizeList[1].prizeId}`)
-        $.title = prizeList[1].name;
-        $.blueCost = prizeList[1].cost;
+      prizeList = prizeList.filter(vo => vo['amount'] === 1);
+      if (prizeList && prizeList.length) {
+        console.log(`查询换${prizeList[0].name}ID成功，ID:${prizeList[0].prizeId}`)
+        $.title = prizeList[0].name;
+        $.blueCost = prizeList[0].cost;
       } else {
         console.log(`查询换万能的京豆ID失败`)
         $.beanerr = `东哥今天不给换`;
