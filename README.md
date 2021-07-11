@@ -1,4 +1,4 @@
-# js_scripts
+# jd_scripts
 京东活动脚本个人整理版
 
 ## 运行时间
