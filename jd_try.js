@@ -27,13 +27,13 @@ const args = {
 	// 每次获取商品数量
 	pageSize: 12,
 	// 试用商铺类型
-	cidsList: ["家用电器", "手机数码", "电脑办公", "家居家装"],
+	cidsList: ["家用电器", "手机数码", "电脑办公"],
 	// 试用类型
 	typeList: ["普通试用", "闪电试用"],
 	// 商品过滤关键字
 	goodFilters: "教程@软件@英语@辅导@培训".split('@'),
 	// 商品最低价格
-	minPrice: 200,
+	minPrice: 100,
 	// 商品提供最多的数量
 	maxSupplyCount: 10,
 	// 商品试用之间的间隔, 单位：毫秒，随机间隔[applyInterval, applyInterval+2000]
