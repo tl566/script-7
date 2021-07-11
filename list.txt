@@ -35,7 +35,12 @@
 依赖脚本：
     1.jdCookie.js
 
-
+6. jd_pet.js【已开启】
+东东萌宠生产实物
+入口：京东APP我的-更多工具-东东萌宠
+依赖脚本：
+    1.jdCookie.js
+    2.jdPetShareCodes.js
 
 
 依赖脚本
