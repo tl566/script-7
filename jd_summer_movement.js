@@ -466,7 +466,7 @@ async function dealReturn(type, data) {
       //console.log(JSON.stringify(data));
       if (data.data && data.data.result && data.data.bizCode === 0) {
         console.log(`百元守卫战互助码：${ data.data.result.inviteId || '助力已满，获取助力码失败'}`);
-        if ($.isNode()) await notify.sendNotify($.name, `京东账号 ${$.index} ${$.UserName}\n百元守卫战互助码：${data.data.result.inviteId}`);
+        // if ($.isNode()) await notify.sendNotify($.name, `京东账号 ${$.index} ${$.UserName}\n百元守卫战互助码：${data.data.result.inviteId}`);
         $.guradHome = data.data;
       }else {
         console.log(JSON.stringify(data));
