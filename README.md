@@ -13,9 +13,3 @@ https://github.com/star261/jd
 https://github.com/yangtingxiao/QuantumultX/tree/master/scripts/jd
 https://github.com/Wenmoux/scripts/tree/wen
 https://github.com/panghu999?tab=repositories
-
-
-
-    
-
-
