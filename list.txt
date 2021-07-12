@@ -42,3 +42,9 @@
     1.jdCookie.js
     2.jdFactoryShareCodes.js
 
+7. jd_summer_movement.js
+京东燃动夏季-兑换无门槛红包
+入口：22.0复制整段话 http://Jxup18yIzBCJVW寶，塊幫我點，紅包哆壹點#B0Aii6IIEa%しǎι【京東】ＡΡΡの
+依赖脚本：
+    1.jdCookie.js
+    2.USER_AGENTS.js
