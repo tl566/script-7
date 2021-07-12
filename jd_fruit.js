@@ -1,6 +1,6 @@
 /*
 东东水果:脚本更新地址 jd_fruit.js
-更新时间：2021-7-8
+更新时间：2021-7-12
 活动入口：京东APP我的-更多工具-东东农场
 东东农场活动链接：https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html
 已支持IOS双京东账号,Node.js支持N个京东账号
@@ -152,7 +152,7 @@ async function doDailyTask() {
   if ($.farmInfo.todayGotWaterGoalTask.canPop) {
     await gotWaterGoalTaskForFarm();
     if ($.goalResult.code === '0') {
-      console.log(`【被水滴砸中】获得${$.goalResult.addEnergy}g💧\\n`);
+      console.log(`【被水滴砸中】获得${$.goalResult.addEnergy}g💧\n`);
       // message += `【被水滴砸中】获得${$.goalResult.addEnergy}g💧\n`
     }
   }
@@ -1206,7 +1206,7 @@ async function initForFarm() {
 async function taskInitForFarm() {
   console.log('\n初始化任务列表')
   const functionId = arguments.callee.name.toString();
-  $.farmTask = await request(functionId);
+  $.farmTask = await request(functionId, {"version":14,"channel":1,"babelChannel":"120"});
 }
 //获取好友列表API
 async function friendListInitForFarm() {
