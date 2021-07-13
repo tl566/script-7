@@ -2,7 +2,7 @@
 jd宠汪汪 搬的https://github.com/uniqueque/QuantumultX/blob/4c1572d93d4d4f883f483f907120a75d925a693e/Script/jd_joy.js
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 IOS用户支持京东双账号,NodeJs用户支持N个京东账号
-更新时间：2021-7-7
+更新时间：2021-7-13
 活动入口：京东APP我的-更多工具-宠汪汪
 建议先凌晨0点运行jd_joy.js脚本获取狗粮后，再运行此脚本(jd_joy_steal.js)可偷好友积分，6点运行可偷好友狗粮
 feedCount:自定义 每次喂养数量; 等级只和喂养次数有关，与数量无关
@@ -95,6 +95,7 @@ const weAppUrl = 'https://draw.jdfcloud.com//pet';
   })
 async function jdJoy() {
   try {
+    await launchInvite();
     await getPetTaskConfig();
     if ($.getPetTaskConfigRes.success) {
       if ($.isNode()) {
@@ -114,6 +115,7 @@ async function jdJoy() {
       await deskGoodsTask();//限时货柜
       await enterRoom();
       await joinTwoPeopleRun()//参加双人赛跑
+      await getInviteFood();
     } else {
       message += `${$.getPetTaskConfigRes.errorMessage}`;
     }
@@ -526,7 +528,71 @@ function appScanMarket(type, body) {
     })
   })
 }
-
+function launchInvite(body = {}) {
+  return new Promise(resolve => {
+    const invitePin = '被折叠的记忆33';
+    const url = `https://draw.jdfcloud.com//common/pet/enterRoom/h5?invitePin=${encodeURIComponent(invitePin)}&inviteSource=friend_list&shareSource=weapp&openId=oPcgJ49Ea26t4OFpK9P2WoPwCh3I&reqSource=weapp&invokeKey=NRp8OPxZMFXmGkaE`;
+    $.post(taskPostUrl(url, JSON.stringify(body), '', '', 'application/json'), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data.success && data['data']) {
+              if (data['data']['petLevel'] === 1 && data['data']['invitedUserTag'] === 'create_ok') {
+                console.log(`新用户${data['data']['pin']} 接收${invitePin}邀请成功,赠送你 ${data['data']['newUserGetFoodCount']}g狗粮\n`);
+              }
+            } else {
+              console.log(`launchInvite 失败 ${$.toStr(data)}\n`)
+            }
+          } else {
+            console.log(`launchInvite 异常 ${$.toStr(data)}\n`)
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+async function getInviteFood() {
+  const options = {
+    url: 'https://draw.jdfcloud.com//common/pet/getInviteFood?reqSource=weapp&invokeKey=NRp8OPxZMFXmGkaE',
+    timeout: 10000,
+    headers: {
+      "Accept-Encoding": "gzip,compress,br,deflate",
+      "Connection": "keep-alive",
+      "Cookie": cookie,
+      "Host": "draw.jdfcloud.com",
+      "LKYLToken": "",
+      "Referer": "https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html",
+      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.7(0x18000731) NetType/4G Language/zh_CN",
+      "content-type": "application/json"
+    }
+  }
+  await $.http.get(options).then(async (resp) => {
+    let { statusCode, body } = resp;
+    if (statusCode === 200) {
+      try {
+        body = $.toObj(body);
+        if (body) {
+          if (body['success'] && body['errorCode'] === 'success') {
+            if (body['data']) {
+              console.log(`获得狗粮 ${body['data']}g\n`);
+              $.msg($.name, '', `京东账号 ${$.index} ${$.UserName}\n获得狗粮 ${body['data']}g`);
+              if ($.isNode()) await notify.sendNotify($.name, `京东账号 ${$.index} ${$.UserName}\n获得狗粮 ${body['data']}g`);
+            }
+          }
+        }
+      } catch (e) {
+        console.log(`异常:${e}`);
+      }
+    }
+  }).catch((e) => console.log(`异常:${e}`));
+}
 //领取狗粮API
 function getFood(type) {
   return new Promise(resolve => {
@@ -1084,7 +1150,7 @@ function taskUrl(url, Host, reqSource) {
     headers: {
       'Cookie': cookie,
       // 'reqSource': reqSource,
-      'Host': Host,
+      // 'Host': Host,
       'Connection': 'keep-alive',
       'Content-Type': 'application/json',
       'Referer': 'https://jdjoy.jd.com/pet/index',
@@ -1094,7 +1160,7 @@ function taskUrl(url, Host, reqSource) {
     }
   }
 }
-function taskPostUrl(url, body, reqSource, Host = 'jdjoy.jd.com', ContentType) {
+function taskPostUrl(url, body, reqSource, Host = 'jdjoy.jd.com', ContentType = 'application/json') {
   return {
     url: url,
     body: body,
