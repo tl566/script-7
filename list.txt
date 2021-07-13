@@ -42,3 +42,9 @@
     1.jdCookie.js
     2.jdFactoryShareCodes.js
 
+7. jd_plantBean.js
+种豆得豆换京豆
+入口：京东APP我的-签到领豆-种豆得豆
+依赖脚本：
+    1.jdCookie.js
+    2.jdPlantBeanShareCodes.js
