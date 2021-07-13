@@ -319,6 +319,7 @@ async function petSport() {
       let sportRevardResult = await request('getSportReward');
       console.log(`领取遛狗奖励完成: ${JSON.stringify(sportRevardResult)}`);
     }
+    await $.wait(10000);  // 增加延迟尝试解决多次执行就报错的问题
     times++;
   } while (resultCode == 0 && code == 0)
   if (times > 1) {
