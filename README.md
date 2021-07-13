@@ -6,7 +6,7 @@
 2. 京东试用很多需要成为京东试用种草官才行
 
 ## 脚本来源关注
-https://github.com/star261/jd
-https://github.com/yangtingxiao/QuantumultX/tree/master/scripts/jd
-https://github.com/Wenmoux/scripts/tree/wen
-https://github.com/panghu999?tab=repositories
+https://github.com/star261/jd  
+https://github.com/yangtingxiao/QuantumultX/tree/master/scripts/jd  
+https://github.com/Wenmoux/scripts/tree/wen  
+https://github.com/panghu999?tab=repositories  
