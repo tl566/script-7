@@ -562,7 +562,7 @@ function jdfactory_getHomeData() {
                   $.remainScore = data.data.result.factoryInfo.remainScore;//当前蓄电池电量
                   $.couponCount = data.data.result.factoryInfo.couponCount;//已选中商品当前剩余量
                   $.hasProduceName = data.data.result.factoryInfo.name;//已选中商品当前剩余量
-                  if ($.userScore >= $.totalScore) {
+                  if ($.userScore * 1 >= $.totalScore * 1) {
                     //商品已可兑换
                     $.newUser = 1;
                     console.log(`\n商品${$.hasProduceName}已可兑换\n`);
@@ -635,7 +635,7 @@ function shareCodesFormat() {
       const tempIndex = $.index > inviteCodes.length ? (inviteCodes.length - 1) : ($.index - 1);
       $.newShareCodes = inviteCodes[tempIndex].split('@');
     }
-    const readShareCodeRes = await readShareCode();
+    const readShareCodeRes = [];
     if (readShareCodeRes && readShareCodeRes.code === 200) {
       $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
     }
