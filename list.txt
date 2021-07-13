@@ -49,12 +49,3 @@
     1.jdCookie.js
     2.jdPlantBeanShareCodes.js
 
-8. jd_necklace.js
-点点券
-入口：京东APP首页-券后9.9/领券中心-领点点券
-依赖脚本：
-    1.jdCookie.js
-    2. USER_AGENTS.js
-
-9. code.sh
-从日志获取互助码
