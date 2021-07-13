@@ -48,3 +48,10 @@
 依赖脚本：
     1.jdCookie.js
     2.jdPlantBeanShareCodes.js
+
+8. jd_necklace.js
+点点券
+入口：https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html
+依赖脚本：
+    1.jdCookie.js
+    2. USER_AGENTS.js
