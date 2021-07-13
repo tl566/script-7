@@ -170,6 +170,7 @@ async function feedPetsAgain() {
         if (feedPetRes.resultCode == 0 && feedPetRes.code == 0) {
           console.log('投食成功')
         }
+        await $.wait(3000);  // 增加延迟避免报错
       }
       const response2 = await request('initPetTown');
       $.petInfo = response2.result;
@@ -194,6 +195,7 @@ async function doTask() {
     if ($.taskInfo[item].finished) {
       console.log(`任务 ${item} 已完成`)
     }
+    await $.wait(3000);  // 增加延迟避免报错
   }
   //每日签到
   if (signInit && !signInit.finished) {
@@ -226,6 +228,7 @@ async function doTask() {
     if (browseSingleShopInitTask && !browseSingleShopInitTask.finished) {
       await browseSingleShopInit(browseSingleShopInitTask);
     }
+    await $.wait(3000);  // 增加延迟避免报错
   }
   if (inviteFriendsInit && !inviteFriendsInit.finished) {
     await inviteFriendsInitFun();
@@ -300,6 +303,7 @@ async function slaveHelp() {
     } else {
       console.log(`助力好友结果: ${response.message}`);
     }
+    await $.wait(3000);  // 增加延迟避免报错
   }
   if (helpPeoples && helpPeoples.length > 0) {
     message += `【您助力的好友】${helpPeoples.substr(0, helpPeoples.length - 1)}\n`;
@@ -319,7 +323,7 @@ async function petSport() {
       let sportRevardResult = await request('getSportReward');
       console.log(`领取遛狗奖励完成: ${JSON.stringify(sportRevardResult)}`);
     }
-    await $.wait(10000);  // 增加延迟尝试解决多次执行就报错的问题
+    await $.wait(3000);  // 增加延迟尝试解决多次执行就报错的问题
     times++;
   } while (resultCode == 0 && code == 0)
   if (times > 1) {
@@ -388,6 +392,7 @@ async function browseShopsInitFun() {
     code = response.code;
     resultCode = response.resultCode;
     times++;
+    await $.wait(3000);  // 增加延迟避免报错
   } while (resultCode == 0 && code == 0 && times < 5)
   console.log('浏览店铺任务结束');
 }
@@ -429,6 +434,7 @@ async function feedReachInitFun() {
       needFeedTimes = 0;
     }
     tryTimes--;
+    await $.wait(3000);  // 增加延迟避免报错
   } while (needFeedTimes > 0 && tryTimes > 0)
   console.log('投食任务结束...\n');
 }
