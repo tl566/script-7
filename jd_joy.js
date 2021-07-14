@@ -882,7 +882,7 @@ function runMatch(teamLevel, timeout = 5000) {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/combat/match?teamLevel=${teamLevel}&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `//jdjoy.jd.com/common/pet/combat/match?teamLevel=${teamLevel}&invokeKey=qRKHmL4sna8ZOP9F`,
       method: "GET",
       data: {},
       credentials: "include",
