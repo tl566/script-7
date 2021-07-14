@@ -8,3 +8,4 @@
 ## 脚本来源关注
 https://github.com/inoyna12/jd28  
 https://github.com/star261/jd  
+https://github.com/chavyleung/scripts  
