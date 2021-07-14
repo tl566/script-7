@@ -435,14 +435,16 @@ async function feedReachInitFun() {
     console.log(`还需要投食${needFeedTimes}次`);
     const response = await request('feedPets');
     console.log(`本次投食结果: ${JSON.stringify(response)}`);
-    if (response.resultCode == 0 && response.code == 0) {
-      needFeedTimes--;
+    if (response) {
+        if (response.resultCode == 0 && response.code == 0) {
+            needFeedTimes--;
+        }
+        if (response.resultCode == 3003 && response.code == 0) {
+            console.log('剩余狗粮不足, 投食结束');
+            needFeedTimes = 0;
+        }
+        tryTimes--;
     }
-    if (response.resultCode == 3003 && response.code == 0) {
-      console.log('剩余狗粮不足, 投食结束');
-      needFeedTimes = 0;
-    }
-    tryTimes--;
     await $.wait(3000);  // 增加延迟避免报错
   } while (needFeedTimes > 0 && tryTimes > 0)
   console.log('投食任务结束...\n');
