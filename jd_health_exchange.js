@@ -37,7 +37,7 @@ const JD_API_HOST = "https://api.m.jd.com/";
   for (let i = 0; i < cookiesArr.length && !$.jBeans && !$.physicals; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
-      console.log(`已使用 账号 ${i + 1}查到 兑换列表数据\n`);
+      console.log(`已使用 账号 ${i + 1}查到 奖品数据列表\n`);
       $.waitIndex = i;
       await jdhealth_getCommodities();
       // await $.wait(800);
