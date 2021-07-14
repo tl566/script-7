@@ -102,7 +102,7 @@ async function main() {
 async function helpFriends() {
   for (let code of $.newShareCodes) {
     if (!code) continue
-    console.log(`去助力好友${code}`)
+    console.log(`\n去助力好友${code}`)
     let res = await doTask(code, 6)
     if([108,-1001].includes(res?.data?.bizCode)){
       console.log(`助力次数已满，跳出`)
@@ -148,9 +148,9 @@ function getTaskDetail(taskId = '') {
               await $.wait(1000 * (data?.data?.result?.taskVos[0]?.waitDuration || 3));
               await doTask(data?.data?.result?.taskVos[0].shoppingActivityVos[0]?.taskToken, 22, 0);//完成任务
             } else for (let vo of data?.data?.result?.taskVos.filter(vo => vo.taskType !== 19) ?? []) {
-              console.log(`${vo.taskName}任务，完成次数：${vo.times}/${vo.maxTimes}`)
+              console.log(`\n${vo.taskName}任务，完成次数：${vo.times}/${vo.maxTimes}`)
+              if (vo.times < vo.maxTimes) console.log(`去完成${vo.taskName}任务`)
               for (let i = vo.times; i < vo.maxTimes; ++i) {
-                console.log(`去完成${vo.taskName}任务`)
                 if (vo.taskType === 13) {
                   await doTask(vo.simpleRecordInfoVo?.taskToken, vo?.taskId)
                 } else if (vo.taskType === 8) {
@@ -165,6 +165,8 @@ function getTaskDetail(taskId = '') {
                   await doTask(vo.threeMealInfoVos[0]?.taskToken, vo?.taskId)
                 } else if (vo.taskType === 26 || vo.taskType === 3) {
                   await doTask(vo.shoppingActivityVos[0]?.taskToken, vo?.taskId)
+                } else if (vo.taskType === 1) {
+                  await doTask(vo.followShopVo[0]?.taskToken, vo?.taskId)
                 }
               }
             }

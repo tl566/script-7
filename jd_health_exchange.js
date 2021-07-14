@@ -145,7 +145,7 @@ function jdhealth_exchange(body, timeout = $.waitIndex === ($.index - 1) ? 900 :
             $.logErr(err);
           } else {
             data = $.toObj(data);
-            if (data['code'] === 0) {
+            if (data && data['code'] === 0) {
               if (data.data.bizCode === 0) {
                 if (data['data']['result']['commodityType'] === 2 && data['data']['result']['jingBeanNum']) {
                   console.log(`${data['data']['result']['jingBeanNum']}京豆兑换成功🎉\n`);
@@ -184,23 +184,16 @@ function taskUrl(function_id, body = {}) {
       "Cookie": cookie,
       "Connection": "keep-alive",
       "Accept": "application/json, text/plain, */*",
-      "User-Agent": "jdapp;iPhone;10.0.6;14.3;88732f840b77821b345bf07fd71f609e6ff12f43;network/4g;model/iPhone11,8;addressid/2005183373;appBuild/167724;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+      "User-Agent": $.isNode()
+      ? process.env.JD_USER_AGENT
+          ? process.env.JD_USER_AGENT
+          : require("./USER_AGENTS").USER_AGENT
+      : $.getdata("JDUA")
+          ? $.getdata("JDUA")
+          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
       "Referer": "https://h5.m.jd.com/babelDiy/Zeus/D2CwCLVmaP3QonubWFJeTVhYRyT/index.html",
       "Accept-Language": "zh-cn"
     }
-		// headers: {
-		// 	Cookie: cookie,
-		// 	origin: "https://h5.m.jd.com",
-		// 	referer: "https://h5.m.jd.com/",
-		// 	"Content-Type": "application/x-www-form-urlencoded",
-		// 	"User-Agent": $.isNode()
-		// 		? process.env.JD_USER_AGENT
-		// 			? process.env.JD_USER_AGENT
-		// 			: require("./USER_AGENTS").USER_AGENT
-		// 		: $.getdata("JDUA")
-		// 		? $.getdata("JDUA")
-		// 		: "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-		// },
 	};
 }
 
