@@ -115,7 +115,7 @@ async function jdJoy() {
       await deskGoodsTask();//限时货柜
       await enterRoom();
       await joinTwoPeopleRun()//参加双人赛跑
-      await getInviteFood();
+      //await getInviteFood();
     } else {
       message += `${$.getPetTaskConfigRes.errorMessage}`;
     }
