@@ -123,11 +123,13 @@ async function jdPet() {
             }
             console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.petInfo.shareCode}\n`);
             await taskInit();
-            if ($.taskInit.resultCode === '9999' || !$.taskInit.result) {
-                console.log('初始化任务异常, 请稍后再试');
-                return
+            if ($.taskInit.resultCode) {
+                if ($.taskInit.resultCode === '9999' || !$.taskInit.result) {
+                    console.log('初始化任务异常, 请稍后再试');
+                    return
+                }
+                $.taskInfo = $.taskInit.result;
             }
-            $.taskInfo = $.taskInit.result;
 
             await petSport();//遛弯
             await slaveHelp();//助力好友
