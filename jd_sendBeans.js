@@ -164,7 +164,7 @@ async function getActivityList() {
         "Accept": "application/json, text/plain, */*",
         "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
         "Accept-Language": "zh-cn",
-        "Referer": "https://sendbeans.jd.com/dist/index.html?lng=&lat=&sid=c212f63c30c4bc6abfcc7889495d2acw&un_area=12_984_3382_0",
+        "Referer": "https://sendbeans.jd.com/dist/index.html?lng=&lat=&sid=&un_area=",
         "Accept-Encoding": "gzip, deflate, br",
         "openId": ""
       }
@@ -443,7 +443,7 @@ async function help() {
 }
 
 async function invite() {
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?openId=oPcgJ4_X7uCMeTgGmar-rmiWst1Y&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?openId=oPcgJ40Ol7BSTczZ2ok0WmfLWoAs&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
   const method = `POST`;
   const headers = {
     'content-type': `application/json`,
@@ -485,7 +485,7 @@ async function invite() {
 
 
 async function getActivityDetail() {
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityId=${$.activityId}&userOpenId=oPcgJ4_X7uCMeTgGmar-rmiWst1Y&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityId=${$.activityId}&userOpenId=&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
   const method = `GET`;
   const headers = {
     'cookie': $.cookie,
