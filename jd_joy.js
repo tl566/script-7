@@ -25,6 +25,7 @@ cron "15 0-23/2 * * *" script-path=jd_joy.js,tag=京东宠汪汪
 京东宠汪汪 = type=cron,script-path=jd_joy.js, cronexpr="15 0-23/2 * * *", timeout=3600, enable=true
 */
 const $ = new Env('宠汪汪');
+const invokeKey = 'qRKHmL4sna8ZOP9F';
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -410,7 +411,7 @@ function getDeskGoodDetails() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/getDeskGoodDetails?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/getDeskGoodDetails?invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -443,7 +444,7 @@ function followScan(sku) {
       sku
     }
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/scan?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/scan?invokeKey=${invokeKey}`,
       method: "POST",
       data: body,
       credentials: "include",
@@ -472,7 +473,7 @@ function scanMarket(type, body, cType = 'application/json') {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/${type}?invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//jdjoy.jd.com/common/pet/${type}?invokeKey=${invokeKey}`,
       method: "POST",
       data: body,
       credentials: "include",
@@ -505,7 +506,7 @@ function appScanMarket(type, body) {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/${type}?invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//jdjoy.jd.com/common/pet/${type}?invokeKey=${invokeKey}`,
       method: "POST",
       data: body,
       credentials: "include",
@@ -531,7 +532,7 @@ function appScanMarket(type, body) {
 function launchInvite(body = {}) {
   return new Promise(resolve => {
     const invitePin = '被折叠的记忆33';
-    const url = `https://draw.jdfcloud.com//common/pet/enterRoom/h5?invitePin=${encodeURIComponent(invitePin)}&inviteSource=friend_list&shareSource=weapp&openId=oPcgJ49Ea26t4OFpK9P2WoPwCh3I&reqSource=weapp&invokeKey=qRKHmL4sna8ZOP9F`;
+    const url = `https://draw.jdfcloud.com//common/pet/enterRoom/h5?invitePin=${encodeURIComponent(invitePin)}&inviteSource=friend_list&shareSource=weapp&openId=oPcgJ49Ea26t4OFpK9P2WoPwCh3I&reqSource=weapp&invokeKey=${invokeKey}`;
     $.post(taskPostUrl(url, JSON.stringify(body), '', '', 'application/json'), async (err, resp, data) => {
       try {
         if (err) {
@@ -560,7 +561,7 @@ function launchInvite(body = {}) {
 }
 async function getInviteFood() {
   const options = {
-    url: 'https://draw.jdfcloud.com//common/pet/getInviteFood?reqSource=weapp&invokeKey=qRKHmL4sna8ZOP9F',
+    url: `https://draw.jdfcloud.com//common/pet/getInviteFood?reqSource=weapp&invokeKey=${invokeKey}`,
     timeout: 10000,
     headers: {
       "Accept-Encoding": "gzip,compress,br,deflate",
@@ -600,7 +601,7 @@ function getFood(type) {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: `//draw.jdfcloud.com/common/pet/getFood?reqSource=weapp&taskType=${type}&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/getFood?reqSource=weapp&taskType=${type}&invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -630,7 +631,7 @@ function followShop(shopId) {
     const reqSource = 'weapp';
     const host = 'draw.jdfcloud.com';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/followShop?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/followShop?invokeKey=${invokeKey}`,
       method: "POST",
       data: body,
       credentials: "include",
@@ -638,7 +639,6 @@ function followShop(shopId) {
     }
     const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     const options = taskPostUrl(url, body, reqSource, host,'application/x-www-form-urlencoded');
-    // const options = taskPostUrl('https://jdjoy.jd.com/common/pet/followShop?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE', body, reqSource, host,'application/x-www-form-urlencoded');
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
@@ -660,7 +660,7 @@ function enterRoom() {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?invitePin=&openId=&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?invitePin=&openId=&invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -694,7 +694,7 @@ function appGetPetTaskConfig() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/getPetTaskConfig?invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -727,7 +727,7 @@ function feedPets(feedNum) {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: `//draw.jdfcloud.com/common/pet/feed?feedCount=${feedNum}&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/feed?feedCount=${feedNum}&invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -786,7 +786,7 @@ function getPetTaskConfig() {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: "//draw.jdfcloud.com//common/pet/getPetTaskConfig?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//draw.jdfcloud.com//common/pet/getPetTaskConfig?invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -816,7 +816,7 @@ function getPetRace() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/detail/v2?help=false&invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/combat/detail/v2?help=false&invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -846,7 +846,7 @@ function getRankList() {
     // const url = `${JD_API_HOST}/combat/getRankList`;
     $.raceUsers = [];
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/getRankList?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/combat/getRankList?invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -882,7 +882,7 @@ function runMatch(teamLevel, timeout = 5000) {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/combat/match?teamLevel=${teamLevel}&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//jdjoy.jd.com/common/pet/combat/match?teamLevel=${teamLevel}&invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -913,7 +913,7 @@ function getBackupInfo() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/getBackupInfo?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/combat/getBackupInfo?invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -942,7 +942,7 @@ function getWinCoin() {
   return new Promise(resolve => {
     // const url = `${weAppUrl}/combat/detail/v2?help=false&reqSource=weapp`;
     let opt = {
-      url: "//draw.jdfcloud.com/common/pet/combat/detail/v2?help=false&invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//draw.jdfcloud.com/common/pet/combat/detail/v2?help=false&invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -975,7 +975,7 @@ function receiveJoyRunAward() {
     const host = `jdjoy.jd.com`;
     const reqSource = 'h5';
     let opt = {
-      url: "//jdjoy.jd.com/common/pet/combat/receive?invokeKey=qRKHmL4sna8ZOP9F",
+      url: `//jdjoy.jd.com/common/pet/combat/receive?invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -1025,7 +1025,7 @@ function getSupplyInfo(showOrder) {
   return new Promise(resolve => {
     // const url = `${weAppUrl}/combat/getSupplyInfo?showOrder=${showOrder}`;
     let opt = {
-      url: `//draw.jdfcloud.com/common/pet/combat/getSupplyInfo?showOrder=${showOrder}&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/combat/getSupplyInfo?showOrder=${showOrder}&invokeKey=${invokeKey}`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -1063,7 +1063,7 @@ function showMsg() {
 function iconClick(functionId, id) {
   return new Promise(resolve => {
     $.get({
-      url: `https://jdjoy.jd.com/common/pet/icon/click?iconCode=${functionId}&linkAddr=${id}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `https://jdjoy.jd.com/common/pet/icon/click?iconCode=${functionId}&linkAddr=${id}&reqSource=h5&invokeKey=${invokeKey}`,
       headers: {
         'Accept': '*/*',
         'Connection': 'keep-alive',
