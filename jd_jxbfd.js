@@ -243,7 +243,7 @@ async function storyOper() {
     const { StoryList } = $.StoryInfo;
     for (let story of StoryList) {
       const { strStoryId, dwType, dwStatus, ddwTriggerDay } = story;
-      if (strStoryId && (dwStatus === 1 || dwStatus === 4) {
+      if (strStoryId && (dwStatus === 1 || dwStatus === 4)) {
         if (dwType === 4) {
           console.log(`${story['Collector']['strRecvDesc']}\n`);
           const body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
