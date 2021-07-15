@@ -90,6 +90,10 @@ function QueryUserInfo() {
               console.log(`当前京币：${(data['ddwCoinBalance'] / 10000).toFixed(1)}万`)
               console.log(`已接待游客: ${data['buildInfo']['dwTodaySpeedPeople']}/20\n`);
               $.buildInfo = data['buildInfo'];
+              if (data['dwOfficeUnLock'] === 0) {
+                console.log(`\n当前账号未开启 财富岛活动\n`);
+                $.accountFlag = false;
+              }
               // if (data['buildInfo']['dwTodaySpeedPeople'] >= 20) $.SpeedUp = true;
             } else {
               console.log(`获取用户信息失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
