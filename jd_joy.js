@@ -2,7 +2,7 @@
 jd宠汪汪 搬的https://github.com/uniqueque/QuantumultX/blob/4c1572d93d4d4f883f483f907120a75d925a693e/Script/jd_joy.js
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 IOS用户支持京东双账号,NodeJs用户支持N个京东账号
-更新时间：2021-7-13
+更新时间：2021-7-15
 活动入口：京东APP我的-更多工具-宠汪汪
 建议先凌晨0点运行jd_joy.js脚本获取狗粮后，再运行此脚本(jd_joy_steal.js)可偷好友积分，6点运行可偷好友狗粮
 feedCount:自定义 每次喂养数量; 等级只和喂养次数有关，与数量无关
@@ -233,13 +233,14 @@ async function petTask() {
   for (let item of $.getPetTaskConfigRes.datas || []) {
     const joinedCount = item.joinedCount || 0;
     if (item['receiveStatus'] === 'chance_full') {
-      console.log(`${item.taskName} 任务已完成`)
+      console.log(`已完成任务：${item.taskName} ${item['joinedCount'] || 0}/${item['taskChance']}`)
       continue
     }
     //每日签到
     if (item['taskType'] === 'SignEveryDay') {
+      console.log(`\n-----${item['taskName']}----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       if (item['receiveStatus'] === 'chance_left') {
-        console.log('每日签到未完成,需要自己手动去微信小程序【来客有礼】签到，可获得京豆奖励')
+        console.log(`【${item['taskName']}】未完成,需要自己手动去微信小程序【来客有礼】签到，可获得京豆和${item['taskReward']}g狗粮奖励`)
       } else if (item['receiveStatus'] === 'unreceive') {
         //已签到，领取签到后的狗粮
         const res = await getFood('SignEveryDay');
@@ -248,6 +249,7 @@ async function petTask() {
     }
     //每日赛跑
     if (item['taskType'] === 'race') {
+      console.log(`\n-----${item['taskName']}----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       if (item['receiveStatus'] === 'chance_left') {
         console.log('每日赛跑未完成')
       } else if (item['receiveStatus'] === 'unreceive') {
@@ -257,26 +259,27 @@ async function petTask() {
     }
     //每日兑换
     if (item['taskType'] === 'exchange') {
-      if (item['receiveStatus'] === 'chance_left') {
-        console.log('每日兑换未完成')
-      } else if (item['receiveStatus'] === 'unreceive') {
+      console.log(`\n-----${item['taskName']}----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
+      if (item['receiveStatus'] === 'unreceive') {
         const res = await getFood('exchange');
         console.log(`领取每日兑换狗粮结果：${res.data}`);
       }
     }
     //每日帮好友喂一次狗粮
     if (item['taskType'] === 'HelpFeed') {
+      console.log(`\n-----${item['taskName']}----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       if (item['receiveStatus'] === 'chance_left') {
         console.log('每日帮好友喂一次狗粮未完成')
       } else if (item['receiveStatus'] === 'unreceive') {
         const res = await getFood('HelpFeed');
-        console.log(`领取每日帮好友喂一次狗粮 狗粮结果：${res.data}`);
+        console.log(`领取 【${item['taskName']}】任务奖励结果：${res.data}`);
       }
     }
     //每日喂狗粮
     if (item['taskType'] === 'FeedEveryDay') {
+      console.log(`\n-----${item['taskName']}----- 任务进度：${item['feedTotal'] || 0}/${item['feedAmount']}`);
       if (item['receiveStatus'] === 'chance_left') {
-        console.log(`\n${item['taskName']}任务进行中\n`)
+        console.log(`${item['taskName']} 任务进行中\n`)
       } else if (item['receiveStatus'] === 'unreceive') {
         const res = await getFood('FeedEveryDay');
         console.log(`领取每日喂狗粮 结果：${res.data}`);
@@ -285,8 +288,9 @@ async function petTask() {
     //
     //邀请用户助力,领狗粮.(需手动去做任务)
     if (item['taskType'] === 'InviteUser') {
+      console.log(`\n-----${item['taskName']}----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       if (item['receiveStatus'] === 'chance_left') {
-        console.log('未完成,需要自己手动去邀请好友给你助力,可以获得狗粮')
+        console.log(`未完成,需要自己手动去邀请好友给你助力,每邀请一位好友，可得${item['taskReward']}g狗粮`)
       } else if (item['receiveStatus'] === 'unreceive') {
         const InviteUser = await getFood('InviteUser');
         console.log(`领取助力后的狗粮结果::${JSON.stringify(InviteUser)}`);
@@ -294,7 +298,7 @@ async function petTask() {
     }
     //每日三餐
     if (item['taskType'] === 'ThreeMeals') {
-      console.log('\n-----每日三餐-----');
+      console.log(`\n-----每日三餐----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       if (item['receiveStatus'] === 'unreceive') {
         const ThreeMealsRes = await getFood('ThreeMeals');
         if (ThreeMealsRes.success) {
@@ -307,23 +311,26 @@ async function petTask() {
     }
     //逛会场
     if (item['taskType'] === 'ScanMarket') {
-      console.log('\n----逛会场----');
+      console.log(`\n-----逛会场----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       const scanMarketList = item.scanMarketList;
-      for (let scanMarketItem of scanMarketList) {
-        if (!scanMarketItem.status) {
-          const body = {
-            "marketLink": scanMarketItem.marketLink,
-            "taskType": "ScanMarket",
-            //"reqSource": "weapp"
-          };
-          const scanMarketRes = await scanMarket('scan', body);
-          console.log(`逛会场-${scanMarketItem.marketName}结果::${JSON.stringify(scanMarketRes)}`)
+      for (let i = 0; i < 3; i ++) {
+        console.log(`\n第${i + 1}次做 【逛会场】 任务\n`)
+        for (let scanMarketItem of scanMarketList) {
+          if (!scanMarketItem.status) {
+            const body = {
+              "marketLink": scanMarketItem.marketLink,
+              "taskType": "ScanMarket",
+              //"reqSource": "weapp"
+            };
+            const scanMarketRes = await scanMarket('scan', body);
+            console.log(`逛会场-${scanMarketItem.marketName}结果::${JSON.stringify(scanMarketRes)}`)
+          }
         }
       }
     }
     //关注店铺
     if (item['taskType'] === 'FollowShop') {
-      console.log('\n-----关注店铺-----');
+      console.log(`\n-----关注店铺----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       const followShops = item.followShops;
       for (let shop of followShops) {
         if (!shop.status) {
@@ -335,28 +342,31 @@ async function petTask() {
         }
       }
     }
-    //浏览频道
+    //浏览频道/关注频道
     if (item['taskType'] === 'FollowChannel') {
-      console.log('\n----浏览频道----');
+      console.log(`\n-----浏览频道/关注频道 任务进度：${item['joinedCount'] || 0}/${item['taskChance']} -----`);
       const followChannelList = item.followChannelList;
-      for (let followChannelItem of followChannelList) {
-        if (!followChannelItem.status) {
-          await iconClick('follow_channel', followChannelItem.channelId);
-          await $.wait(1000);
-          const body = {
-            "channelId": followChannelItem.channelId,
-            "taskType": "FollowChannel",
-            "reqSource": "weapp"
-          };
-          const scanMarketRes = await scanMarket('scan', body);
-          console.log(`浏览频道-${followChannelItem.channelName}结果::${scanMarketRes['errorCode']}`)
-          await $.wait(5000);
+      for (let i = 0; i < 3; i ++) {
+        console.log(`\n第${i + 1}次做 【浏览频道/关注频道】 任务\n`)
+        for (let followChannelItem of followChannelList) {
+          if (!followChannelItem.status) {
+            await iconClick('follow_channel', followChannelItem.channelId);
+            await $.wait(1000);
+            const body = {
+              "channelId": followChannelItem.channelId,
+              "taskType": "FollowChannel",
+              "reqSource": "weapp"
+            };
+            const scanMarketRes = await scanMarket('scan', body);
+            console.log(`浏览频道-${followChannelItem.channelName}结果::${scanMarketRes['errorCode']}`)
+            await $.wait(5000);
+          }
         }
       }
     }
     //关注商品
     if (item['taskType'] === 'FollowGood') {
-      console.log('\n----关注商品----');
+      console.log(`\n-----关注商品----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       const followGoodList = item.followGoodList;
       for (let followGoodItem of followGoodList) {
         if (!followGoodItem.status) {
@@ -372,7 +382,7 @@ async function petTask() {
     }
     //看激励视频
     if (item['taskType'] === 'ViewVideo') {
-      console.log('\n----看激励视频----');
+      console.log(`\n-----看激励视频----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       if (item.taskChance === joinedCount) {
         console.log('今日激励视频已看完')
       } else {
@@ -582,9 +592,13 @@ async function getInviteFood() {
         if (body) {
           if (body['success'] && body['errorCode'] === 'success') {
             if (body['data']) {
-              console.log(`获得狗粮 ${body['data']}g\n`);
-              $.msg($.name, '', `京东账号 ${$.index} ${$.UserName}\n获得狗粮 ${body['data']}g`);
-              if ($.isNode()) await notify.sendNotify($.name, `京东账号 ${$.index} ${$.UserName}\n获得狗粮 ${body['data']}g`);
+              if (typeof body['data'] === 'number' && !isNaN(body['data'])) {
+                console.log(`获得狗粮 ${body['data']}g\n`);
+                $.msg($.name, '', `京东账号 ${$.index} ${$.UserName}\n获得狗粮 ${body['data']}g`);
+                if ($.isNode()) await notify.sendNotify($.name, `京东账号 ${$.index} ${$.UserName}\n获得狗粮 ${body['data']}g`);
+              } else {
+                console.log(`getInviteFood失败，${$.toStr(data)}`);
+              }
             }
           }
         }
@@ -706,7 +720,7 @@ function appGetPetTaskConfig() {
         if (err) {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
-          // console.log('----', JSON.parse(data))
+          // console.log('-----', JSON.parse(data))
           $.appGetPetTaskConfigRes = JSON.parse(data);
         }
       } catch (e) {
