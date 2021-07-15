@@ -86,10 +86,10 @@ function QueryUserInfo() {
               console.log(`已接待游客: ${data['buildInfo']['dwTodaySpeedPeople']}/20\n`);
               $.buildInfo = data['buildInfo'];
               $.StoryInfo = data['StoryInfo'];
-              if (data['dwOfficeUnLock'] === 0) {
-                console.log(`\n当前账号未开启 财富岛活动\n`);
-                $.accountFlag = false;
-              }
+              //if (data['dwOfficeUnLock'] === 0) {
+                //console.log(`\n当前账号未开启 财富岛活动\n`);
+                //$.accountFlag = false;
+              //}
               // if (data['buildInfo']['dwTodaySpeedPeople'] >= 20) $.SpeedUp = true;
             } else {
               console.log(`获取用户信息失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
@@ -256,6 +256,17 @@ async function storyOper() {
           await wait(31 * 1000);
           body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
           await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
+        } else if (dwType === 2) {
+          //美人鱼
+          console.log(`${story['Mermaid']['strTalk']}\n`);
+          let body = `strStoryId=${strStoryId}&dwType=1&ddwTriggerDay=${ddwTriggerDay}`;
+          await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+          await wait(3 * 1000);
+          body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}`;
+          await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+          await wait(2 * 1000);
+          body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
+          await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
         } else {
           console.log(`轮船未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
         }
