@@ -61,6 +61,7 @@ async function main() {
     await rewardSign();//连续营业赢红包
     await buildAction();//建筑升级与收集金币
     await SpeedUp();//接待游客
+    await EmployTourGuideFun();
   } catch (e) {
     $.logErr(e)
   }
@@ -256,7 +257,7 @@ async function storyOper() {
           body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
           await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
         } else {
-          console.log(`未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
+          console.log(`轮船未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
         }
       }
     }
@@ -559,6 +560,76 @@ function BuildLvlUpApi(body, strBuildIndex) {
               console.log(`${strBuildIndex} 升级成功，当前等级: ${data['dwBuildLvl']}\n`);
             } else {
               console.log(`${strBuildIndex} 升级失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+//雇佣功能
+function EmployTourGuideFun() {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('user/EmployTourGuideInfo', '', '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              const { TourGuideList, dwIsInWorkingTm, dwRemainGuideCnt } = data;
+              console.log(`当前导游：可雇佣${dwRemainGuideCnt || 0}个`);
+              if (TourGuideList && TourGuideList.length) {
+                for (let TourGuide of TourGuideList) {
+                  if (TourGuide['dwFreeMin'] > 0) {
+                    //可试用
+                    console.log(`试用 ${TourGuide['strGuideName']} ${TourGuide['strSkillDesc']}`);
+                    const body = `strBuildIndex=${TourGuide['strBuildIndex']}&dwIsFree=1&ddwConsumeCoin=0`
+                    await EmployTourGuide(body);
+                    await $.wait(2000)
+                  } else {
+                    console.log(`雇佣 ${TourGuide['strGuideName']} ${TourGuide['strSkillDesc']}`);
+                    const body = `strBuildIndex=${TourGuide['strBuildIndex']}&dwIsFree=0&ddwConsumeCoin=${TourGuide['ddwCostCoin']}`
+                    await EmployTourGuide(body);
+                    await $.wait(2000)
+                  }
+                }
+              }
+            } else {
+              console.log(`查询找导游信息 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+function EmployTourGuide(body) {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('user/EmployTourGuide', body, '_cfd_t,bizCode,ddwConsumeCoin,dwEnv,dwIsFree,ptag,source,strBuildIndex,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`雇佣成功，在【${data['Data']['strBuildIndex']}】工作${data['Data']['ddwTotalWorkTm'] / 60}分钟\n`);
+            } else {
+              console.log(`雇佣 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
             }
           }
         }
