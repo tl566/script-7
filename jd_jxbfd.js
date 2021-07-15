@@ -586,6 +586,7 @@ function EmployTourGuideFun() {
             if (data['iRet'] === 0) {
               const { TourGuideList, dwIsInWorkingTm, dwRemainGuideCnt } = data;
               console.log(`当前导游：可雇佣${dwRemainGuideCnt || 0}个`);
+              if (dwRemainGuideCnt <= 0) return
               if (TourGuideList && TourGuideList.length) {
                 for (let TourGuide of TourGuideList) {
                   if (TourGuide['dwFreeMin'] > 0) {
