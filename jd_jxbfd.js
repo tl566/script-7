@@ -2,8 +2,6 @@
 新版京喜财富岛，未完
  */
 const CryptoJS = require('crypto-js');
-const USER_AGENT = require('./USER_AGENTS').USER_AGENT;
-const axios = require('axios');
 const $ = new Env("京喜财富岛");
 const JD_API_HOST = "https://m.jingxi.com";
 const notify = $.isNode() ? require('./sendNotify') : {};
