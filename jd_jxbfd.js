@@ -666,16 +666,17 @@ async function rewardSign() {
     if (dwTodayStatus === 1) {
       console.log(`\n【连续营业赢红包】 奖励已领取\n`);
     } else {
-      let ddwCoin = 0, ddwMoney = 0, dwPrizeType = 0, dwPrizeLv = 0;
+      let ddwCoin = 0, ddwMoney = 0, dwPrizeType = 0, dwPrizeLv = 0, strPrizePool = "";
       for (let sign of SignList) {
         if (dwTodayId === sign['dwDayId']) {
           ddwCoin = sign['ddwCoin'];
           ddwMoney = sign['ddwMoney'];
           dwPrizeType = sign['dwPrizeType'];
           dwPrizeLv = sign['dwBingoLevel'];
+          strPrizePool = sign['strPrizePool'] ? sign['strPrizePool'] : "";
         }
       }
-      const body = `ddwCoin=${ddwCoin}&ddwMoney=${ddwMoney}&dwPrizeType=${dwPrizeType}&strPrizePool=&dwPrizeLv=${dwPrizeLv}`;
+      const body = `ddwCoin=${ddwCoin}&ddwMoney=${ddwMoney}&dwPrizeType=${dwPrizeType}&strPrizePool=${strPrizePool}&dwPrizeLv=${dwPrizeLv}`;
       await RewardSign(body);
     }
   }
