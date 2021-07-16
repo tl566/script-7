@@ -10,6 +10,7 @@ let cookiesArr = [], cookie = '', token = '';
 $.appId = 10032;
 let JX_UA = `jdpingou;iPhone;4.9.4;14.6;${randPhoneId()};network/wifi;model/iPhone9,2;appBuild/100579;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/936;pap/JA2019_3111800;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E200`;
 JX_UA =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : JX_UA) : JX_UA;
+$.inviteCodeList = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -47,6 +48,20 @@ if ($.isNode()) {
       continue
     }
     await main();
+  }
+  for (let i = 0; i < cookiesArr.length; i++) {
+    cookie = cookiesArr[i];
+    $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    $.index = i + 1;
+    $.nickName = '';
+    $.canHelp = true;
+    for (const item of $.inviteCodeList) {
+      if (item['user'] === $.UserName) continue;
+      if (!$.canHelp) break;
+      console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${item['user']}，邀请码为：${item['code']}`);
+      await helpbystage(item['code']);
+      await $.wait(2000);
+    }
   }
 })();
 async function main() {
@@ -87,7 +102,15 @@ function QueryUserInfo() {
               console.log(`当前财富值：${data['ddwRichBalance']}`)
               console.log(`当前京币：${(data['ddwCoinBalance'] / 10000).toFixed(1)}万`)
               console.log(`已接待游客: ${data['buildInfo']['dwTodaySpeedPeople']}/20\n`);
-              console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data['strMyShareId']}\n\n`);
+
+              if (data['strMyShareId']) {
+                console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data['strMyShareId']}\n\n`);
+                $.inviteCodeList.push({
+                  'user': $.UserName,
+                  'code': data['strMyShareId'],
+                  'max': false
+                });
+              }
               $.buildInfo = data['buildInfo'];
               $.StoryInfo = data['StoryInfo'];
               //if (data['dwOfficeUnLock'] === 0) {
@@ -324,7 +347,7 @@ async function storyOper() {
     for (let story of StoryList) {
       const { strStoryId, dwType, dwStatus, ddwTriggerDay } = story;
       console.log(`\nstory：${$.toStr(story)}\n`)
-      console.log(`\nstory：dwStatus：${story['dwStatus']}，dwType：${story['dwType']}\n`)
+      console.log(`story：dwStatus：${story['dwStatus']}，dwType：${story['dwType']}\n`)
       if (strStoryId && ddwTriggerDay) {
         if (dwStatus === 1) {
           if (dwType === 4) {
@@ -376,6 +399,8 @@ async function storyOper() {
             console.log(`${story['Mermaid']['strTalk']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+          } else {
+            console.log(`轮船未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
           }
         } else if (dwStatus === 4) {
           if (dwType === 1) {
@@ -386,7 +411,11 @@ async function storyOper() {
             await $.wait(31 * 1000);
             body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
+          } else {
+            console.log(`轮船未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
           }
+        } else {
+          console.log(`轮船未知状态，dwStatus：${dwStatus}，${$.toStr(story)}\n`);
         }
       }
     }
@@ -546,7 +575,7 @@ async function Rubbishs() {
                   }
                 }
               } else {
-                console.log(`查询垃圾信息 成功！当前暂无垃圾\n`);
+                console.log(`查询垃圾信息 成功！当前暂无垃圾，下次垃圾出现时间：${$.time('yyyy-MM-dd HH:mm:ss', data['Data']['ddwNextStart'] * 1000)}\n`);
               }
             } else {
               console.log(`查询垃圾信息 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
@@ -560,9 +589,6 @@ async function Rubbishs() {
       }
     })
   });
-}
-function QueryRubbishInfo() {
-
 }
 async function doTasks() {
   return new Promise(async (resolve) => {
@@ -850,6 +876,35 @@ function EmployTourGuide(body) {
               console.log(`雇佣成功，在【${data['Data']['strBuildIndex']}】工作${data['Data']['ddwTotalWorkTm'] / 60}分钟\n`);
             } else {
               console.log(`雇佣 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+//助力API
+function helpbystage(strShareId) {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('story/helpbystage', `strShareId=${strShareId}`, '_cfd_t,bizCode,dwEnv,ptag,source,strShareId,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`助力 成功，获得${data['Data']['GuestPrizeInfo']['strPrizeName']}\n`);
+            } else {
+              console.log(`助力 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
+              //助力已达上限
+              if (data['iRet'] === 2235) $.canHelp = false;
             }
           }
         }
