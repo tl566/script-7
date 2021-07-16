@@ -443,7 +443,6 @@ async function pickShells() {
   const queryShell = await pickshell();
   if (queryShell) {
     if (queryShell['iRet'] === 0) {
-      $.pickshellFlag = true;
       const { NormShell } = queryShell['Data'];
       for (let item of NormShell) {
         if (item['dwNum'] && item['dwNum'] > 0) {
@@ -455,7 +454,6 @@ async function pickShells() {
       }
     } else {
       console.log(`查询沙滩信息 失败: ${queryShell['sErrMsg']}, iRet: ${queryShell['iRet']}`)
-      if (queryShell['iRet'] === 2219) $.pickshellFlag = false;
     }
   }
   console.log(`\n`);
@@ -537,7 +535,6 @@ function pickshell(body = '', type = 1) {
               }
             } else {
               console.log(`沙滩捡${strType}失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-              if (data['iRet'] === 2219) $.pickshellFlag = false;
             }
           }
         }
