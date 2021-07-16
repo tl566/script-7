@@ -531,5 +531,13 @@ function injectToRequest(fn, scene = 'cww') {
     });
   };
 }
-
-exports.injectToRequest = injectToRequest;
+async function injectToRequest2(scene = 'cww') {
+  console.log('JDJRValidator trying......');
+  const res = await new JDJRValidator().run(scene);
+  return `&validate=${res.validate}`
+}
+module.exports = {
+  injectToRequest,
+  injectToRequest2
+}
+// exports.injectToRequest = injectToRequest;
