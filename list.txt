@@ -57,9 +57,3 @@
 依赖脚本：
     1.jdCookie.js
     2.MovementFaker.js
-
-9. jd_bean_sign.js
-京东多合一签到，领取京豆
-依赖脚本：
-    1.jdCookie.js
-    2.JD_DailyBonus.js
