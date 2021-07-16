@@ -9,3 +9,7 @@
 https://github.com/inoyna12/jd28  
 https://github.com/star261/jd  
 https://github.com/chavyleung/scripts  
+
+
+## todolist
+1. 京东价保脚本失效，待修复
