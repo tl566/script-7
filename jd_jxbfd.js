@@ -87,7 +87,7 @@ async function main() {
     await GetActTask();//活动任务
     await pickShells();//海滩捡贝壳海螺等
     await doTasks();//任务赚京币&成就赚财富
-    await rewardSign();//连续营业赢红包
+    await rewardSign();//连续营业赢红包&打工赢红包
     await buildAction();//建筑升级与收集金币
     await EmployTourGuideFun();//雇佣导游
     await SpeedUp();//接待游客
@@ -678,6 +678,18 @@ async function rewardSign() {
       await RewardSign(body);
     }
   }
+  //打工赢红包
+  if ($.TakeAggrPageData && $.TakeAggrPageData.hasOwnProperty('Employee')) {
+    const { EmployeeList, dwNeedTotalPeople } = $.TakeAggrPageData['Employee'];
+    console.log(`打工赢红包：当前已邀请好友 ${EmployeeList.length}/${dwNeedTotalPeople}\n`);
+    for (const Employee of EmployeeList) {
+      if (Employee['dwStatus'] !== 0) continue;
+      if (!Employee['dwId']) continue;
+      console.log(`收取第${Employee['dwId']}个助力奖励：${Employee['dwStagePrizeType'] === 4 ? Employee['strPrizeName'] + '红包' : ''}`);
+      await helpdraw(Employee['dwId']);
+      await $.wait(2000);
+    }
+  }
 }
 function GetTakeAggrPage() {
   return new Promise(async (resolve) => {
@@ -707,7 +719,7 @@ function GetTakeAggrPage() {
 }
 function RewardSign(body) {
   return new Promise(async (resolve) => {
-    let options = taskUrl('story/RewardSign', body, '_cfd_t,bizCode,ddwCoin,ddwMoney,dwEnv,dwPrizeLv,dwPrizeType,ptag,source,strPrizePool,strZone');
+    const options = taskUrl('story/RewardSign', body, '_cfd_t,bizCode,ddwCoin,ddwMoney,dwEnv,dwPrizeLv,dwPrizeType,ptag,source,strPrizePool,strZone');
     $.get(options, (err, resp, data) => {
       try {
         if (err) {
@@ -720,6 +732,33 @@ function RewardSign(body) {
               console.log(`连续营业赢红包 奖励领取成功，京币：${data['Data']['ddwCoin']}，红包：${data['Data']['ddwMoney']}\n`);
             } else {
               console.log(`连续营业赢红包 奖励领取失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+function helpdraw(dwUserId) {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('story/helpdraw', `dwUserId=${dwUserId}`, '_cfd_t,bizCode,dwEnv,dwUserId,ptag,source,strZone');
+    $.get(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`打工赢红包`, $.toStr(data));
+              console.log(`打工赢红包 奖励领取成功，京币：${data['Data']['ddwCoin']}个，红包：${data['Data']['StagePrizeInfo']['strPrizeName'] || 0}元\n`);
+            } else {
+              console.log(`打工赢红包 奖励领取失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
             }
           }
         }
@@ -935,7 +974,7 @@ function EmployTourGuide(body) {
             if (data['iRet'] === 0) {
               console.log(`雇佣成功，在【${data['Data']['strBuildIndex']}】工作${data['Data']['ddwTotalWorkTm'] / 60}分钟\n`);
             } else {
-              console.log(`雇佣 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+              console.log(`雇佣 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`);
             }
           }
         }
