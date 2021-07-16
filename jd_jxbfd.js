@@ -54,27 +54,31 @@ if ($.isNode()) {
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.index = i + 1;
     $.nickName = '';
-    for (let index = 0; index < $.inviteCodeList.length; index ++) {
-      $.userInviteInfo = $.inviteCodeList[index];
-      if ($.userInviteInfo['user'] === $.UserName) continue;
-      if ($.userInviteInfo['max']) continue;
-      console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${$.userInviteInfo['user']}，邀请码为：${$.userInviteInfo['code']}`);
-      const data = await helpbystage($.userInviteInfo['code']);
-      if (data) {
-        if (data['iRet'] === 0) {
-          console.log(`助力 成功，获得${data['Data']['GuestPrizeInfo']['strPrizeName']}`);
-        } else {
-          console.log(`助力 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
-          //助力机会耗尽
-          if (data['iRet'] === 2235) break;
-          //好友已不需要助力
-          if (data['iRet'] === 2190) $.inviteCodeList[index]['max'] = true;
+    try {
+      for (let index = 0; index < $.inviteCodeList.length; index ++) {
+        $.userInviteInfo = $.inviteCodeList[index];
+        if ($.userInviteInfo['user'] === $.UserName) continue;
+        if ($.userInviteInfo['max']) continue;
+        console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${$.userInviteInfo['user']}，邀请码为：${$.userInviteInfo['code']}`);
+        const data = await helpbystage($.userInviteInfo['code']);
+        if (data) {
+          if (data['iRet'] === 0) {
+            console.log(`助力 成功，获得${data['Data']['GuestPrizeInfo']['strPrizeName']}`);
+          } else {
+            console.log(`助力 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
+            //助力机会耗尽
+            if (data['iRet'] === 2235) break;
+            //好友已不需要助力
+            if (data['iRet'] === 2190) $.inviteCodeList[index]['max'] = true;
+          }
         }
+        await $.wait(2000);
       }
-      await $.wait(2000);
+    } catch (e) {
+      $.logErr(e)
     }
   }
-})();
+})().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
 async function main() {
   try {
     $.accountFlag = true;
