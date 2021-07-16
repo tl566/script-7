@@ -54,12 +54,23 @@ if ($.isNode()) {
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.index = i + 1;
     $.nickName = '';
-    $.canHelp = true;
-    for (const item of $.inviteCodeList) {
-      if (item['user'] === $.UserName) continue;
-      if (!$.canHelp) break;
-      console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${item['user']}，邀请码为：${item['code']}`);
-      await helpbystage(item['code']);
+    for (let index = 0; index < $.inviteCodeList.length; index ++) {
+      $.userInviteInfo = $.inviteCodeList[index];
+      if ($.userInviteInfo['user'] === $.UserName) continue;
+      if ($.userInviteInfo['max']) continue;
+      console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${$.userInviteInfo['user']}，邀请码为：${$.userInviteInfo['code']}`);
+      const data = await helpbystage($.userInviteInfo['code']);
+      if (data) {
+        if (data['iRet'] === 0) {
+          console.log(`助力 成功，获得${data['Data']['GuestPrizeInfo']['strPrizeName']}`);
+        } else {
+          console.log(`助力 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
+          //助力机会耗尽
+          if (data['iRet'] === 2235) break;
+          //好友已不需要助力
+          if (data['iRet'] === 2190) $.inviteCodeList[index]['max'] = true;
+        }
+      }
       await $.wait(2000);
     }
   }
@@ -73,7 +84,7 @@ async function main() {
     if (!$.accountFlag) return
     await Rubbishs();
     await storyOper();//轮船功能
-    await GetActTask();
+    await GetActTask();//活动任务
     await pickShells();//海滩捡贝壳海螺等
     await doTasks();//任务赚京币&成就赚财富
     await rewardSign();//连续营业赢红包
@@ -199,10 +210,11 @@ function GetActTask() {
               if (data['Data']['dwTotalTaskNum'] === data['Data']['dwCompleteTaskNum'] && data['Data']['dwStatus'] === 3) {
                 console.log(`${data['Data']['strContent']}，开始领奖`);
                 await ActTaskAward();
+              } else if (data['Data']['dwTotalTaskNum'] === data['Data']['dwCompleteTaskNum'] && data['Data']['dwStatus'] === 4) {
+                console.log(`【完成所有任务开宝箱】 奖励已领取`);
               }
             } else {
               console.log(`GetActTask 获取任务列表失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-              if (data['iRet'] === 1022) $.SpeedUpFlag = false;
             }
           }
         }
@@ -603,23 +615,34 @@ async function doTasks() {
           if (data) {
             if (data['ret'] === 0) {
               const tasks = data['data']['userTaskStatusList'] || [];
-              for (let task of tasks) {
-                console.log(`【${task.taskName}】任务进度：${task.completedTimes}/${task.targetTimes}`);
+              let tasks1 = tasks.filter(vo => vo['taskType'] === 11);
+              let tasks2 = tasks.filter(task => task['taskType'] === 6 || task['taskType'] === 15 || task['taskType'] === 14);
+              for (let task of tasks1) {
+                //成就任务
+                console.log(`成就赚财富 【${task.taskName}】任务进度：${task.completedTimes}/${task.targetTimes}`);
+                if ((task.completedTimes === task.targetTimes) && task.awardStatus === 2) {
+                  console.log(`开始领取 【${task.taskName}】任务奖励`)
+                  await Award(task['taskId'], 'newtasksys')
+                  await $.wait(1000);
+                }
+              }
+              console.log(`\n`);
+              for (let task of tasks2) {
+                //活动任务
+                console.log(`任务赚京币 【${task.taskName}】任务进度：${task.completedTimes}/${task.targetTimes}`);
                 if ((task.completedTimes === task.targetTimes) && task.awardStatus === 2) {
                   console.log(`开始领取 【${task.taskName}】任务奖励`)
                   await Award(task['taskId'], 'newtasksys')
                   await $.wait(1000);
                 } else if (task.awardStatus === 2 && task.completedTimes < task.targetTimes) {
-                  if (task['taskType'] === 6 || task['taskType'] === 15 || task['taskType'] === 14) {
-                    // console.log('【任务赚京币】', task['taskName'], task['taskType'])
-                    for (let i = 0; i < (task.targetTimes - task.completedTimes); i++) {
-                      console.log(`开始做 【${task.taskName}】任务`);
-                      await DoTask(task['taskId']);
-                      await $.wait(5000);
-                    }
-                  } else {
-                    // console.log('【成就赚财富】', task['taskName'], 'taskType：' + task['taskType'])
+                  for (let i = 0; i < (task.targetTimes - task.completedTimes); i++) {
+                    console.log(`开始做 【${task.taskName}】任务`);
+                    await DoTask(task['taskId']);
+                    await $.wait(5000);
                   }
+                  console.log(`开始领取 【${task.taskName}】任务奖励`)
+                  await Award(task['taskId'], 'newtasksys')
+                  await $.wait(1000);
                 }
               }
             } else {
@@ -640,7 +663,7 @@ async function rewardSign() {
   if ($.TakeAggrPageData && $.TakeAggrPageData.hasOwnProperty('Sign')) {
     const { SignList, dwTodayStatus, dwTodayId } = $.TakeAggrPageData['Sign'];
     if (dwTodayStatus === 1) {
-      console.log(`\n连续营业赢红包 奖励已领取\n`);
+      console.log(`\n【连续营业赢红包】 奖励已领取\n`);
     } else {
       let ddwCoin = 0, ddwMoney = 0, dwPrizeType = 0, dwPrizeLv = 0;
       for (let sign of SignList) {
@@ -712,10 +735,12 @@ async function buildAction() {
   if ($.buildInfo && $.buildInfo.hasOwnProperty('buildList')) {
     const { buildList } = $.buildInfo;
     for (let build of buildList) {
+      $.canCreateBuild = false;
       const body = `strBuildIndex=${build['strBuildIndex']}&dwType=1`;
       const strBuildIndex = build['strBuildIndex'] === 'food' ? '京喜美食城' : build['strBuildIndex'] === 'sea' ? '京喜旅馆' : build['strBuildIndex'] === 'shop' ? '京喜商店' : build['strBuildIndex'] === 'fun' ? '京喜游乐场' : `未知 ${build['strBuildIndex']}`;
       await CollectCoin(body, strBuildIndex);
       await $.wait(3000);
+      if ($.canCreateBuild) await createbuild(`strBuildIndex=${build['strBuildIndex']}`, strBuildIndex);
     }
     console.log(`\n\n`);
     for (let build of buildList) {
@@ -741,6 +766,36 @@ function CollectCoin(body, strBuildIndex) {
               console.log(`${strBuildIndex} 收取京币成功: ${data['ddwCoin']}，当前已有京币：${data['ddwCoinBalance']}`);
             } else {
               console.log(`${strBuildIndex} 收取京币 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+              if (data['iRet'] === 2008) {
+                console.log(`开始建造 ${strBuildIndex}`);
+                $.canCreateBuild = true;
+              }
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+function createbuild(body, strBuildIndex) {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('user/createbuilding', body, '_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`${strBuildIndex} 建造成功\n`);
+            } else {
+              console.log(`${strBuildIndex} 建造失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
             }
           }
         }
@@ -898,20 +953,11 @@ function helpbystage(strShareId) {
           console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
         } else {
           data = $.toObj(data);
-          if (data) {
-            if (data['iRet'] === 0) {
-              console.log(`助力 成功，获得${data['Data']['GuestPrizeInfo']['strPrizeName']}\n`);
-            } else {
-              console.log(`助力 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
-              //助力已达上限
-              if (data['iRet'] === 2235) $.canHelp = false;
-            }
-          }
         }
       } catch (e) {
         $.logErr(e, resp);
       } finally {
-        resolve()
+        resolve(data)
       }
     })
   });
@@ -1026,33 +1072,33 @@ Date.prototype.Format = function (fmt) {
 }
 
 async function requestAlgo() {
-  $.fingerprint = await generateFp();
-  const options = {
-    "url": `https://cactus.jd.com/request_algo?g_ty=ajax`,
-    "headers": {
-      'Authority': 'cactus.jd.com',
-      'Pragma': 'no-cache',
-      'Cache-Control': 'no-cache',
-      'Accept': 'application/json',
-      'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-      'Content-Type': 'application/json',
-      'Origin': 'https://st.jingxi.com',
-      'Sec-Fetch-Site': 'cross-site',
-      'Sec-Fetch-Mode': 'cors',
-      'Sec-Fetch-Dest': 'empty',
-      'Referer': 'https://st.jingxi.com/',
-      'Accept-Language': 'zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7'
-    },
-    'body': JSON.stringify({
-      "version": "1.0",
-      "fp": $.fingerprint,
-      "appId": $.appId.toString(),
-      "timestamp": Date.now(),
-      "platform": "web",
-      "expandParams": ""
-    })
-  }
   new Promise(async resolve => {
+    $.fingerprint = await generateFp();
+    const options = {
+      "url": `https://cactus.jd.com/request_algo?g_ty=ajax`,
+      "headers": {
+        'Authority': 'cactus.jd.com',
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache',
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'Content-Type': 'application/json',
+        'Origin': 'https://st.jingxi.com',
+        'Sec-Fetch-Site': 'cross-site',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Dest': 'empty',
+        'Referer': 'https://st.jingxi.com/',
+        'Accept-Language': 'zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7'
+      },
+      'body': JSON.stringify({
+        "version": "1.0",
+        "fp": $.fingerprint,
+        "appId": $.appId.toString(),
+        "timestamp": Date.now(),
+        "platform": "web",
+        "expandParams": ""
+      })
+    }
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
