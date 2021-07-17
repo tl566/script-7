@@ -687,7 +687,7 @@ async function rewardSign() {
   //打工赢红包
   if ($.TakeAggrPageData && $.TakeAggrPageData.hasOwnProperty('Employee')) {
     const { EmployeeList, dwNeedTotalPeople } = $.TakeAggrPageData['Employee'];
-    console.log(`打工赢红包：当前已邀请好友 ${EmployeeList.length}/${dwNeedTotalPeople}\n`);
+    console.log(`【打工赢红包】当前已邀请好友 ${EmployeeList.length}/${dwNeedTotalPeople}\n`);
     for (const Employee of EmployeeList) {
       if (Employee['dwStatus'] !== 0) continue;
       if (!Employee['dwId']) continue;
@@ -762,7 +762,7 @@ function helpdraw(dwUserId) {
           if (data) {
             if (data['iRet'] === 0) {
               console.log(`打工赢红包`, $.toStr(data));
-              console.log(`打工赢红包 奖励领取成功，京币：${data['Data']['ddwCoin']}个，红包：${data['Data']['StagePrizeInfo']['strPrizeName'] || 0}元\n`);
+              console.log(`打工赢红包 奖励领取成功，京币：${data['Data']['ddwCoin']}个，红包：${data['Data']['StagePrizeInfo']['strPrizeName'] || 0}\n`);
             } else {
               console.log(`打工赢红包 奖励领取失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
             }
