@@ -1,6 +1,6 @@
 /*
 新版京喜财富岛，未完
-更新日期：2021-07-16
+更新日期：2021-07-17
  */
 const $ = new Env("京喜财富岛");
 const JD_API_HOST = "https://m.jingxi.com";
@@ -86,7 +86,7 @@ async function main() {
     await QueryUserInfo();
     //账号火爆或者未开启财富岛活动，退出
     if (!$.accountFlag) return
-    await Rubbishs();
+    await Rubbishs();//垃圾功能，TODO 使用环保勋章
     await storyOper();//轮船功能
     await GetActTask();//活动任务
     await pickShells();//海滩捡贝壳海螺等
@@ -380,6 +380,7 @@ async function storyOper() {
             await $.wait(1000);
             body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
+            //TODO 使用经商勋章
           } else if (dwType === 1) {
             //美食家上岛和小情侣
             console.log(`海滩： 美食家上岛或小情侣`)
@@ -394,18 +395,18 @@ async function storyOper() {
             console.log(`海滩： 拯救美人鱼`)
             console.log(`${story['Mermaid']['strTalk']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=1&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
-            await $.wait(3 * 1000);
-            body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}`;
             const res = await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+            await $.wait(2 * 1000);
             let MedalBody = '';
             if (res) {
               if (res['iRet'] === 0) {
                 if (res.Data.hasOwnProperty('Medal')) {
                   const { dwType, dwLevel, strName, dwCurRatio } = res.Data.Medal;
-                  if (dwCurRatio > 50) {
+                  if (dwCurRatio >= 100) {
                     MedalBody = `dwType=${dwType}&dwLevel=${dwLevel}`;
-                    console.log(`拯救美人鱼获得：${strName}勋章。dwType：${dwType},dwLevel：${dwLevel}`)
+                    console.log(`拯救美人鱼获得：【${strName}】勋章，进度：${dwCurRatio}% dwType：${dwType},dwLevel：${dwLevel}`)
+                  } else {
+                    console.log(`拯救美人鱼获得：【${strName}】勋章，进度：${dwCurRatio}% dwType：${dwType},dwLevel：${dwLevel}`)
                   }
                 }
               }
@@ -413,6 +414,8 @@ async function storyOper() {
             await $.wait(2 * 1000);
             //使用勋章
             if (MedalBody) await UserMedal(MedalBody);
+            body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}`;
+            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
             await $.wait(2 * 1000);
             body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
@@ -433,7 +436,7 @@ async function storyOper() {
           } else if (dwType === 2) {
             //美人鱼感恩回归
             console.log(`海滩： 美人鱼感恩回归`)
-            console.log(`${story['Mermaid']['strTalk']}\n`);
+            console.log(`${story['Mermaid']['strTalk4']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
           } else {
