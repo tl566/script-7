@@ -443,7 +443,7 @@ async function help() {
 }
 
 async function invite() {
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?openId=oPcgJ40Ol7BSTczZ2ok0WmfLWoAs&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?openId=&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
   const method = `POST`;
   const headers = {
     'content-type': `application/json`,
