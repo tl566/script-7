@@ -382,8 +382,8 @@ async function storyOper() {
             await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
             //TODO 使用经商勋章
           } else if (dwType === 1) {
-            //美食家上岛和小情侣
-            console.log(`海滩： 美食家上岛或小情侣`)
+            //美食家上岛或小情侣或失眠人
+            console.log(`海滩： 美食家上岛或小情侣或失眠人`)
             console.log(`${story['Special']['strTalk']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
@@ -423,17 +423,7 @@ async function storyOper() {
             console.log(`轮船未知 dwType 状态，dwType：${dwType}，${$.toStr(story)}\n`);
           }
         } else if (dwStatus === 4) {
-          if (dwType === 1) {
-            //失眠人
-            console.log(`海滩： 失眠人`)
-            console.log(`${story['Special']['strTalk']}\n`);
-            return
-            let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
-            await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
-            await $.wait(31 * 1000);
-            body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
-            await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
-          } else if (dwType === 2) {
+          if (dwType === 2) {
             //美人鱼感恩回归
             console.log(`海滩： 美人鱼感恩回归`)
             console.log(`${story['Mermaid']['strTalk4']}\n`);
