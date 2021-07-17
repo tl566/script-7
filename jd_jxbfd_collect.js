@@ -149,6 +149,7 @@ function pickshell(body = '', type = 1) {
               if (data['iRet'] === 2219) $.pickshellFlag = false;
               if (data['iRet'] === 5403) {
                 //东西过多，背包已放不下
+                await sell(type);
                 await pickshell(body, type);
               }
             }
