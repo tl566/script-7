@@ -362,21 +362,27 @@ async function storyOper() {
     const { StoryList } = $.StoryInfo;
     for (let story of StoryList) {
       const { strStoryId, dwType, dwStatus, ddwTriggerDay } = story;
-      console.log(`\nstory：${$.toStr(story)}\n`)
       console.log(`story：dwStatus：${story['dwStatus']}，dwType：${story['dwType']}\n`)
       if (strStoryId && ddwTriggerDay) {
         if (dwStatus === 1) {
           if (dwType === 4) {
+            //卖贝壳给收藏家
+            console.log(`海滩： 卖贝壳给收藏家`)
             console.log(`${story['Collector']['strRecvDesc']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
+            //尝试第一次收集贝壳
             await pickShells();
-            await $.wait(6 * 1000);
+            await $.wait(10 * 1000);
+            //尝试第二次收集贝壳
             await pickShells();
-            body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}`;
+            await sell(2);//卖给收藏家：dwSceneId = 2，自己主动售卖：dwSceneId = 1
+            await $.wait(1000);
+            body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
           } else if (dwType === 1) {
             //美食家上岛和小情侣
+            console.log(`海滩： 美食家上岛或小情侣`)
             console.log(`${story['Special']['strTalk']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
@@ -385,6 +391,7 @@ async function storyOper() {
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
           } else if (dwType === 2) {
             //拯救美人鱼
+            console.log(`海滩： 拯救美人鱼`)
             console.log(`${story['Mermaid']['strTalk']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=1&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
@@ -395,9 +402,11 @@ async function storyOper() {
             if (res) {
               if (res['iRet'] === 0) {
                 if (res.Data.hasOwnProperty('Medal')) {
-                  const { dwType, dwLevel, strName } = res.Data.Medal;
-                  MedalBody = `dwType=${dwType}&dwLevel=${dwLevel}`;
-                  console.log(`拯救美人鱼获得：${strName}勋章。dwType：${dwType},dwLevel：${dwLevel}`)
+                  const { dwType, dwLevel, strName, dwCurRatio } = res.Data.Medal;
+                  if (dwCurRatio > 50) {
+                    MedalBody = `dwType=${dwType}&dwLevel=${dwLevel}`;
+                    console.log(`拯救美人鱼获得：${strName}勋章。dwType：${dwType},dwLevel：${dwLevel}`)
+                  }
                 }
               }
             }
@@ -408,31 +417,30 @@ async function storyOper() {
             body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
           } else {
-            console.log(`轮船未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
-          }
-        } else if (dwStatus === 4) {
-          if (dwType === 2) {
-            //美人鱼感恩回归
-            console.log(`${story['Mermaid']['strTalk']}\n`);
-            let body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
-          } else {
-            console.log(`轮船未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
+            console.log(`轮船未知 dwType 状态，dwType：${dwType}，${$.toStr(story)}\n`);
           }
         } else if (dwStatus === 4) {
           if (dwType === 1) {
             //失眠人
+            console.log(`海滩： 失眠人`)
             console.log(`${story['Special']['strTalk']}\n`);
+            return
             let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
             await $.wait(31 * 1000);
             body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['triggerType']}`;
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
+          } else if (dwType === 2) {
+            //美人鱼感恩回归
+            console.log(`海滩： 美人鱼感恩回归`)
+            console.log(`${story['Mermaid']['strTalk']}\n`);
+            let body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
+            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
           } else {
-            console.log(`轮船未知状态，dwType：${dwType}，${$.toStr(story)}\n`);
+            console.log(`轮船未知 dwType 状态，dwType：${dwType}，${$.toStr(story)}\n`);
           }
         } else {
-          console.log(`轮船未知状态，dwStatus：${dwStatus}，${$.toStr(story)}\n`);
+          console.log(`轮船未知 dwStatus和dwType 状态，${$.toStr(story)}\n`);
         }
       }
     }
@@ -449,7 +457,7 @@ async function pickShells() {
         if (item['dwNum'] && item['dwNum'] > 0) {
           for (let i = 0; i < new Array(item['dwNum']).fill('').length; i++) {
             await pickshell(`dwType=${item['dwType']}`, item['dwType']);//珍珠
-            await $.wait(1000);
+            await $.wait(2000);
           }
         }
       }
@@ -667,16 +675,18 @@ async function rewardSign() {
     if (dwTodayStatus === 1) {
       console.log(`\n【连续营业赢红包】 奖励已领取\n`);
     } else {
-      let ddwCoin = 0, ddwMoney = 0, dwPrizeType = 0, dwPrizeLv = 0, strPrizePool = "";
+      let ddwCoin = 0, ddwMoney = 0, dwPrizeType = 0, dwPrizeLv = 0, strPrizePool = "", strDiscount = '';
       for (let sign of SignList) {
         if (dwTodayId === sign['dwDayId']) {
           ddwCoin = sign['ddwCoin'];
           ddwMoney = sign['ddwMoney'];
           dwPrizeType = sign['dwPrizeType'];
           dwPrizeLv = sign['dwBingoLevel'];
+          strDiscount = sign['strDiscount'];
           strPrizePool = sign['strPrizePool'] ? sign['strPrizePool'] : "";
         }
       }
+      console.log(`开始做 【连续营业赢红包】任务，可获得京币：${ddwCoin}个，红包：${strDiscount}元`);
       const body = `ddwCoin=${ddwCoin}&ddwMoney=${ddwMoney}&dwPrizeType=${dwPrizeType}&strPrizePool=${strPrizePool}&dwPrizeLv=${dwPrizeLv}`;
       await RewardSign(body);
     }
@@ -732,7 +742,7 @@ function RewardSign(body) {
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
-              console.log(`连续营业赢红包 奖励领取成功，京币：${data['Data']['ddwCoin']}，红包：${data['Data']['ddwMoney']}\n`);
+              console.log(`连续营业赢红包 奖励领取成功，京币：${data['Data']['ddwCoin']}，红包：${data['Data']['strPrizeName']}\n`);
             } else {
               console.log(`连续营业赢红包 奖励领取失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
             }
@@ -1005,6 +1015,76 @@ function helpbystage(strShareId) {
         $.logErr(e, resp);
       } finally {
         resolve(data)
+      }
+    })
+  });
+}
+async function sell(dwSceneId = 1, type) {
+  const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
+  return new Promise(async (resolve) => {
+    const options = taskUrl('story/querystorageroom', ``, '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`获取背包信息: 成功`);
+              if (data.Data && data.Data.hasOwnProperty('Office')) {
+                const { Office } = data.Data;
+                if (Office && Office.length) {
+                  //如果多个同时卖出：strTypeCnt=3:2|4:6&dwSceneId=1
+                  //卖给收藏家：dwSceneId = 2，自己主动售卖：dwSceneId = 1
+                  let strTypeCnt = '', dwCount = 0;
+                  for (let index = 0; index < Office.length; index ++) {
+                    strTypeCnt += `${Office[index]['dwType']}:${Office[index]['dwCount']}${index + 1 === Office.length ? '' : '|'}`;
+                    dwCount = dwCount + Office[index]['dwCount'];
+                  }
+                  const body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=${dwSceneId}`;
+                  console.log(`准备出售 ${strType}，共计：${dwCount}个`);
+                  await sellgoods(body);
+                }
+              }
+            } else {
+              console.log(`获取背包信息 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+function sellgoods(body, type) {
+  return new Promise(async (resolve) => {
+    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
+    const options = taskUrl('story/sellgoods', body, '_cfd_t,bizCode,dwEnv,dwSceneId,ptag,source,strTypeCnt,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              const { Data } = data;
+              console.log(`出售 ${strType} 成功，获得京币${Data['ddwCoin']}个，财富值${Data['ddwMoney'] || 0}。`);
+            } else {
+              console.log(`出售 ${strType} 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
       }
     })
   });

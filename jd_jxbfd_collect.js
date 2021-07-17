@@ -149,7 +149,7 @@ function pickshell(body = '', type = 1) {
               if (data['iRet'] === 2219) $.pickshellFlag = false;
               if (data['iRet'] === 5403) {
                 //东西过多，背包已放不下
-                await sell(type);
+                await sell(1, type);
                 await pickshell(body, type);
               }
             }
@@ -163,9 +163,9 @@ function pickshell(body = '', type = 1) {
     })
   });
 }
-async function sell(type = 1) {
+async function sell(dwSceneId = 1, type = 1) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : ''
+    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
     const options = taskUrl('story/querystorageroom', ``, '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
     $.get(options, async (err, resp, data) => {
       try {
@@ -184,8 +184,8 @@ async function sell(type = 1) {
                   if (s && s.length) {
                     //如果多个同时卖出：strTypeCnt=3:2|4:6&dwSceneId=1
                     const strTypeCnt = `${s[0]['dwType']}:${s[0]['dwCount']}`
-                    const body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=1`;
-                    console.log(`准备出售 ${strType} ${s[0]['dwCount']}个`);
+                    const body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=${dwSceneId}`;
+                    console.log(`准备出售 ${strType} 共计：${s[0]['dwCount']}个`);
                     await sellgoods(body, type);
                   }
                 }
@@ -205,7 +205,7 @@ async function sell(type = 1) {
 }
 function sellgoods(body, type) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : ''
+    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
     const options = taskUrl('story/sellgoods', body, '_cfd_t,bizCode,dwEnv,dwSceneId,ptag,source,strTypeCnt,strZone');
     $.get(options, async (err, resp, data) => {
       try {
