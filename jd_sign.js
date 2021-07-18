@@ -6,7 +6,7 @@
 
 const validator = require('./utils/JDJRValidator_Pure.js');
 const Faker = require('./utils/jd_sign_validate.js')
-
+const invokeKey = 'qRKHmL4sna8ZOP9F';
 const $ = new Env('京东签到图形验证');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -232,7 +232,7 @@ function getEid(arr) {
 }
 
 function taskUrl(turnTableId) {
-  const url = `https://jdjoy.jd.com/api/turncard/channel/detail?turnTableId=${turnTableId}&invokeKey=NRp8OPxZMFXmGkaE`
+  const url = `https://jdjoy.jd.com/api/turncard/channel/detail?turnTableId=${turnTableId}&invokeKey=${invokeKey}`
   return {
     url,
     headers: {
@@ -249,7 +249,7 @@ function taskUrl(turnTableId) {
 }
 
 function tasPostkUrl(turnTableId) {
-  const url = `https://jdjoy.jd.com/api/turncard/channel/sign?turnTableId=${turnTableId}&fp=${fp}&eid=${eid}&invokeKey=NRp8OPxZMFXmGkaE`
+  const url = `https://jdjoy.jd.com/api/turncard/channel/sign?turnTableId=${turnTableId}&fp=${fp}&eid=${eid}&invokeKey=${invokeKey}`
   return {
     url,
     headers: {
