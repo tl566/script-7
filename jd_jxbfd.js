@@ -635,7 +635,8 @@ async function Rubbishs() {
                   const { RubbishList, TalkList, strBuildType } = Rubbish;
                   console.log(`${TalkList.toString()}`);
                   //接收任务
-                  console.log(`开始处理【${strBuildType}】建筑的垃圾`)
+                  const strBuild = strBuildType === 'food' ? '京喜美食城' : strBuildType === 'sea' ? '京喜旅馆' : strBuildType === 'shop' ? '京喜商店' : strBuildType === 'fun' ? '京喜游乐场' : `未知建筑 ${strBuildType}`;
+                  console.log(`开始回收【${strBuild}】建筑的垃圾`)
                   let RubbishOper = await CollectorOper('RubbishOper', 'dwType=1&dwRewardType=0', `_cfd_t,bizCode,dwEnv,dwRewardType,dwType,ptag,source,strZone`);
                   if (RubbishOper) {
                     if (RubbishOper['iRet'] === 0) {
@@ -646,11 +647,13 @@ async function Rubbishs() {
                             const { RubbishList } = ThrowRubbish['Game'];
                             for (const item of RubbishList) {
                               //dwType 0：可回收垃圾，1：有毒垃圾，2：厨房垃圾，3：其他垃圾
-                              console.log(`开始回收垃圾 ${item['strName']}，可获得${item['ddwCoin']}京币：dwType ${item['dwType']}，dwId ${item['dwId']}`);
+                              console.log(`开始垃圾分类回收第${item['dwId']}个垃圾 ${item['strName']}，可获得${item['ddwCoin']}京币`);
                               await CollectorOper('RubbishOper', `dwType=2&dwRewardType=0&dwRubbishId=${item['dwId']}`, `_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone`);
                               await $.wait(2000);
                             }
                           }
+                        } else if (ThrowRubbish['dwIsNeedDoGame'] === 0) {
+                          console.log(`回收垃圾成功，获得 ${ThrowRubbish['ddwCoin']} 京币\n`)
                         }
                       }
                     }
@@ -849,7 +852,7 @@ async function buildAction() {
     for (let build of buildList) {
       $.canCreateBuild = false;
       const body = `strBuildIndex=${build['strBuildIndex']}&dwType=1`;
-      const strBuildIndex = build['strBuildIndex'] === 'food' ? '京喜美食城' : build['strBuildIndex'] === 'sea' ? '京喜旅馆' : build['strBuildIndex'] === 'shop' ? '京喜商店' : build['strBuildIndex'] === 'fun' ? '京喜游乐场' : `未知 ${build['strBuildIndex']}`;
+      const strBuildIndex = build['strBuildIndex'] === 'food' ? '京喜美食城' : build['strBuildIndex'] === 'sea' ? '京喜旅馆' : build['strBuildIndex'] === 'shop' ? '京喜商店' : build['strBuildIndex'] === 'fun' ? '京喜游乐场' : `未知建筑 ${build['strBuildIndex']}`;
       await CollectCoin(body, strBuildIndex);
       await $.wait(3000);
       if (new Date().getHours() === 0) {
