@@ -66,8 +66,9 @@ if ($.isNode()) {
             console.log(`助力 成功，获得${data['Data']['GuestPrizeInfo']['strPrizeName']}`);
           } else {
             console.log(`助力 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
-            //助力机会耗尽
-            if (data['iRet'] === 2235) break;
+            //助力机会耗尽：2235，
+            //2229：助力人账号火爆，2230：接收助力的人账号火爆
+            if (data['iRet'] === 2235 || data['iRet'] === 2229) break;
             //好友已不需要助力
             if (data['iRet'] === 2190) $.inviteCodeList[index]['max'] = true;
           }
