@@ -1,6 +1,6 @@
 /*
-新版京喜财富岛，未完
-更新日期：2021-07-17
+新版京喜财富岛，已完成
+更新日期：2021-07-18
  */
 const $ = new Env("京喜财富岛");
 const JD_API_HOST = "https://m.jingxi.com";
@@ -84,17 +84,19 @@ async function main() {
     $.accountFlag = true;
     $.SpeedUpFlag = 0;
     await QueryUserInfo();
-    //账号火爆或者未开启财富岛活动，退出
+    //账号火爆，退出
     if (!$.accountFlag) return
     await Rubbishs();//垃圾功能，TODO 使用环保勋章
     await storyOper();//轮船功能
-    await GetActTask();//活动任务
+    await doComposeGame();//去玩合成金珍珠游戏
     await pickShells();//海滩捡贝壳海螺等
     await doTasks();//任务赚京币&成就赚财富
     await rewardSign();//连续营业赢红包&打工赢红包
     await buildAction();//建筑升级与收集金币
     await EmployTourGuideFun();//雇佣导游
     await SpeedUp();//接待游客
+    await GetActTask();//活动任务
+    await receiveBigReward();//完成所有任务开宝箱
   } catch (e) {
     $.logErr(e)
   }
@@ -114,6 +116,7 @@ function QueryUserInfo() {
           if (data) {
             if (data['iRet'] === 0) {
               console.log(`获取用户信息: 成功`);
+              console.log(`当前等级：${data['dwLandLvl']}岛主`)
               console.log(`当前财富值：${data['ddwRichBalance']}`)
               console.log(`当前京币：${(data['ddwCoinBalance'] / 10000).toFixed(1)}万`)
               console.log(`已接待游客: ${data['buildInfo']['dwTodaySpeedPeople']}/20\n`);
@@ -183,6 +186,80 @@ function SpeedUp() {
     })
   });
 }
+
+function doComposeGame() {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('story/GetActTask', '', '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              const tasks = data.Data.TaskList || [];
+              for (let task of tasks.filter(vo => vo['dwPointType'] === 8)) {
+                if (task['dwPointType'] === 8 && (task.dwCompleteNum < task.dwTargetNum)) {
+                  //合成珍珠
+                  console.log(`【${task.strTaskName}】任务进度：${task.dwCompleteNum}/${task.dwTargetNum}`);
+                  console.log(`开始做 【${task.strTaskName}】任务`);
+                  await ComposeGameState();
+                  await $.wait(1000);
+                  await Award(task['ddwTaskId'])
+                } else {
+                  console.log(`\n【去玩合成金珍珠游戏】 已完成\n`)
+                }
+              }
+            } else {
+              console.log(`GetActTask 获取任务列表失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+function receiveBigReward() {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('story/GetActTask', '', '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              if (data['Data']['dwTotalTaskNum'] !== data['Data']['dwCompleteTaskNum'] && data['Data']['dwStatus'] === 1) {
+                console.log(`当前所有任务暂未完成，暂不能开宝箱\n`);
+              }
+              if (data['Data']['dwTotalTaskNum'] === data['Data']['dwCompleteTaskNum'] && data['Data']['dwStatus'] === 3) {
+                //完成所有任务开宝箱
+                console.log(`${data['Data']['strContent']}，开始领奖`);
+                await ActTaskAward();
+              } else if (data['Data']['dwTotalTaskNum'] === data['Data']['dwCompleteTaskNum'] && data['Data']['dwStatus'] === 4) {
+                console.log(`【完成所有任务开宝箱】 奖励已领取`);
+              }
+            } else {
+              console.log(`GetActTask 获取任务列表失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
 function GetActTask() {
   return new Promise(async (resolve) => {
     const options = taskUrl('story/GetActTask', '', '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
@@ -203,19 +280,6 @@ function GetActTask() {
                   await Award(task['ddwTaskId'])
                   await $.wait(1000);
                 }
-                if (task['dwPointType'] === 8 && (task.dwCompleteNum < task.dwTargetNum)) {
-                  //合成珍珠
-                  console.log(`开始做 【${task.strTaskName}】任务`);
-                  await ComposeGameState();
-                  await $.wait(1000);
-                  await Award(task['ddwTaskId'])
-                }
-              }
-              if (data['Data']['dwTotalTaskNum'] === data['Data']['dwCompleteTaskNum'] && data['Data']['dwStatus'] === 3) {
-                console.log(`${data['Data']['strContent']}，开始领奖`);
-                await ActTaskAward();
-              } else if (data['Data']['dwTotalTaskNum'] === data['Data']['dwCompleteTaskNum'] && data['Data']['dwStatus'] === 4) {
-                console.log(`【完成所有任务开宝箱】 奖励已领取`);
               }
             } else {
               console.log(`GetActTask 获取任务列表失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
@@ -316,7 +380,7 @@ function ActTaskAward() {
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
-              console.log(`完成所有任务开宝箱 成功，获得：${data['Data']['ddwBigReward']}\n`);
+              console.log(`完成所有任务开宝箱 成功，获得：${data['Data']['ddwBigReward']}财富值\n`);
             } else {
               console.log(`完成所有任务开宝箱 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
             }
@@ -437,6 +501,8 @@ async function storyOper() {
         }
       }
     }
+  } else {
+    console.log(`当前沙滩暂无 岛民朋友`);
   }
 }
 //沙滩上捡贝壳
@@ -785,6 +851,11 @@ async function buildAction() {
       const strBuildIndex = build['strBuildIndex'] === 'food' ? '京喜美食城' : build['strBuildIndex'] === 'sea' ? '京喜旅馆' : build['strBuildIndex'] === 'shop' ? '京喜商店' : build['strBuildIndex'] === 'fun' ? '京喜游乐场' : `未知 ${build['strBuildIndex']}`;
       await CollectCoin(body, strBuildIndex);
       await $.wait(3000);
+      if (new Date().getHours() === 0) {
+        //0点收取两次京币，可完成 收8次京币 任务
+        await CollectCoin(body, strBuildIndex);
+        await $.wait(3000);
+      }
       if ($.canCreateBuild) await createbuild(`strBuildIndex=${build['strBuildIndex']}`, strBuildIndex);
     }
     console.log(`\n\n`);
