@@ -83,7 +83,6 @@ if ($.isNode()) {
 async function main() {
   try {
     $.accountFlag = true;
-    $.SpeedUpFlag = 0;
     await QueryUserInfo();
     //账号火爆，退出
     if (!$.accountFlag) return
@@ -167,10 +166,10 @@ function SpeedUp() {
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
+              console.log(`\n【${data['strBuildIndex']}】建筑 成功接待一个游客 ${data['dwIsOverburst'] === 1 ? '暴击' : ''}，＋京币：${data['ddwSpeedCoin']}`);
               if (data['dwTodaySpeedPeople']) {
-                console.log(`今日已接待游客: ${data['dwTodaySpeedPeople']}/20`);
-                $.SpeedUpFlag ++;
-                if ($.SpeedUpFlag < 20) {
+                console.log(`今日已接待游客: ${data['dwTodaySpeedPeople']}\n`);
+                if (data['dwTodaySpeedPeople'] < 20) {
                   await $.wait(2000);
                   await SpeedUp();
                 }
