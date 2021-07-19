@@ -59,6 +59,7 @@ if ($.isNode()) {
         $.userInviteInfo = $.inviteCodeList[index];
         if ($.userInviteInfo['user'] === $.UserName) continue;
         if ($.userInviteInfo['max']) continue;
+        if (!$.userInviteInfo['canReciveHelp']) continue;
         console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${$.userInviteInfo['user']}，邀请码为：${$.userInviteInfo['code']}`);
         const data = await helpbystage($.userInviteInfo['code']);
         if (data) {
@@ -71,6 +72,8 @@ if ($.isNode()) {
             if (data['iRet'] === 2235 || data['iRet'] === 2229) break;
             //好友已不需要助力
             if (data['iRet'] === 2190) $.inviteCodeList[index]['max'] = true;
+            //接收助力者账号火爆
+            if (data['iRet'] === 2230) $.inviteCodeList[index]['canReciveHelp'] = false;
           }
         }
         await $.wait(2000);
@@ -127,7 +130,8 @@ function QueryUserInfo() {
                 $.inviteCodeList.push({
                   'user': $.UserName,
                   'code': data['strMyShareId'],
-                  'max': false
+                  'max': false,
+                  'canReciveHelp': true
                 });
               }
               $.buildInfo = data['buildInfo'];
