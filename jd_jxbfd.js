@@ -1179,7 +1179,7 @@ async function sell(dwSceneId = 1, type = 0) {
                   body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=${dwSceneId}`;
                   if (body) {
                     console.log(`准备出售 ${strType}，共计：${dwCount}个`);
-                    await sellgoods(body);
+                    await sellgoods(body, dwSceneId === 1 ? type : 0);
                   }
                 }
               }
