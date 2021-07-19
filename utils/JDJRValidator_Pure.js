@@ -10,7 +10,7 @@ const zlib = require('zlib');
 const vm = require('vm');
 const PNG = require('png-js');
 const UA = require('../USER_AGENTS.js').USER_AGENT;
-
+const JDJR_validator_Count = process.env.JDJR_validator_Count || 100
 
 Math.avg = function average() {
   var sum = 0;
@@ -221,6 +221,7 @@ class JDJRValidator {
     this.data = {};
     this.x = 0;
     this.t = Date.now();
+    this.count = 0;
   }
 
   async run(scene = 'cww') {
@@ -243,13 +244,19 @@ class JDJRValidator {
       // await sleep(4500);
       await sleep(pos[pos.length - 1][2] - Date.now());
       const result = await JDJRValidator.jsonp('/slide/s.html', {d, ...this.data}, scene);
-
+      this.count ++;
       if (result.message === 'success') {
         // console.log(result);
         console.log('JDJR验证用时: %fs', (Date.now() - this.t) / 1000);
         return result;
       } else {
-        console.count("验证失败");
+        console.count("验证失败总次数");
+        console.log(`此账号验证失败次数：${this.count}/${JDJR_validator_Count}`);
+        if (this.count >= JDJR_validator_Count) {
+          console.log(`JDJR验证次数已达设定的上限：${JDJR_validator_Count}，现退出验证`);
+          console.log(`result`, result)
+          return result;
+        }
         // console.count(JSON.stringify(result));
         await sleep(300);
         return await this.run(scene);
