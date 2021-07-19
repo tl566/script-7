@@ -58,7 +58,6 @@ async function main() {
     await QueryUserInfo();
     //账号火爆或者未开启财富岛活动，退出
     if (!$.accountFlag) return
-    // await sell();
     await pickShells();//海滩捡贝壳海螺等
   } catch (e) {
     $.logErr(e)
@@ -103,7 +102,6 @@ async function pickShells() {
   const queryShell = await pickshell();
   if (queryShell) {
     if (queryShell['iRet'] === 0) {
-      $.pickshellFlag = true;
       let { NormShell } = queryShell['Data'];
       NormShell = NormShell.filter(vo => vo['dwNum'] > 0);
       if (NormShell && NormShell.length === 0) {
@@ -120,7 +118,6 @@ async function pickShells() {
       }
     } else {
       console.log(`查询沙滩信息 失败: ${queryShell['sErrMsg']}, iRet: ${queryShell['iRet']}`)
-      if (queryShell['iRet'] === 2219) $.pickshellFlag = false;
     }
   }
 }
@@ -146,7 +143,6 @@ function pickshell(body = '', type = 1) {
               }
             } else {
               console.log(`沙滩捡${strType}失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-              if (data['iRet'] === 2219) $.pickshellFlag = false;
               if (data['iRet'] === 5403) {
                 //东西过多，背包已放不下
                 await sell(1, type);
@@ -163,7 +159,7 @@ function pickshell(body = '', type = 1) {
     })
   });
 }
-async function sell(dwSceneId = 1, type = 1) {
+async function sell(dwSceneId = 1, type = 0) {
   return new Promise(async (resolve) => {
     const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
     const options = taskUrl('story/querystorageroom', ``, '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
@@ -180,15 +176,17 @@ async function sell(dwSceneId = 1, type = 1) {
               if (data.Data && data.Data.hasOwnProperty('Office')) {
                 const { Office } = data.Data;
                 if (Office && Office.length) {
+                  let strTypeCnt = '', dwCount = 0, body = '';
+                  //出售单个贝壳
                   const s = Office.filter(vo => vo['dwType'] === type);
                   if (s && s.length) {
-                    //如果多个同时卖出：strTypeCnt=3:2|4:6&dwSceneId=1
-                    const count = randomNum(20, 40);//不卖掉全部贝壳，随机卖掉一些。
-                    // const strTypeCnt = `${s[0]['dwType']}:${s[0]['dwCount']}`
-                    const strTypeCnt = `${s[0]['dwType']}:${count}`;
-                    const body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=${dwSceneId}`;
-                    console.log(`准备出售 ${strType} 共计：${count}个`);
-                    await sellgoods(body, type);
+                    const count = dwCount = randomNum(20, 40);//不卖掉全部贝壳，随机卖掉一些。
+                    strTypeCnt = `${s[0]['dwType']}:${count}`;
+                    body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=${dwSceneId}`;
+                    if (body) {
+                      console.log(`准备出售 ${strType}，共计：${dwCount}个`);
+                      await sellgoods(body);
+                    }
                   }
                 }
               }
