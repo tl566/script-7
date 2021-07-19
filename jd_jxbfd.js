@@ -446,7 +446,6 @@ async function storyOper() {
             await $.wait(1000);
             body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
-            //TODO 使用经商勋章
           } else if (dwType === 1) {
             //美食家上岛或小情侣或失眠人
             console.log(`海滩： 美食家上岛或小情侣或失眠人`)
@@ -469,7 +468,19 @@ async function storyOper() {
             body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
           } else {
-            console.log(`轮船未知 dwType 状态，dwType：${dwType}，${$.toStr(story)}\n`);
+            console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
+            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+          }
+        } else if (dwStatus === 3) {
+          if (dwType === 1) {
+            //大胃王
+            console.log(`海滩： 大胃王`)
+            console.log(`${story['Special']['strTalk']}\n`);
+            let body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['dwTriggerType']}`;
+            await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
+          } else {
+            console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
+            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
           }
         } else if (dwStatus === 4) {
           if (dwType === 2) {
@@ -479,10 +490,12 @@ async function storyOper() {
             let body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
           } else {
-            console.log(`轮船未知 dwType 状态，dwType：${dwType}，${$.toStr(story)}\n`);
+            console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
+            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
           }
         } else {
-          console.log(`轮船未知 dwStatus和dwType 状态，${$.toStr(story)}\n`);
+          console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
+          await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
         }
       }
     }
