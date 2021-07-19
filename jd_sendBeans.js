@@ -28,11 +28,12 @@ if ($.isNode()) {
   $.activityId = '';
   $.completeNumbers = '';
   console.log(`开始获取活动信息\n`);
-  for (let i = 0; i < cookiesArr.length && $.activityId === '' && i < 3; i++) {
+  for (let i = 0; i < cookiesArr.length && $.activityId === ''; i++) {
     $.cookie = cookiesArr[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
     $.isLogin = true;
     $.nickName = $.UserName;
+    $.index = i + 1;
     await TotalBean();
     $.isLoginInfo[$.UserName] = $.isLogin;
     if (!$.isLogin) {
@@ -130,15 +131,17 @@ async function getActivityInfo() {
   }
   // console.log(JSON.stringify($.activityList))
   for (let i = 0; i < $.activityList.length; i++) {
-    console.log(`活动ID【${$.activityList[i].activeId}】：${$.activityList[i].status === 'COMPLETE' ? '已完成' : $.activityList[i].status === 'FINISH' ? '已结束' : $.activityList[i].status === 'NOT_BEGIN' ? '未开始，开始时间 ' + $.time('yyyy-MM-dd HH:mm:ss', $.activityList[i].beginTime) : $.activityList[i].status === 'ON_GOING' ? '活动火热进行中' : '未知状态 ' + $.activityList[i].status}`);
+    console.log(`活动ID【${$.activityList[i].activeId}】账号${$.index} ${$.UserName}：${$.activityList[i].status === 'COMPLETE' ? '已完成' : $.activityList[i].status === 'FINISH' ? '已结束' : $.activityList[i].status === 'NOT_BEGIN' ? '未开始，开始时间 ' + $.time('yyyy-MM-dd HH:mm:ss', $.activityList[i].beginTime) : $.activityList[i].status === 'ON_GOING' ? '活动火热进行中' : '未知状态 ' + $.activityList[i].status}`);
   }
 
   for (let i = 0; i < $.activityList.length; i++) {
     if ($.activityList[i].status !== 'NOT_BEGIN' && $.activityList[i].status !== 'COMPLETE') {
       $.activityId = $.activityList[i].activeId;
+      console.log(`活动ID获取成功：${$.activityId}`)
       break;
     }
   }
+  if (!$.activityId) return
   await $.wait(3000);
   $.detail = {};
   await getActivityDetail();
@@ -485,7 +488,7 @@ async function invite() {
 
 
 async function getActivityDetail() {
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityId=${$.activityId}&userOpenId=oPcgJ40Ol7BSTczZ2ok0WmfLWoAs&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityId=${$.activityId}&userOpenId=&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
   const method = `GET`;
   const headers = {
     'cookie': $.cookie,
@@ -503,7 +506,7 @@ async function getActivityDetail() {
   return new Promise(async resolve => {
     $.get(myRequest, (err, resp, data) => {
       try {
-        //console.log(data);
+        // console.log(data);
         data = JSON.parse(data);
         if (data.success) {
           $.detail = data.data;
