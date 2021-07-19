@@ -183,7 +183,7 @@ async function sell(dwSceneId = 1, type = 1) {
                   const s = Office.filter(vo => vo['dwType'] === type);
                   if (s && s.length) {
                     //如果多个同时卖出：strTypeCnt=3:2|4:6&dwSceneId=1
-                    const count = randomNum(20, 30);//不卖掉全部贝壳，随机卖掉一些。
+                    const count = randomNum(20, 40);//不卖掉全部贝壳，随机卖掉一些。
                     // const strTypeCnt = `${s[0]['dwType']}:${s[0]['dwCount']}`
                     const strTypeCnt = `${s[0]['dwType']}:${count}`;
                     const body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=${dwSceneId}`;
