@@ -51,7 +51,7 @@ if ($.isNode()) {
       $.nickName = '';
       $.isLogin = true;
       $.nickName = '';
-      await TotalBean();
+      // await TotalBean();
       console.log(`\n*************开始【京东账号${$.index}】${$.nickName || $.UserName}***************\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -257,8 +257,8 @@ function SpeedUp(ck, index) {
         } else {
           data = $.toObj(data);
           if (data) {
+            const userName = decodeURIComponent(ck.match(/pt_pin=([^; ]+)(?=;?)/) && ck.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
             if (data['iRet'] === 0) {
-              const userName = decodeURIComponent(ck.match(/pt_pin=([^; ]+)(?=;?)/) && ck.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
               console.log(`账号 ${index + 1} ${userName}【${data['strBuildIndex']}】建筑 成功接待一个游客 ${data['dwIsOverburst'] === 1 ? '暴击' : ''}，＋京币：${data['ddwSpeedCoin']}，今日已接待游客: ${data['dwTodaySpeedPeople'] || 0}`);
             } else {
               console.log(`账号 ${index + 1} ${userName} 接待游客失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
