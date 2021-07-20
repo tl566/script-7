@@ -172,7 +172,6 @@ function SpeedUp() {
             if (data['iRet'] === 0) {
               console.log(`\n【${data['strBuildIndex']}】建筑 成功接待一个游客 ${data['dwIsOverburst'] === 1 ? '暴击' : ''}，＋京币：${data['ddwSpeedCoin']}，今日已接待游客: ${data['dwTodaySpeedPeople'] || 0}`);
               if (data['dwTodaySpeedPeople']) {
-                console.log(`今日已接待游客: ${data['dwTodaySpeedPeople']}\n`);
                 if (data['dwTodaySpeedPeople'] < 20) {
                   await $.wait(2000);
                   await SpeedUp();
