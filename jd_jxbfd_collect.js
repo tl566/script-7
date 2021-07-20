@@ -44,6 +44,7 @@ if ($.isNode()) {
   while (true) {
     count++
     console.log(`==========================开始第 ${count} 次挂机=======================`)
+    console.time(`${cookiesArr.length}个账号第 ${count} 次收集贝壳挂机耗时`)
     for (let i = 0; i < cookiesArr.length; i++) {
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -59,8 +60,9 @@ if ($.isNode()) {
       }
       await main();
     }
-    console.log(`第 ${count} 次挂机结束，等待${Math.ceil(20 / cookiesArr.length)}秒，开始第 ${count + 1} 次挂机\n`);
-    await $.wait(Math.ceil(20 / cookiesArr.length) * 1000);
+    console.timeEnd(`${cookiesArr.length}个账号第 ${count} 次收集贝壳挂机耗时`)
+    console.log(`第 ${count} 次挂机结束，等待${Math.floor(20 / cookiesArr.length) || 2}秒，开始第 ${count + 1} 次挂机\n`);
+    await $.wait((Math.floor(20 / cookiesArr.length) || 2) * 1000);
   }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
 async function main() {
