@@ -1,6 +1,6 @@
 /*
 新版京喜财富岛，已完成
-更新日期：2021-07-19
+更新日期：2021-07-20
  */
 const $ = new Env("京喜财富岛");
 const JD_API_HOST = "https://m.jingxi.com";
@@ -59,7 +59,7 @@ if ($.isNode()) {
         $.userInviteInfo = $.inviteCodeList[index];
         if ($.userInviteInfo['user'] === $.UserName) continue;
         if ($.userInviteInfo['max']) continue;
-        if (!$.userInviteInfo['canReciveHelp']) continue;
+        if (!$.userInviteInfo['canReceiveHelp']) continue;
         console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${$.userInviteInfo['user']}，邀请码为：${$.userInviteInfo['code']}`);
         const data = await helpbystage($.userInviteInfo['code']);
         if (data) {
@@ -73,7 +73,7 @@ if ($.isNode()) {
             //好友已不需要助力
             if (data['iRet'] === 2190) $.inviteCodeList[index]['max'] = true;
             //接收助力者账号火爆
-            if (data['iRet'] === 2230) $.inviteCodeList[index]['canReciveHelp'] = false;
+            if (data['iRet'] === 2230) $.inviteCodeList[index]['canReceiveHelp'] = false;
           }
         }
         await $.wait(2000);
@@ -123,7 +123,7 @@ function QueryUserInfo() {
               console.log(`当前等级：${data['dwLandLvl']}岛主`)
               console.log(`当前财富值：${data['ddwRichBalance']}`)
               console.log(`当前京币：${(data['ddwCoinBalance'] / 10000).toFixed(1)}万`)
-              console.log(`已接待游客: ${data['buildInfo']['dwTodaySpeedPeople']}/20\n`);
+              console.log(`已接待游客: ${data['buildInfo']['dwTodaySpeedPeople']}\n`);
 
               if (data['strMyShareId']) {
                 console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data['strMyShareId']}\n\n`);
@@ -131,7 +131,7 @@ function QueryUserInfo() {
                   'user': $.UserName,
                   'code': data['strMyShareId'],
                   'max': false,
-                  'canReciveHelp': true
+                  'canReceiveHelp': true
                 });
               }
               $.buildInfo = data['buildInfo'];
@@ -180,45 +180,6 @@ function SpeedUp() {
               }
             } else {
               console.log(`接待游客失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-            }
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve()
-      }
-    })
-  });
-}
-
-function doComposeGame() {
-  return new Promise(async (resolve) => {
-    const options = taskUrl('story/GetActTask', '', '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
-    $.get(options, async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
-        } else {
-          data = $.toObj(data);
-          if (data) {
-            if (data['iRet'] === 0) {
-              const tasks = data.Data.TaskList || [];
-              for (let task of tasks.filter(vo => vo['dwPointType'] === 8)) {
-                if (task['dwPointType'] === 8 && (task.dwCompleteNum < task.dwTargetNum)) {
-                  //合成珍珠
-                  console.log(`【${task.strTaskName}】任务进度：${task.dwCompleteNum}/${task.dwTargetNum}`);
-                  console.log(`开始做 【${task.strTaskName}】任务`);
-                  await ComposeGameState();
-                  await $.wait(1000);
-                  await Award(task['ddwTaskId'])
-                } else {
-                  console.log(`\n【去玩合成金珍珠游戏】 已完成\n`)
-                }
-              }
-            } else {
-              console.log(`GetActTask 获取任务列表失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
             }
           }
         }
@@ -299,7 +260,7 @@ function GetActTask() {
     })
   });
 }
-function ComposeGameState() {
+function doComposeGame() {
   return new Promise(async (resolve) => {
     const options = {
       url: `https://m.jingxi.com/jxbfd/user/ComposeGameState?__t=${Date.now()}&strZone=jxbfd&dwFirst=1&_=${Date.now() + 5}&sceneval=2&g_login_type=1&g_ty=ls`,
@@ -315,6 +276,90 @@ function ComposeGameState() {
         "Accept-Language": "zh-cn",
       }
     }
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              let maxCount = 0, temp = [];
+              const { stagelist = [], dwCurProgress = 0, strMyShareId, strDT } = data;
+              $.gameAddTimes = dwCurProgress;//记录已完成游戏次数
+              if (stagelist.length) stagelist.map(vo => temp.push(vo['dwCurStageEndCnt']));
+              maxCount = Math.max(...temp);
+              console.log(`\n获取 合成珍珠游戏详情 成功，游戏进度：${dwCurProgress}/${maxCount}`);
+              if (dwCurProgress < maxCount) {
+                for (let i = dwCurProgress; i < maxCount; i++) {
+                  const time = randomNum(30000, 50000);
+                  const ss = Math.floor(time / 1000)
+                  console.log(`开始第 ${i + 1} 次合成珍珠游戏，为防止黑号模拟真实情况 需等待${ss}秒，在此期间请勿手动进入合成珍珠游戏页面`);
+                  for (let k = 0; k < ss; k+=5) {
+                    await $.wait(5000);
+                    await RealTmReport(strMyShareId);
+                  }
+                  await $.wait(1000);
+                  await ComposeGameAddProcess(`strBT=${strDT}`);
+                }
+                for (let j = 0; j < stagelist.length; j++) {
+                  $.oneStage = stagelist[j];
+                  if ($.oneStage.dwIsAward === 1) {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，已领取`);
+                  } else if ($.oneStage.dwIsAward === 0 && $.gameAddTimes >= $.oneStage.dwCurStageEndCnt) {
+                    console.log(`第${j + 1}颗珍珠奖励：可获得：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，现在开始领取`);
+                    await ComposeGameAward(`dwCurStageEndCnt=${$.oneStage['dwCurStageEndCnt']}`);
+                    await $.wait(1000);
+                  } else {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，不可领取`);
+                  }
+                }
+              } else {
+                console.log(`合成珍珠游戏 已完成`);
+                for (let j = 0; j < stagelist.length; j++) {
+                  $.oneStage = stagelist[j];
+                  if ($.oneStage.dwIsAward === 1) {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，已领取`);
+                  } else if ($.oneStage.dwIsAward === 0 && $.gameAddTimes >= $.oneStage.dwCurStageEndCnt) {
+                    console.log(`第${j + 1}颗珍珠奖励：可获得：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，现在开始领取`);
+                    await ComposeGameAward(`dwCurStageEndCnt=${$.oneStage['dwCurStageEndCnt']}`);
+                    await $.wait(1000);
+                  } else {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，不可领取`);
+                  }
+                }
+              }
+            } else {
+              console.log(`获取 合成珍珠游戏详情 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+//模拟在玩游戏
+function RealTmReport(strMyShareId) {
+  return new Promise(async (resolve) => {
+    let options = {
+      url: `${JD_API_HOST}/jxbfd/user/RealTmReport?__t=${Date.now()}&dwIdentityType=0&strBussKey=composegame&strMyShareId=${strMyShareId}&ddwCount=5&_=${Date.now() + 2}&sceneval=2&g_login_type=1&g_ty=ls`,
+      headers: {
+        "Cookie": cookie,
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "Referer": "https://st.jingxi.com/fortune_island/index.html?ptag=138631.26.55",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Host": "m.jingxi.com",
+        "User-Agent": JX_UA,
+        "Accept-Language": "zh-cn",
+      },
+      timeout: 10000
+    }
     $.get(options, (err, resp, data) => {
       try {
         if (err) {
@@ -324,9 +369,64 @@ function ComposeGameState() {
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
-              console.log(`合成珍珠任务成功。${$.toStr(data)}\n`)
+              console.log(`RealTmReport 成功 ${(new Date()).Format("yyyy-MM-dd hh:mm:ss | S")}`)
             } else {
-              console.log(`做合成珍珠任务 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+              console.log(`RealTmReport失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+//记录游戏成功
+function ComposeGameAddProcess(body = '') {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('user/ComposeGameAddProcess', body, '__t,strBT,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`合成珍珠 成功，获得：${data['dwCurProgress']}颗珍珠\n`);
+              $.gameAddTimes ++;
+            } else {
+              console.log(`合成珍珠 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+//领取珍珠游戏奖励
+function ComposeGameAward(body) {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('user/ComposeGameAward', body, '__t,dwCurStageEndCnt,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`珍珠奖励领取 成功，获得：${data['ddwCoin']}京币，${data['ddwMoney']}财富值\n`);
+            } else {
+              console.log(`珍珠奖励领取 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
             }
           }
         }
@@ -1229,6 +1329,9 @@ function taskUrl(function_path, body = '', stk = '') {
   if (['Award'].includes(function_path)) {
     //bizCode=jxbfddch 不同
     url = `${JD_API_HOST}/newtasksys/newtasksys_front/${function_path}?strZone=jxbfd&bizCode=jxbfddch&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&${body}&_stk=${encodeURIComponent(stk)}&_ste=1`;
+  }
+  if (['ComposeGameAddProcess', 'ComposeGameAward'].includes(function_path)) {
+    url = `${JD_API_HOST}/jxbfd/${function_path}?strZone=jxbfd&_t=${Date.now()}&${body}&_stk=${encodeURIComponent(stk)}&_ste=1`;
   }
   url += `&h5st=${decrypt(Date.now(), stk, '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&g_ty=ls`;
   return {
