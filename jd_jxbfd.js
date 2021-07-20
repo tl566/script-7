@@ -170,7 +170,7 @@ function SpeedUp() {
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
-              console.log(`\n【${data['strBuildIndex']}】建筑 成功接待一个游客 ${data['dwIsOverburst'] === 1 ? '暴击' : ''}，＋京币：${data['ddwSpeedCoin']}`);
+              console.log(`\n【${data['strBuildIndex']}】建筑 成功接待一个游客 ${data['dwIsOverburst'] === 1 ? '暴击' : ''}，＋京币：${data['ddwSpeedCoin']}，今日已接待游客: ${data['dwTodaySpeedPeople'] || 0}`);
               if (data['dwTodaySpeedPeople']) {
                 console.log(`今日已接待游客: ${data['dwTodaySpeedPeople']}\n`);
                 if (data['dwTodaySpeedPeople'] < 20) {
@@ -1039,7 +1039,7 @@ function CollectCoin(body, strBuildIndex) {
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
-              console.log(`${strBuildIndex} 收取京币成功: ${data['ddwCoin']}，当前已有京币：${data['ddwCoinBalance']}`);
+              console.log(`${strBuildIndex} 收取京币成功: ${data['ddwCoin']}，当前已有京币：${(data['ddwCoinBalance'] / 10000).toFixed(1)}万`);
             } else {
               console.log(`${strBuildIndex} 收取京币 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
               if (data['iRet'] === 2008) {
@@ -1088,7 +1088,7 @@ async function BuildLvlUp(body, strBuildIndexText) {
   if (buildInfo) {
     if (buildInfo['iRet'] === 0) {
       const { dwCanLvlUp, ddwNextLvlCostCoin, strBuildIndex, dwBuildLvl } = buildInfo;
-      console.log(`查询${strBuildIndexText} 信息成功: 当前等级：${dwBuildLvl}，升级需要：${ddwNextLvlCostCoin}金币${dwCanLvlUp === 1 ? '' : '\n'}`);
+      console.log(`查询${strBuildIndexText} 信息成功: 当前等级：${dwBuildLvl}，升级需要金币：${(ddwNextLvlCostCoin / 10000).toFixed(1)}万${dwCanLvlUp === 1 ? '' : '\n'}`);
       if (dwCanLvlUp === 1) {
         console.log(`${strBuildIndexText} 可升级`);
         const buildUpBody = `ddwCostCoin=${ddwNextLvlCostCoin}&strBuildIndex=${strBuildIndex}`;
