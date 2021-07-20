@@ -70,9 +70,7 @@ async function main() {
     //账号火爆或者未开启财富岛活动，退出
     if (!$.accountFlag) return
     await $.wait(1000);
-    await Promise.all([
-      pickShells(),//海滩捡贝壳海螺等
-    ]);
+    await pickShells();//海滩捡贝壳海螺等
   } catch (e) {
     $.logErr(e)
   }
@@ -86,7 +84,7 @@ function QueryUserInfo() {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+          console.log(`${$.name} QueryUserInfo API请求失败，请检查网路重试`)
         } else {
           data = $.toObj(data);
           if (data) {
@@ -125,7 +123,7 @@ async function pickShells() {
         if (item['dwNum'] && item['dwNum'] > 0) {
           for (let i = 0; i < new Array(item['dwNum']).fill('').length; i++) {
             await pickshell(`dwType=${item['dwType']}`, item['dwType']);//珍珠
-            await $.wait(1000);
+            await $.wait(2000);
           }
         }
       }
@@ -146,7 +144,7 @@ function pickshell(body = '', type = 1) {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+          console.log(`${$.name} pickshell API请求失败，请检查网路重试`)
         } else {
           data = $.toObj(data);
           if (data) {
@@ -181,7 +179,7 @@ async function sell(dwSceneId = 1, type = 0) {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+          console.log(`${$.name} querystorageroom API请求失败，请检查网路重试`)
         } else {
           data = $.toObj(data);
           if (data) {
@@ -225,7 +223,7 @@ function sellgoods(body, type) {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+          console.log(`${$.name} sellgoods API请求失败，请检查网路重试`)
         } else {
           data = $.toObj(data);
           if (data) {
@@ -253,7 +251,7 @@ function SpeedUp(ck, index) {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+          console.log(`${$.name} SpeedUp API请求失败，请检查网路重试`)
         } else {
           data = $.toObj(data);
           if (data) {
