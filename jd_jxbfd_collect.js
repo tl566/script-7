@@ -1,9 +1,8 @@
 /*
-新版京喜财富岛，未完
-cron 0,30 * * * * jd_jxbfd_collec
-更新日期：2021-07-16
+新版京喜财富岛 挂机收集海滩贝壳、热气球接待游客
+更新日期：2021-07-20
  */
-const $ = new Env("京喜财富岛-收集");
+const $ = new Env("京喜财富岛-挂机收集贝壳和热气球");
 const JD_API_HOST = "https://m.jingxi.com";
 const notify = $.isNode() ? require('./sendNotify') : {};
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : {};
@@ -32,33 +31,47 @@ if ($.isNode()) {
   }
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
   await requestAlgo();
-  for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
-    $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-    $.index = i + 1;
-    $.nickName = '';
-    $.isLogin = true;
-    $.nickName = '';
-    await TotalBean();
-    console.log(`\n*************开始【京东账号${$.index}】${$.nickName || $.UserName}***************\n`);
-    if (!$.isLogin) {
-      $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
-      if ($.isNode()) {
-        await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+  if (cookiesArr && cookiesArr.length && $.isNode()) {
+    console.log(`\n热气球接待游客 挂机开始，自动8s接待一个游客\n`);
+    //兼容iOS
+    setInterval(async () => {
+      const promiseArr = cookiesArr.map((ck, index) => SpeedUp(ck, index));
+      await Promise.all(promiseArr);
+      console.count('\n热气球 挂机次数')
+    }, 8 * 1000);
+  }
+  let count = 0;
+  while (true) {
+    count++
+    console.log(`==========================开始第${count}次挂机=======================`)
+    for (let i = 0; i < cookiesArr.length; i++) {
+      cookie = cookiesArr[i];
+      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+      $.index = i + 1;
+      $.nickName = '';
+      $.isLogin = true;
+      $.nickName = '';
+      await TotalBean();
+      console.log(`\n*************开始【京东账号${$.index}】${$.nickName || $.UserName}***************\n`);
+      if (!$.isLogin) {
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+        continue
       }
-      continue
+      await main();
     }
-    await main();
+    console.log(`第 ${count} 次挂机结束，等待${Math.ceil(20 / cookiesArr.length)}秒，开始第 ${count + 1} 次挂机\n`);
+    await $.wait(Math.ceil(20 / cookiesArr.length) * 1000);
   }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
 async function main() {
   try {
     $.accountFlag = true;
-    $.SpeedUpFlag = 0;
     await QueryUserInfo();
     //账号火爆或者未开启财富岛活动，退出
     if (!$.accountFlag) return
-    await pickShells();//海滩捡贝壳海螺等
+    await Promise.all([
+      pickShells(),//海滩捡贝壳海螺等
+    ]);
   } catch (e) {
     $.logErr(e)
   }
@@ -80,7 +93,6 @@ function QueryUserInfo() {
               console.log(`获取用户信息: 成功`);
               console.log(`当前财富值：${data['ddwRichBalance']}`)
               console.log(`当前京币：${(data['ddwCoinBalance'] / 10000).toFixed(1)}万`)
-              console.log(`已接待游客: ${data['buildInfo']['dwTodaySpeedPeople']}/20\n`);
             } else {
               console.log(`获取用户信息失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
               if (data['iRet'] === 1006) {
@@ -105,7 +117,7 @@ async function pickShells() {
       let { NormShell } = queryShell['Data'];
       NormShell = NormShell.filter(vo => vo['dwNum'] > 0);
       if (NormShell && NormShell.length === 0) {
-        console.log(`当前 海滩 暂无东西`);
+        console.log(`账号 ${$.nickName} 当前 海滩 暂无贝壳`);
         return
       }
       for (let item of NormShell) {
@@ -139,10 +151,10 @@ function pickshell(body = '', type = 1) {
           if (data) {
             if (data['iRet'] === 0) {
               if (body) {
-                console.log(`沙滩成功捡到一个 ${strType}，${data.Data.strFirstDesc}`);
+                console.log(`账号 ${$.nickName} 沙滩成功捡到一个 ${strType}，${data.Data.strFirstDesc}`);
               }
             } else {
-              console.log(`沙滩捡${strType}失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+              console.log(`账号 ${$.nickName} 沙滩捡${strType} 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
               if (data['iRet'] === 5403) {
                 //东西过多，背包已放不下
                 await sell(1, type);
@@ -185,7 +197,7 @@ async function sell(dwSceneId = 1, type = 0) {
                     body = `strTypeCnt=${encodeURIComponent(strTypeCnt)}&dwSceneId=${dwSceneId}`;
                     if (body) {
                       console.log(`准备出售 ${strType}，共计：${dwCount}个`);
-                      await sellgoods(body);
+                      await sellgoods(body, type);
                     }
                   }
                 }
@@ -231,7 +243,35 @@ function sellgoods(body, type) {
     })
   });
 }
-function taskUrl(function_path, body = '', stk = '') {
+//热气球接待游客
+function SpeedUp(ck, index) {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('user/SpeedUp', 'strBuildIndex=fun', '_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone', ck);
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              const userName = decodeURIComponent(ck.match(/pt_pin=([^; ]+)(?=;?)/) && ck.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+              console.log(`账号 ${index + 1} ${userName}【${data['strBuildIndex']}】建筑 成功接待一个游客 ${data['dwIsOverburst'] === 1 ? '暴击' : ''}，＋京币：${data['ddwSpeedCoin']}，今日已接待游客: ${data['dwTodaySpeedPeople'] || 0}`);
+            } else {
+              console.log(`账号 ${index + 1} ${userName} 接待游客失败: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
+function taskUrl(function_path, body = '', stk = '', taskCookie = cookie) {
   let url = `${JD_API_HOST}/jxbfd/${function_path}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&${body}&_stk=${encodeURIComponent(stk)}&_ste=1`;
   if (['Award'].includes(function_path)) {
     //bizCode=jxbfddch 不同
@@ -241,7 +281,7 @@ function taskUrl(function_path, body = '', stk = '') {
   return {
     url,
     headers: {
-      "Cookie": cookie,
+      "Cookie": taskCookie,
       "Accept": "*/*",
       "Connection": "keep-alive",
       "Referer": "https://st.jingxi.com/fortune_island/index.html?ptag=138631.26.55",
