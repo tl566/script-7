@@ -151,10 +151,10 @@ function pickshell(body = '', type = 1) {
           if (data) {
             if (data['iRet'] === 0) {
               if (body) {
-                console.log(`账号 ${$.nickName} 沙滩成功捡到一个 ${strType}，${data.Data.strFirstDesc}`);
+                console.log(`账号 ${$.index} ${$.nickName} 沙滩成功捡到一个 ${strType}，${data.Data.strFirstDesc}`);
               }
             } else {
-              console.log(`账号 ${$.nickName} 沙滩捡${strType} 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+              console.log(`账号 ${$.index} ${$.nickName} 沙滩捡${strType} 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
               if (data['iRet'] === 5403) {
                 //东西过多，背包已放不下
                 await sell(1, type);
