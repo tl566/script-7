@@ -43,7 +43,7 @@ if ($.isNode()) {
   let count = 0;
   while (true) {
     count++
-    console.log(`==========================开始第${count}次挂机=======================`)
+    console.log(`==========================开始第 ${count} 次挂机=======================`)
     for (let i = 0; i < cookiesArr.length; i++) {
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -69,6 +69,7 @@ async function main() {
     await QueryUserInfo();
     //账号火爆或者未开启财富岛活动，退出
     if (!$.accountFlag) return
+    await $.wait(1000);
     await Promise.all([
       pickShells(),//海滩捡贝壳海螺等
     ]);
@@ -158,6 +159,7 @@ function pickshell(body = '', type = 1) {
               if (data['iRet'] === 5403) {
                 //东西过多，背包已放不下
                 await sell(1, type);
+                await $.wait(1000);
                 await pickshell(body, type);
               }
             }
