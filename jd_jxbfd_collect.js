@@ -8,7 +8,7 @@ const notify = $.isNode() ? require('./sendNotify') : {};
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : {};
 let cookiesArr = [], cookie = '', token = '';
 $.appId = 10032;
-let JX_UA = `jdpingou;iPhone;4.9.4;14.6;${randPhoneId()};network/wifi;model/iPhone9,2;appBuild/100579;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/936;pap/JA2019_3111800;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E200`;
+let JX_UA = `jdpingou;iPhone;4.11.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randPhoneId()};network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E200`;
 JX_UA =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : JX_UA) : JX_UA;
 $.inviteCodeList = [];
 if ($.isNode()) {
