@@ -48,12 +48,3 @@
 依赖脚本：
     1.jdCookie.js
     2.jdPlantBeanShareCodes.js
-
-8. jd_summer_movement.js【短期活动，可能到7.21截止】
-燃动夏季
-百元保卫战
-入口：京东app搜索 全民运动会
-入口：https://wbbny.m.jd.com/babelDiy/Zeus/2rtpffK8wqNyPBH6wyUDuBKoAbCt/index.html
-依赖脚本：
-    1.jdCookie.js
-    2.MovementFaker.js
