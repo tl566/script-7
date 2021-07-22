@@ -112,6 +112,8 @@
 10 12 * * * node /scripts/jd_crazy_joy_bonus.js >> /scripts/logs/jd_crazy_joy_bonus.log 2>&1
 #京喜财富岛
 5 1,7,12,18 * * * node /scripts/jd_jxbfd.js >> /scripts/logs/jd_jxbfd.log 2>&1
+#京喜财富岛-收集贝壳，每20分钟一次，可根据自己账号数量进行修改cron
+0-59/20 * * * * node /scripts/jd_jxbfd_collect.js >> /scripts/logs/jd_jxbfd_collect.log 2>&1
 #财富岛-热气球接待游客和雇佣导游
 10 * * * * node /scripts/jd_jxbfd_balloon.js >> /scripts/logs/jd_jxbfd_balloon.log 2>&1
 # 删除优惠券(默认注释，如需要自己开启，如有误删，已删除的券可以在回收站中还原，慎用)
