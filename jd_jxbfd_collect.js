@@ -2,7 +2,7 @@
 新版京喜财富岛 挂机收集海滩贝壳
 更新日期：2021-07-21
  */
-const $ = new Env("京喜财富岛-挂机收集贝壳和热气球");
+const $ = new Env("京喜财富岛-挂机收集贝壳");
 const JD_API_HOST = "https://m.jingxi.com";
 const notify = $.isNode() ? require('./sendNotify') : {};
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : {};
