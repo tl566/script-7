@@ -322,7 +322,6 @@ function help(shareCode, groupCode, isTask = 0) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`【抢京豆】${$.name} API请求失败，请检查网路重试`)
         } else {
-          console.log('data', data)
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === '0') {
