@@ -146,7 +146,7 @@ async function jdBeanHome() {
     await getUserInfo()
     await $.wait(1000)
     await getTaskList();
-    await receiveJd2();
+    // await receiveJd2();
     await showMsg();
   } catch (e) {
     $.logErr(e)
@@ -211,7 +211,7 @@ function getAuthorShareCode() {
 }
 function getAuthorShareCode2() {
   return new Promise(resolve => {
-    $.get({url: "https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_updateBeanHome.json",headers:{
+    $.get({url: "https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/jd_updateBeanHome.json",headers:{
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
       }}, async (err, resp, data) => {
       try {
