@@ -40,7 +40,11 @@ if ($.isNode()) {
       }
       continue
     }
-    await main();
+    try {
+      await main();
+    } catch (e) {
+      $.logErr(e)
+    }
     await $.wait(500);
   }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();})
@@ -154,7 +158,11 @@ function dealReturn(type, data) {
     case 'beanTaskList':
       if(data.code === '0'){
         console.log(`获取任务列表`);
-        $.taskInfo = data.data;
+        if (data['data']) {
+          $.taskInfo = data.data;
+        } else {
+          $.log(data['errorMessage'])
+        }
       }else{
         console.log(`返回数据异常`+type);
       }
