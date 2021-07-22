@@ -1,5 +1,6 @@
 /*
 新版京喜财富岛 收集海滩贝壳 每20分钟一次，可根据自己账号数量进行修改cron
+默认每10秒收集一次贝壳，可使用环境变量 SHELL_WAIT_TIME控制。
 cron 0-59/20 * * * * jd_jxbfd_collect
 更新日期：2021-07-22
  */
@@ -9,6 +10,7 @@ const notify = $.isNode() ? require('./sendNotify') : {};
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : {};
 let cookiesArr = [], cookie = '', token = '';
 $.appId = 10032;
+const shellWaitTime = $.isNode() ? (process.env.SHELL_WAIT_TIME ? process.env.SHELL_WAIT_TIME : 10) : 10;
 let JX_UA = `jdpingou;iPhone;4.11.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randPhoneId()};network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E200`;
 JX_UA =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : JX_UA) : JX_UA;
 if ($.isNode()) {
@@ -116,8 +118,8 @@ async function pickShells(ck = cookie, index = $.index) {
       for (let item of NormShell) {
         if (item['dwNum'] && item['dwNum'] > 0) {
           for (let i = 0; i < new Array(item['dwNum']).fill('').length; i++) {
-            await pickshell(`dwType=${item['dwType']}`, item['dwType'], ck, index);//珍珠
-            await $.wait(3000);
+            await pickshell(`dwType=${item['dwType']}`, item['dwType'], ck, index);
+            await $.wait(shellWaitTime * 1000);
           }
         }
       }
