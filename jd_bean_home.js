@@ -322,12 +322,18 @@ function help(shareCode, groupCode, isTask = 0) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`【抢京豆】${$.name} API请求失败，请检查网路重试`)
         } else {
+          console.log('data', data)
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === '0') {
               console.log(`【抢京豆】${data.data.helpToast}`)
             }
             if(data.code === '0' && data.data && data.data.respCode === 'SG209'){
+              //助力已耗尽
+              $.canHelp = false;
+            }
+            if(data.code === '0' && data.data && data.data.respCode === 'SG100'){
+              //助力着账号火爆
               $.canHelp = false;
             }
           }
@@ -505,7 +511,7 @@ function morningGetBean() {
         } else {
           data = $.toObj(data);
           if (data) {
-            if (data['code'] === '0') {
+            if (data['code'] === '0' && data['data']) {
               if (data['data']['awardResultFlag'] === '1') {
                 console.log(`早起福利领京豆：${data['data']['beanNum']} ${data['data']['bizMsg']}`);
                 message += `早起福利领京豆：${data['data']['beanNum']} ${data['data']['bizMsg']}\n`;
