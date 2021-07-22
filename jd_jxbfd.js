@@ -1,6 +1,6 @@
 /*
 新版京喜财富岛，已完成
-更新日期：2021-07-21
+更新日期：2021-07-22
  */
 const $ = new Env("京喜财富岛");
 const JD_API_HOST = "https://m.jingxi.com";
@@ -571,7 +571,7 @@ async function storyOper() {
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
           } else {
             console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
-            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
           }
         } else if (dwStatus === 3) {
           if (dwType === 1) {
@@ -582,7 +582,7 @@ async function storyOper() {
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
           } else {
             console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
-            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
           }
         } else if (dwStatus === 4) {
           if (dwType === 2) {
@@ -593,11 +593,11 @@ async function storyOper() {
             await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
           } else {
             console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
-            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
           }
         } else {
           console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
-          await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+          await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
         }
       }
     }
@@ -811,14 +811,15 @@ async function Rubbishs() {
                               //dwType 0：可回收垃圾，1：有毒垃圾，2：厨房垃圾，3：其他垃圾
                               console.log(`开始垃圾分类回收第${item['dwId']}个垃圾 ${item['strName']}，可获得：${item['ddwCoin']}京币，${item['ddwMoney']}财富值`);
                               if (item['dwIsAdv'] === 1) {
-                              await CollectorOper('RubbishOper', `dwType=2&dwRewardType=1&dwRubbishId=${item['dwId']}`, `_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone`);
-                              await $.wait(2000);
-                              await CollectorOper('RubbishOper', `dwType=4`, `_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone`);
-                              await $.wait(2000);
-                              
+                                //回收垃圾后，浏览商品有财富值和京币
+                                await CollectorOper('RubbishOper', `dwType=2&dwRewardType=1&dwRubbishId=${item['dwId']}`, `_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone`);
+                                await $.wait(2000);
+                                await CollectorOper('RubbishOper', `dwType=4`, `_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone`);
+                                await $.wait(2000);
                               } else {
+                                //只有京币
                                 await CollectorOper('RubbishOper', `dwType=2&dwRewardType=0&dwRubbishId=${item['dwId']}`, `_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone`);
-                              await $.wait(2000);
+                                await $.wait(2000);
                               }
                             }
                           }
