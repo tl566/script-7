@@ -809,9 +809,17 @@ async function Rubbishs() {
                             const { RubbishList } = ThrowRubbish['Game'];
                             for (const item of RubbishList) {
                               //dwType 0：可回收垃圾，1：有毒垃圾，2：厨房垃圾，3：其他垃圾
-                              console.log(`开始垃圾分类回收第${item['dwId']}个垃圾 ${item['strName']}，可获得${item['ddwCoin']}京币`);
-                              await CollectorOper('RubbishOper', `dwType=2&dwRewardType=0&dwRubbishId=${item['dwId']}`, `_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone`);
+                              console.log(`开始垃圾分类回收第${item['dwId']}个垃圾 ${item['strName']}，可获得：${item['ddwCoin']}京币，${item['ddwMoney']}财富值`);
+                              if (item['dwIsAdv'] === 1) {
+                              await CollectorOper('RubbishOper', `dwType=2&dwRewardType=1&dwRubbishId=${item['dwId']}`, `_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone`);
                               await $.wait(2000);
+                              await CollectorOper('RubbishOper', `dwType=4`, `_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone`);
+                              await $.wait(2000);
+                              
+                              } else {
+                                await CollectorOper('RubbishOper', `dwType=2&dwRewardType=0&dwRubbishId=${item['dwId']}`, `_cfd_t,bizCode,dwEnv,dwRewardType,dwRubbishId,dwType,ptag,source,strZone`);
+                              await $.wait(2000);
+                              }
                             }
                           }
                         } else if (ThrowRubbish['dwIsNeedDoGame'] === 0) {
