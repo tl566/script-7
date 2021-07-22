@@ -68,7 +68,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       await jdBeanHome();
     }
   }
-  for (let i = 0; i < cookiesArr.length && 1==2; i++) {
+  for (let i = 0; i < cookiesArr.length; i++) {
     $.index = i + 1;
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -143,8 +143,8 @@ async function jdBeanHome() {
     await $.wait(1000)
     await award("feeds")
     await $.wait(1000)
-    //await getUserInfo()
-    //await $.wait(1000)
+    await getUserInfo()
+    await $.wait(1000)
     await getTaskList();
     await receiveJd2();
     await showMsg();
