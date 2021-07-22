@@ -1,6 +1,6 @@
 /*
 新版京喜财富岛，已完成
-更新日期：2021-07-20
+更新日期：2021-07-21
  */
 const $ = new Env("京喜财富岛");
 const JD_API_HOST = "https://m.jingxi.com";
@@ -550,7 +550,7 @@ async function storyOper() {
             await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
           } else if (dwType === 1) {
             //美食家上岛或小情侣或失眠人
-            console.log(`海滩： 美食家上岛或小情侣或失眠人`)
+            console.log(`海滩： 大胃王或购物狂或小情侣或失眠人，需等待30秒`)
             console.log(`${story['Special']['strTalk']}\n`);
             let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['dwTriggerType']}`;
             await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
