@@ -63,7 +63,7 @@ if ($.isNode()) {
       await jdPigPet();
     }
   }
-  if (allMessage && new Date().getHours() % 6 === 0) {
+  if (allMessage && new Date().getHours() === 0) {
     if ($.isNode()) await notify.sendNotify($.name, allMessage);
     $.msg($.name, '', allMessage);
   }
