@@ -1,6 +1,6 @@
 /*
 点点券，可以兑换无门槛红包（1元，5元，10元，100元，部分红包需抢购）
-Last Modified time: 2021-07-7 18:27:14
+Last Modified time: 2021-07-23 18:27:14
 活动入口：京东APP-领券中心/券后9.9-领点点券 [活动地址](https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html)
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===============Quantumultx===============
@@ -24,7 +24,7 @@ const stat = fs.stat;
 const path = require('path');
 let allMessage = ``;
 const notify = $.isNode() ? require('./sendNotify') : '';
-const zooFaker = require('./utils/ZooFaker_Necklace');
+const zooFaker = require('./utils/ZooFaker_Necklace').utils;
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const openUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html%22%20%7D`
@@ -42,7 +42,7 @@ if ($.isNode()) {
 }
 
 const JD_API_HOST = 'https://api.m.jd.com/api';
-const JD_UA = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randPhoneId()}`
+const JD_UA = `jdapp;iPhone;10.0.6;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randPhoneId()};network/4g;model/iPhone11,8;addressid/1188016812;appBuild/167724;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`;
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -56,6 +56,7 @@ const JD_UA = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil
       $.isLogin = true;
       $.nickName = '';
       message = '';
+      $.joyytoken = ''
       await TotalBean();
       console.log(`\n*******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
@@ -170,11 +171,17 @@ async function receiveBubbles() {
   }
 }
 async function sign() {
-  if ($.signInfo.todayCurrentSceneSignStatus === 1) {
-    console.log(`\n开始每日签到`)
-    await necklace_sign();
-  } else {
-    console.log(`已签到\n`)
+  if ($.signInfo.todayCurrentSceneSignStatus) {
+    if ($.signInfo.todayCurrentSceneSignStatus === 1) {
+      console.log(`\n开始每日签到`)
+      await necklace_sign();
+    } else {
+      console.log(`已签到\n`)
+    }
+  }
+  if ($.newSignInfo && !$.newSignInfo.signed) {
+    console.log(`\n此账号是 新版本每日签到`)
+    // await necklace_sign();
   }
 }
 async function reportTask(item = {}) {
@@ -210,7 +217,8 @@ function formatInt(num, prec = 1, ceil = false) {
 //每日签到福利
 function necklace_sign() {
   return new Promise(async resolve => {
-    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'sign' });
+    $.action = 'sign';
+    const body = await zooFaker.get_risk_result($);
     $.post(taskPostUrl("necklace_sign", body), async (err, resp, data) => {
       try {
         if (err) {
@@ -225,8 +233,6 @@ function necklace_sign() {
                 // $.taskConfigVos = data.data.result.taskConfigVos;
                 // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
               }
-            } else if (data.rtn_code === 403) {
-              console.log(`每日签到失败：活动太火爆了,还是去买买买吧~\n`);
             } else {
               console.log(`每日签到失败：${JSON.stringify(data)}\n`);
             }
@@ -243,7 +249,9 @@ function necklace_sign() {
 //兑换无门槛红包
 function necklace_exchangeGift(scoreNums) {
   return new Promise(async resolve => {
-    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'exchangeGift', 'id': scoreNums });
+    $.action = 'exchangeGift';
+    $.id = scoreNums;
+    const body = await zooFaker.get_risk_result($);
     console.log(`\n使用${scoreNums}个点点券兑换${scoreNums / 1000}元无门槛红包`);
     $.post(taskPostUrl("necklace_exchangeGift", body), async (err, resp, data) => {
       try {
@@ -277,7 +285,9 @@ function necklace_exchangeGift(scoreNums) {
 //领取奖励
 function necklace_chargeScores(bubleId) {
   return new Promise(async resolve => {
-    const body = await zooFaker.getBody({ 'cookie': cookie, 'action': 'chargeScores', 'id': bubleId });
+    $.action = 'chargeScores';
+    $.id = bubleId;
+    const body = await zooFaker.get_risk_result($);
     $.post(taskPostUrl("necklace_chargeScores", body), async (err, resp, data) => {
       try {
         if (err) {
@@ -312,7 +322,9 @@ function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = 
       taskId
     }
     if (functionId === 'necklace_startTask') {
-      body = await zooFaker.getBody({ 'id': taskId, 'cookie': cookie, 'action': 'startTask' })
+      $.id = taskId;
+      $.action = 'startTask';
+      body = await zooFaker.get_risk_result($);
     }
     if (itemId && functionId === 'necklace_reportTask') body['itemId'] = itemId;
     $.post(taskPostUrl(functionId, body), async (err, resp, data) => {
@@ -390,7 +402,11 @@ function necklace_homePage() {
                 $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs || [];
                 $.lastRequestTime = data.data.result.lastRequestTime;
                 $.bubbles = data.data.result.bubbles;
-                $.signInfo = data.data.result.signInfo;
+                if (data.data.result.signInfo) {
+                  $.signInfo = data.data.result.signInfo;
+                } else if (data.data.result.newSignInfo) {
+                  $.newSignInfo = data.data.result.newSignInfo;
+                }
                 $.totalScore = data.data.result.totalScore;
                 const config = $.exchangeGiftConfigs.filter(item => item['giftType'] === 1);
                 if (config && config[0]) {
@@ -448,8 +464,8 @@ function getCcTaskList(functionId, body, type = '3') {
     if (functionId === 'getCcTaskList') {
       url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1614320848090&sign=d3259c0c19f6c792883485ae65f8991c&sv=111`
     }
-    if (type === '3' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1624874606089&sign=268db25a0300e83652066f5dc4c495e7&sv=111`
-    if (type === '4' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1624875002081&sign=2a9f69fd001b2d46de23e3ef5cc85a01&sv=111`
+    if (type === '3' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627046313059&sign=7ef5734199f67020587da467fd819937&sv=122`
+    if (type === '4' && functionId === 'reportCcTask') url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627046466065&sign=f7b883f44d772432be8ae918eb60d5dd&sv=122`
     // if (functionId === 'reportCcTask') {
     //   url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1614320901023&sign=26e637ba072ddbcfa44c5273ef928696&sv=111`
     // }
@@ -505,13 +521,14 @@ function getCcTaskList(functionId, body, type = '3') {
 }
 function taskPostUrl(function_id, body = {}) {
   return {
-    url: `https://api.m.jd.com/api?appid=coupon-necklace&functionId=${function_id}&loginType=2&client=coupon-necklace&t=${Date.now()}&uuid=fc13275e23b2613e6aae772533ca6f349d2e0a86`,
+    url: `https://api.m.jd.com/api?appid=coupon-necklace&functionId=${function_id}&loginType=2&client=coupon-necklace&t=${Date.now()}&uuid=88732f840b77821b345bf07fd71f609e6ff12f43`,
+    // url: `${JD_API_HOST}?functionId=${function_id}&appid=coupon-necklace&loginType=2&client=coupon-necklace&t=${Date.now()}`,
     body: `body=${escape(JSON.stringify(body))}`,
     headers: {
       "accept": "*/*",
       "accept-encoding": "gzip, deflate, br",
       "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-      "cookie": cookie,
+      "cookie": cookie + $.joyytoken,
       "origin": "https://h5.m.jd.com",
       "referer": "https://h5.m.jd.com/",
       "Content-Type": "application/x-www-form-urlencoded",
