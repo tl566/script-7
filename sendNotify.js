@@ -22,7 +22,8 @@ let SCKEY = '';
 let BARK_PUSH = '';
 //BARK app推送铃声,铃声列表去APP查看复制填写
 let BARK_SOUND = '';
-
+//BARK v1.1.5版本的BARK 支持分组功能，可在历史消息中分组查看消息，默认'京东'
+let BARK_GROUP = '京东';
 
 // =======================================telegram机器人通知设置区域===========================================
 //此处填你telegram bot 的Token，telegram机器人通知推送必填项.例如：1077xxx4424:AAFjv0FcqxxxxxxgEMGfi22B4yh15R5uw
@@ -93,15 +94,20 @@ if (process.env.BARK_PUSH) {
   } else {
     BARK_PUSH = `https://api.day.app/${process.env.BARK_PUSH}`
   }
-  if (process.env.BARK_SOUND) {
-    BARK_SOUND = process.env.BARK_SOUND
-  }
 } else {
   if(BARK_PUSH && BARK_PUSH.indexOf('https') === -1 && BARK_PUSH.indexOf('http') === -1) {
     //兼容BARK本地用户只填写设备码的情况
     BARK_PUSH = `https://api.day.app/${BARK_PUSH}`
   }
 }
+if (process.env.BARK_SOUND) {
+  BARK_SOUND = process.env.BARK_SOUND
+}
+if (process.env.BARK_GROUP) {
+  BARK_GROUP = process.env.BARK_GROUP;
+}
+
+
 if (process.env.TG_BOT_TOKEN) {
   TG_BOT_TOKEN = process.env.TG_BOT_TOKEN;
 }
@@ -291,7 +297,7 @@ function BarkNotify(text, desp, params={}) {
   return  new Promise(resolve => {
     if (BARK_PUSH) {
       const options = {
-        url: `${BARK_PUSH}/${encodeURIComponent(text)}/${encodeURIComponent(desp)}?sound=${BARK_SOUND}&${querystring.stringify(params)}`,
+        url: `${BARK_PUSH}/${encodeURIComponent(text)}/${encodeURIComponent(desp)}?sound=${BARK_SOUND}&group=${BARK_GROUP}&${querystring.stringify(params)}`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
