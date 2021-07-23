@@ -363,7 +363,7 @@ function smtg_obtainPrize(prizeId, timeout = 0, functionId = 'smt_exchangePrize'
 }
 function smtgHome() {
   return new Promise((resolve) => {
-    $.get(taskUrl('smtg_home'), (err, resp, data) => {
+    $.get(taskUrl('smtg_newHome', {"channel": "18"}), (err, resp, data) => {
       try {
         if (err) {
           console.log('\n东东超市兑换奖品: API查询请求失败 ‼️‼️')
@@ -371,7 +371,7 @@ function smtgHome() {
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            if (data.data.bizCode === 0) {
+            if (data.code === 0 && data.data && data.data.bizCode === 0) {
               const { result } = data.data;
               $.totalGold = result.totalGold;
               $.totalBlue = result.totalBlue;
