@@ -529,75 +529,86 @@ async function storyOper() {
   if ($.StoryInfo && $.StoryInfo.hasOwnProperty('StoryList')) {
     const { StoryList } = $.StoryInfo;
     for (let story of StoryList) {
-      const { strStoryId, dwType, dwStatus, ddwTriggerDay } = story;
+      const { strStoryId, dwType, dwStatus = 1, ddwTriggerDay } = story;
       console.log(`story：dwStatus：${story['dwStatus']}，dwType：${story['dwType']}\n`)
       if (strStoryId && ddwTriggerDay) {
-        if (dwStatus === 1) {
-          if (dwType === 4) {
-            //卖贝壳给收藏家
-            console.log(`海滩： 卖贝壳给收藏家`)
+        const storyType = story['Collector'] ? 'Collector' : story['Mermaid'] ? 'Mermaid' : story['Special'] ? 'Special' : '';
+        let body = '';
+        switch (storyType) {
+          case "Collector":
+            //收藏家
+            console.log(`沙滩出现特殊岛民:收藏家`);
             console.log(`${story['Collector']['strRecvDesc']}\n`);
-            let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
-            //尝试第一次收集贝壳
-            await pickShells();
-            await $.wait(10 * 1000);
-            //尝试第二次收集贝壳
-            await pickShells();
-            await sell(2);//卖给收藏家：dwSceneId = 2，自己主动售卖：dwSceneId = 1
-            await $.wait(1000);
-            body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
-          } else if (dwType === 1) {
-            //美食家上岛或小情侣或失眠人
-            console.log(`海滩： 大胃王或购物狂或小情侣或失眠人，需等待30秒`)
-            console.log(`${story['Special']['strTalk']}\n`);
-            let body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['dwTriggerType']}`;
-            await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
-            await $.wait(31 * 1000);
-            body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['dwTriggerType']}`;
-            await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
-          } else if (dwType === 2) {
-            //拯救美人鱼
-            console.log(`海滩： 拯救美人鱼`)
-            console.log(`${story['Mermaid']['strTalk']}\n`);
-            let body = `strStoryId=${strStoryId}&dwType=1&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
-            await $.wait(2 * 1000);
-            body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
-            await $.wait(2 * 1000);
-            body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
-          } else {
+            switch (dwStatus) {
+              case 1:
+                body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
+                await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
+                //先收集一次收集贝壳
+                await pickShells();
+                await $.wait(1000);
+              case 3:
+                await sell(2);//卖给收藏家：dwSceneId = 2，自己主动售卖：dwSceneId = 1
+                await $.wait(1000);
+                body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
+                await CollectorOper('CollectorOper', body, '_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone');
+                break
+              default:
+                console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
+                await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+            }
+            break;
+          case "Mermaid":
+            //美人鱼
+            switch (dwStatus) {
+              case 1:
+                console.log(`海滩： 拯救美人鱼`)
+                console.log(`${story['Mermaid']['strTalk']}\n`);
+                body = `strStoryId=${strStoryId}&dwType=1&ddwTriggerDay=${ddwTriggerDay}`;
+                await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+                await $.wait(2 * 1000);
+              case 3:
+                console.log(`${story['Mermaid']['strTal2']}\n`);
+                body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}`;
+                await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+                await $.wait(2 * 1000);
+              case 2:
+                //拯救后,收集金币
+                console.log(`${story['Mermaid']['strTal3']}\n`);
+                body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
+                await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+                break;
+              case 4:
+                console.log(`海滩： 美人鱼感恩回归`)
+                console.log(`${story['Mermaid']['strTalk4']}\n`);
+                body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
+                await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
+                break
+              default:
+                console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
+                await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+            }
+            break;
+          case "Special":
+            //大胃王或购物狂或小情侣或失眠人
+            console.log(`【${story['Special']['strName']}】：${story['Special']['strTalk']}\n`);
+            switch (dwStatus) {
+              case 1:
+                body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['dwTriggerType']}`;
+                await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
+                // {"Data":{"Serve":{"dwWaitTime":30},"ddwStopTime":1627056000,"ddwTriggerDay":1626969600},"iRet":0,"sErrMsg":"success","sFrom":"SpecialUserOper","story":{}}
+                await $.wait(31 * 1000);
+              case 3:
+                body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['dwTriggerType']}`;
+                await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
+                break;
+              default:
+                console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
+                await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
+            }
+            break;
+          default:
             console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
             await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
-          }
-        } else if (dwStatus === 3) {
-          if (dwType === 1) {
-            //大胃王
-            console.log(`海滩： 大胃王`)
-            console.log(`${story['Special']['strTalk']}\n`);
-            let body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}&triggerType=${story['Special']['dwTriggerType']}`;
-            await CollectorOper('SpecialUserOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone,triggerType`);
-          } else {
-            console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
-            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
-          }
-        } else if (dwStatus === 4) {
-          if (dwType === 2) {
-            //美人鱼感恩回归
-            console.log(`海滩： 美人鱼感恩回归`)
-            console.log(`${story['Mermaid']['strTalk4']}\n`);
-            let body = `strStoryId=${strStoryId}&dwType=4&ddwTriggerDay=${ddwTriggerDay}`;
-            await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
-          } else {
-            console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
-            await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
-          }
-        } else {
-          console.log(`出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}\n`);
-          await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n出现未知【特殊岛民】 dwStatus：${dwStatus}，dwType：${dwType}，${$.toStr(story)}`);
         }
       }
     }
@@ -793,9 +804,9 @@ async function Rubbishs() {
               const { StoryInfo } = data['Data'];
               if (StoryInfo && StoryInfo['StoryList'] && StoryInfo['StoryList'].length) {
                 for (const Story of StoryInfo['StoryList']) {
-                  const { Rubbish , strStoryId, dwStatus } = Story;
+                  const { Rubbish , strStoryId, ddwStopTime } = Story;
                   const { RubbishList, TalkList, strBuildType } = Rubbish;
-                  console.log(`${TalkList.toString()}`);
+                  console.log(`${TalkList.toString()},结束时间:${$.time('yyyy-MM-dd HH:mm:ss', ddwStopTime * 1000)}`);
                   //接收任务
                   const strBuild = strBuildType === 'food' ? '京喜美食城' : strBuildType === 'sea' ? '京喜旅馆' : strBuildType === 'shop' ? '京喜商店' : strBuildType === 'fun' ? '京喜游乐场' : `未知建筑 ${strBuildType}`;
                   console.log(`开始回收【${strBuild}】建筑的垃圾`)
