@@ -565,15 +565,15 @@ async function storyOper() {
               case 1:
                 console.log(`海滩： 拯救美人鱼`)
                 console.log(`${story['Mermaid']['strTalk']}\n`);
+                //连续点击拯救
                 body = `strStoryId=${strStoryId}&dwType=1&ddwTriggerDay=${ddwTriggerDay}`;
                 await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
                 await $.wait(2 * 1000);
-              case 3:
                 console.log(`${story['Mermaid']['strTal2']}\n`);
+                //点击我还会回来的
                 body = `strStoryId=${strStoryId}&dwType=3&ddwTriggerDay=${ddwTriggerDay}`;
                 await CollectorOper('MermaidOper', body, `_cfd_t,bizCode,ddwTriggerDay,dwEnv,dwType,ptag,source,strStoryId,strZone`);
                 await $.wait(2 * 1000);
-              case 2:
                 //拯救后,收集金币
                 console.log(`${story['Mermaid']['strTal3']}\n`);
                 body = `strStoryId=${strStoryId}&dwType=2&ddwTriggerDay=${ddwTriggerDay}`;
