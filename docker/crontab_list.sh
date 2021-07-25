@@ -113,7 +113,7 @@
 #监控crazyJoy分红
 10 12 * * * node /scripts/jd_crazy_joy_bonus.js >> /scripts/logs/jd_crazy_joy_bonus.log 2>&1
 #京喜财富岛
-5 1,7,12,18 * * * node /scripts/jd_jxbfd.js >> /scripts/logs/jd_jxbfd.log 2>&1
+5 1,3-8/1,12,13,18,19 * * * node /scripts/jd_jxbfd.js >> /scripts/logs/jd_jxbfd.log 2>&1
 #京喜财富岛-收集贝壳，每20分钟一次，可根据自己账号数量进行修改cron
 0-59/20 * * * * node /scripts/jd_jxbfd_collect.js >> /scripts/logs/jd_jxbfd_collect.log 2>&1
 #财富岛-热气球接待游客和雇佣导游
