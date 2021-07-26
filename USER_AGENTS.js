@@ -44,7 +44,19 @@ const USER_AGENTS = [
 function randomNumber(min = 0, max = 100) {
   return Math.min(Math.floor(min + Math.random() * (max - min)), max);
 }
-const USER_AGENT = USER_AGENTS[randomNumber(0, USER_AGENTS.length)];
+/**
+ * 生成随机 iPhoneID
+ * @returns {string}
+ */
+function randPhoneId() {
+  return Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10) +
+      Math.random().toString(36).slice(2, 10);
+}
+
+const USER_AGENT = `jdapp;iPhone;10.0.8;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randPhoneId()};network/4g;model/iPhone11,8;addressid/1188016812;appBuild/167724;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`;
 
 module.exports = {
   USER_AGENT

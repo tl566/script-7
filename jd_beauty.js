@@ -360,7 +360,7 @@ async function mr() {
         case "material_produce_v2":
           console.log(`【${vo?.data?.position}】上开始生产${vo?.data?.material_name}`)
           client.send(`{"msg":{"type":"action","args":{},"action":"to_employee"}}`)
-          $.pos.push(vo.data.position)
+          if (vo?.data?.position) $.pos.push(vo.data.position)
           break
         case "material_fetch_v2":
           if (vo.code === '200' || vo.code === 200) {
@@ -510,7 +510,7 @@ async function mr() {
           break
         case "to_employee":
           console.log(`雇佣助力码【${vo.data.token}】`)
-          $.tokens.push(vo.data.token)
+          if (vo?.data?.token) $.tokens.push(vo.data.token)
           break
         case "employee":
           console.log(`${vo.msg}`)
