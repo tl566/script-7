@@ -2,7 +2,7 @@
 jd宠汪汪 搬的https://github.com/uniqueque/QuantumultX/blob/4c1572d93d4d4f883f483f907120a75d925a693e/Script/jd_joy.js
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 IOS用户支持京东双账号,NodeJs用户支持N个京东账号
-更新时间：2021-7-15
+更新时间：2021-7-26
 活动入口：京东APP我的-更多工具-宠汪汪
 建议先凌晨0点运行jd_joy.js脚本获取狗粮后，再运行此脚本(jd_joy_steal.js)可偷好友积分，6点运行可偷好友狗粮
 feedCount:自定义 每次喂养数量; 等级只和喂养次数有关，与数量无关
@@ -40,6 +40,13 @@ if ($.isNode()) {
     cookiesArr.push(jdCookieNode[item])
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+  if (process.env.JOY_FEED_COUNT) {
+    if ([0, 10, 20, 40, 80].indexOf(process.env.JOY_FEED_COUNT * 1) > -1) {
+      FEED_NUM = process.env.JOY_FEED_COUNT ? process.env.JOY_FEED_COUNT * 1 : FEED_NUM;
+    } else {
+      console.log(`您输入的 JOY_FEED_COUNT 为非法数字，请重新输入`);
+    }
+  }
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
@@ -97,29 +104,15 @@ const weAppUrl = 'https://draw.jdfcloud.com//pet';
 async function jdJoy() {
   try {
     await launchInvite();
-    await getPetTaskConfig();
-    if ($.getPetTaskConfigRes.success) {
-      if ($.isNode()) {
-        if (process.env.JOY_FEED_COUNT) {
-          if ([0, 10, 20, 40, 80].indexOf(process.env.JOY_FEED_COUNT * 1) > -1) {
-            FEED_NUM = process.env.JOY_FEED_COUNT ? process.env.JOY_FEED_COUNT * 1 : FEED_NUM;
-          } else {
-            console.log(`您输入的 JOY_FEED_COUNT 为非法数字，请重新输入`);
-          }
-        }
-      }
-      await feedPets(FEED_NUM);//喂食
-      await Promise.all([
-        petTask(),
-        appPetTask()
-      ])
-      await deskGoodsTask();//限时货柜
-      await enterRoom();
-      await joinTwoPeopleRun()//参加双人赛跑
-      await getInviteFood();
-    } else {
-      message += `${$.getPetTaskConfigRes.errorMessage}`;
-    }
+    await feedPets(FEED_NUM);//喂食
+    await Promise.all([
+      getPetTaskConfig(),//做日常任务
+      appGetPetTaskConfig(),//做APP特有的任务
+      deskGoodsTask(),//限时货柜
+      joinTwoPeopleRun(),//参加双人赛跑
+      getInviteFood()
+    ])
+    await enterRoom();
   } catch (e) {
     $.logErr(e)
   }
@@ -397,24 +390,7 @@ async function petTask() {
     }
   }
 }
-async function appPetTask() {
-  await appGetPetTaskConfig();
-  // console.log('$.appGetPetTaskConfigRes', $.appGetPetTaskConfigRes.success)
-  if ($.appGetPetTaskConfigRes.success) {
-    for (let item of $.appGetPetTaskConfigRes.datas || []) {
-      if (item['taskType'] === 'ScanMarket' && item['receiveStatus'] === 'chance_left') {
-        const scanMarketList = item.scanMarketList;
-        for (let scan of scanMarketList) {
-          if (!scan.status && scan.showDest === 'h5') {
-            const body = { marketLink: scan.marketLinkH5, taskType: 'ScanMarket', reqSource: 'h5' }
-            await appScanMarket('scan', body);
-            await $.wait(5000);
-          }
-        }
-      }
-    }
-  }
-}
+
 function getDeskGoodDetails() {
   return new Promise(resolve => {
     // const url = `${JD_API_HOST}/getDeskGoodDetails`;
@@ -715,13 +691,36 @@ function appGetPetTaskConfig() {
       header: {"content-type": "application/json"}
     }
     const url = "https:"+ taroRequest(opt)['url'] + $.validate;
-    $.get(taskUrl(url, host, reqSource), (err, resp, data) => {
+    $.get(taskUrl(url, host, reqSource), async (err, resp, data) => {
       try {
         if (err) {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
-          // console.log('-----', JSON.parse(data))
-          $.appGetPetTaskConfigRes = JSON.parse(data);
+          data = $.toObj(data);
+          if (data) {
+            if (data['success']) {
+              if (data['datas'] && data['datas'].length) {
+                $.appGetPetTaskConfigRes = data;
+                for (let item of $.appGetPetTaskConfigRes.datas) {
+                  if (item['taskType'] === 'ScanMarket' && item['receiveStatus'] === 'chance_left') {
+                    const scanMarketList = item.scanMarketList;
+                    for (let scan of scanMarketList) {
+                      if (!scan.status && scan.showDest === 'h5') {
+                        console.log(`逛会场-做APP特有任务：${scan['marketName']}`);
+                        const body = { marketLink: scan.marketLinkH5, taskType: 'ScanMarket', reqSource: 'h5' }
+                        await appScanMarket('scan', body);
+                        await $.wait(5000);
+                      }
+                    }
+                  }
+                }
+              } else {
+                console.log(`获取APP任务列表失败：${$.toStr(data)}\\n`);
+              }
+            } else {
+              console.log(`获取APP任务列表异常：${$.toStr(data)}\n`);
+            }
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -759,7 +758,7 @@ function feedPets(feedNum) {
               console.log('喂食成功')
               message += `【喂食成功】消耗${feedNum}g狗粮\n`;
             } else if (data.errorCode === 'time_error') {
-              console.log('喂食失败：您的汪汪正在食用中,请稍后再喂食')
+              console.log('\n喂食失败：您的汪汪正在食用中,请稍后再喂食\n')
               message += `【喂食失败】您的汪汪正在食用中,请稍后再喂食\n`;
             } else if (data.errorCode === 'food_insufficient') {
               console.log(`当前喂食${feedNum}g狗粮不够, 现为您降低一档次喂食\n`)
@@ -807,13 +806,26 @@ function getPetTaskConfig() {
       header: {"content-type": "application/json"}
     }
     const url = "https:"+ taroRequest(opt)['url'] + $.validate;
-    $.get(taskUrl(url.replace(/reqSource=h5/, 'reqSource=weapp'), host, reqSource), (err, resp, data) => {
+    $.get(taskUrl(url.replace(/reqSource=h5/, 'reqSource=weapp'), host, reqSource), async (err, resp, data) => {
       try {
         if (err) {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
           // console.log('JSON.parse(data)', JSON.parse(data))
-          $.getPetTaskConfigRes = JSON.parse(data);
+          // $.getPetTaskConfigRes = JSON.parse(data);
+          data = $.toObj(data);
+          if (data) {
+            if (data['success']) {
+              if (data['datas'] && data['datas'].length) {
+                $.getPetTaskConfigRes = data;
+                await petTask();
+              } else {
+                console.log(`获取任务列表失败：${$.toStr(data)}\\n`);
+              }
+            } else {
+              console.log(`获取任务列表异常：${$.toStr(data)}\n`);
+            }
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -843,7 +855,6 @@ function getPetRace() {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
           // console.log('查询赛跑信息API',(data))
-          // $.appGetPetTaskConfigRes = JSON.parse(data);
           $.petRaceResult = JSON.parse(data);
         }
       } catch (e) {
@@ -909,7 +920,6 @@ function runMatch(teamLevel, timeout = 5000) {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
           // console.log('参加赛跑API', JSON.parse(data))
-          // $.appGetPetTaskConfigRes = JSON.parse(data);
           $.runMatchResult = JSON.parse(data);
         }
       } catch (e) {
@@ -940,7 +950,6 @@ function getBackupInfo() {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
           // console.log('查询应援团信息API',(data))
-          // $.appGetPetTaskConfigRes = JSON.parse(data);
           $.getBackupInfoResult = JSON.parse(data);
         }
       } catch (e) {
@@ -969,7 +978,6 @@ function getWinCoin() {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
           // console.log('查询应援团信息API',(data))
-          // $.appGetPetTaskConfigRes = JSON.parse(data);
           if (data) {
             $.getWinCoinRes = JSON.parse(data);
           }
@@ -1002,7 +1010,6 @@ function receiveJoyRunAward() {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
           // console.log('查询应援团信息API',(data))
-          // $.appGetPetTaskConfigRes = JSON.parse(data);
           $.receiveJoyRunAwardRes = JSON.parse(data);
         }
       } catch (e) {
@@ -1052,7 +1059,6 @@ function getSupplyInfo(showOrder) {
           console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
         } else {
           // console.log('查询应援团信息API',(data))
-          // $.appGetPetTaskConfigRes = JSON.parse(data);
           if (data) {
             $.getSupplyInfoRes = JSON.parse(data);
           }
