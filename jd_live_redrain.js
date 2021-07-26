@@ -1,6 +1,6 @@
 /*
 超级直播间红包雨
-更新时间：2021-07-6
+更新时间：2021-07-26
 下一场超级直播间时间:06月25日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4515551
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
@@ -21,13 +21,13 @@ cron "0,30 0-23/1 * * *" script-path=jd_live_redrain.js,tag=超级直播间红�
 const $ = new Env('超级直播间红包雨');
 let allMessage = '', id = 'RRA2cUocg5uYEyuKpWNdh4qE4NW1bN2';
 let bodyList = {
-  "20": {
-    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1626675195020&sign=8f4a12a5aaa6aaf72288f5ba27a45b21&sv=111",
-    "body": "body=%7B%22liveId%22%3A%224691358%22%7D"
+  "3": {
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627280052003&sign=9d1df8b92910fab3aa8e0a86dc3939f7&sv=122",
+    "body": "body=%7B%22liveId%22%3A%224756219%22%7D"
   },
-  "23": {
-    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1626675194014&sign=502a7dcb44613667d93ebb78a905f4ac&sv=102",
-    "body": "body=%7B%22liveId%22%3A%224701480%22%7D"
+  "27": {
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627280054094&sign=d95075803a5e3118eafb75ae29f29ac4&sv=111",
+    "body": "body=%7B%22liveId%22%3A%224756178%22%7D"
   }
 }
 let ids = {}

@@ -114,17 +114,18 @@ async function jdJoySteal() {
     $.helpFeedStatus = null;
     message += `【京东账号${$.index}】${$.nickName}\n`;
     await getFriends();//查询是否有好友
-    await getCoinChanges();//查询喂食好友和偷好友积分是否已达上限
     if ($.getFriendsData && $.getFriendsData.success) {
       if (!$.getFriendsData.datas) {
         console.log(`\n京东返回宠汪汪好友列表数据为空\n`)
         return
       }
       if ($.getFriendsData && $.getFriendsData.datas && $.getFriendsData.datas.length  > 0) {
+        await getCoinChanges();//查询喂食好友和偷好友积分是否已达上限
         const { lastPage } = $.getFriendsData.page;
         // console.log('lastPage', lastPage)
         console.log(`\n共 ${lastPage * 20 - 1} 个好友\n`);
         $.allFriends = [];
+        //偷好友积分
         for (let i = 1; i <= new Array(lastPage).fill('').length; i++) {
           if ($.visit_friend >= 100 || $.stealFriendCoin * 1 >= 100) {
             console.log('偷好友积分已达上限(已获得100积分) 跳出\n')
@@ -134,8 +135,13 @@ async function jdJoySteal() {
           console.log(`偷好友积分 开始查询第${i}页好友\n`);
           await getFriends(i);
           $.allFriends = $.getFriendsData.datas;
-          if ($.allFriends) await stealFriendCoinFun();
+          if ($.allFriends && $.allFriends.length) {
+            await stealFriendCoinFun();
+          } else {
+            console.log(`偷好友积分 第${i}页暂无好友`)
+          }
         }
+        //偷好友狗粮
         for (let i = 1; i <= new Array(lastPage).fill('').length; i++) {
           if ($.stealStatus === 'chance_full') {
             console.log('偷好友狗粮已达上限 跳出\n')
@@ -165,8 +171,13 @@ async function jdJoySteal() {
           console.log(`偷好友狗粮 开始查询第${i}页好友\n`);
           await getFriends(i);
           $.allFriends = $.getFriendsData.datas;
-          if ($.allFriends) await stealFriendsFood();
+          if ($.allFriends && $.allFriends.length) {
+            await stealFriendsFood();
+          } else {
+            console.log(`偷好友狗粮 第${i}页暂无好友`)
+          }
         }
+        //帮好友喂食
         for (let i = 1; i <= new Array(lastPage).fill('').length; i++) {
           if ($.help_feed >= 200 || ($.helpFeedStatus && $.helpFeedStatus === 'chance_full')) {
             console.log('帮好友喂食已达上限(已帮喂20个好友获得200积分) 跳出\n');
@@ -185,8 +196,14 @@ async function jdJoySteal() {
           console.log(`帮好友喂食 开始查询第${i}页好友\n`);
           await getFriends(i);
           $.allFriends = $.getFriendsData.datas;
-          if ($.allFriends) await helpFriendsFeed();
+          if ($.allFriends && $.allFriends.length) {
+            await helpFriendsFeed();
+          } else {
+            console.log(`帮好友喂食 第${i}页暂无好友`)
+          }
         }
+      } else {
+        console.log(`暂无好友。${$.toStr($.getFriendsData)}\n`);
       }
     } else {
       message += `${$.getFriendsData && $.getFriendsData.errorMessage}\n`;
@@ -199,7 +216,7 @@ async function stealFriendsFood() {
   console.log(`开始偷好友狗粮`);
   for (let friends of $.allFriends) {
     const { friendPin, status, stealStatus } = friends;
-    $.stealStatus = stealStatus;
+    // $.stealStatus = stealStatus;
     // console.log(`stealFriendsFood---好友【${friendPin}】--偷食状态：${stealStatus}\n`);
     // console.log(`stealFriendsFood---好友【${friendPin}】--喂食状态：${status}\n`);
     await enterFriendRoom(friendPin);
@@ -303,7 +320,7 @@ function getFriends(currentPage = '1') {
       url,
       headers: {
         'Cookie': cookie,
-        'reqSource': 'h5',
+        // 'reqSource': 'h5',
         'Host': 'draw.jdfcloud.com',
         'Connection': 'keep-alive',
         'Content-Type': 'application/json',
@@ -356,7 +373,7 @@ async function stealFriendCoin(friendPin) {
 }
 //进入好友房间
 function enterFriendRoom(friendPin) {
-  console.log(`\nfriendPin:: ${friendPin}\n`);
+  console.log(`\n好友:: ${friendPin}`);
   return new Promise(async resolve => {
     $.get(taskUrl('enterFriendRoom', (friendPin)), async (err, resp, data) => {
       try {
@@ -371,7 +388,7 @@ function enterFriendRoom(friendPin) {
             data = JSON.parse(data);
             console.log(`可偷狗粮：${data.data.stealFood}`)
             console.log(`可偷积分：${data.data.friendHomeCoin}`)
-            console.log(`可帮喂：${data.data.helpFeedStatus}`)
+            console.log(`可否帮喂：${data.data.helpFeedStatus}`)
             if (data.data.stealFood && data.data.stealFood > 0) {
               await doubleRandomFood(friendPin);
               const getRandomFoodRes = await getRandomFood(friendPin);
@@ -534,7 +551,7 @@ function getCoinChanges() {
       url,
       headers: {
         'Cookie': cookie,
-        'reqSource': 'h5',
+        // 'reqSource': 'h5',
         'Host': 'jdjoy.jd.com',
         'Connection': 'keep-alive',
         'Content-Type': 'application/json',
@@ -566,6 +583,8 @@ function getCoinChanges() {
               }
               console.log(`$.help_feed给好友喂食获得积分：${$.help_feed}`);
               console.log(`$.visit_friend领取好友积分：${$.visit_friend}`);
+            } else {
+              console.log(`getCoinChanges异常：${$.toStr(data)}\n`);
             }
           } else {
             console.log(`京豆api返回数据为空，请检查自身原因`)
