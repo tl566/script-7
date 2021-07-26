@@ -104,7 +104,7 @@ function QueryUserInfo() {
   });
 }
 //热气球接待游客
-function SpeedUp(timeout = 2000) {
+function SpeedUp(timeout = 1000) {
   return new Promise(async (resolve) => {
     setTimeout(() => {
       const options = taskUrl('user/SpeedUp', 'strBuildIndex=fun', '_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone');
@@ -120,7 +120,7 @@ function SpeedUp(timeout = 2000) {
                 console.log(`账号 ${$.index} ${$.UserName}【${data['strBuildIndex']}】建筑 成功接待一个游客 ${data['dwIsOverburst'] === 1 ? '暴击' : ''}，＋京币：${data['ddwSpeedCoin']}，今日已接待游客: ${data['dwTodaySpeedPeople'] || 0}`);
                 if (data['dwTodaySpeedPeople']) {
                   $.SpeedUpFlag ++;
-                  if ($.SpeedUpFlag < 21) {
+                  if ($.SpeedUpFlag < 30) {
                     await SpeedUp();
                   }
                 }
