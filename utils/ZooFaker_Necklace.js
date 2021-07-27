@@ -551,7 +551,7 @@ let utils = {
           "Origin": "https://h5.m.jd.com",
           "X-Requested-With": "com.jingdong.app.mall",
           "Referer": "https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html",
-          "User-Agent": `jdapp;android;10.0.2;9;8363237353630343334383837333-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36`,
+          "User-Agent": `jdapp;iPhone;10.0.8;9;8363237353630343334383837333-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36`,
         }
       }
       const req = https.request(options, (res) => {
@@ -623,7 +623,7 @@ let utils = {
       grn: 1,
       ioa: "fffffftt",
       jj: 1,
-      jk: "-a45046de9fbf-0a4fc8ec9548a7f9",
+      jk: "a",
       mj: [1, 0, 0],
       msg: "",
       nav: "88569",
