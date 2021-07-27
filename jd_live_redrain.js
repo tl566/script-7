@@ -22,12 +22,20 @@ const $ = new Env('超级直播间红包雨');
 let allMessage = '', id = 'RRA2cUocg5uYEyuKpWNdh4qE4NW1bN2';
 let bodyList = {
   "3": {
-    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627280052003&sign=9d1df8b92910fab3aa8e0a86dc3939f7&sv=122",
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627366318037&sign=9d0d58bbae551af3a9325d7d708cf408&sv=112",
     "body": "body=%7B%22liveId%22%3A%224756219%22%7D"
   },
+  "6": {
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627366315037&sign=9d9f89b519d386fcc9e9ee24ede71490&sv=110",
+    "body": "body=%7B%22liveId%22%3A%224781172%22%7D"
+  },
   "27": {
-    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627280054094&sign=d95075803a5e3118eafb75ae29f29ac4&sv=111",
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627366326009&sign=553f3a22d81c801d631abb4649821e51&sv=112",
     "body": "body=%7B%22liveId%22%3A%224756178%22%7D"
+  },
+  "30": {
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627366323011&sign=87298ea8099ea243db1c0dec773044ba&sv=110",
+    "body": "body=%7B%22liveId%22%3A%224781156%22%7D"
   }
 }
 let ids = {}
@@ -54,7 +62,10 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {"open-url": "https://bean.m.jd.com/"});
     return;
   }
-  console.log('下一场超级直播间时间:06月25日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4508223')
+  console.log('下一场超级直播间时间:08月06日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4781172\n' +
+      '下一场超级直播间时间:08月03日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4756219\n' +
+      '下一场超级直播间时间:07月30日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4781156\n' +
+      '下一场超级直播间时间:07月27日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4756178')
   $.newAcids = [];
   await getRedRain();
 
@@ -65,7 +76,9 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     let hour = (new Date().getUTCHours() + 8) % 24;
     let redIds = await getRedRainIds();
     if (!redIds) redIds = await getRedRainIds('https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/redrain.json');
-    $.newAcids = [...(redIds || [])];
+    if (redIds && Array.isArray(redIds) && redIds.length) {
+      $.newAcids = [...(redIds || [])];
+    }
     if ($.newAcids && $.newAcids.length) {
       $.log(`本地红包雨配置获取成功，ID为：${JSON.stringify($.newAcids)}\n`)
     } else {
@@ -86,8 +99,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
   for (let id of $.newAcids) {
     // $.activityId = id;
     if (!id) continue;
-    console.log(`\n今日${new Date().getHours()}点ID：${id
-    }\n`);
+    console.log(`\n今日${new Date().getHours()}点ID：${id}\n`);
     for (let i = 0; i < cookiesArr.length; i++) {
       if (cookiesArr[i]) {
         cookie = cookiesArr[i];
