@@ -306,18 +306,16 @@ async function petTask() {
     if (item['taskType'] === 'ScanMarket') {
       console.log(`\n-----逛会场----- 任务进度：${item['joinedCount'] || 0}/${item['taskChance']}`);
       const scanMarketList = item.scanMarketList;
-      for (let i = 0; i < 3; i ++) {
-        console.log(`\n第${i + 1}次做 【逛会场】 任务\n`)
-        for (let scanMarketItem of scanMarketList) {
-          if (!scanMarketItem.status) {
-            const body = {
-              "marketLink": scanMarketItem.marketLink,
-              "taskType": "ScanMarket",
-              //"reqSource": "weapp"
-            };
-            const scanMarketRes = await scanMarket('scan', body);
-            console.log(`逛会场-${scanMarketItem.marketName}结果::${JSON.stringify(scanMarketRes)}`)
-          }
+      for (let scanMarketItem of scanMarketList) {
+        if (!scanMarketItem.status) {
+          const body = {
+            "marketLink": scanMarketItem.marketLink,
+            "taskType": "ScanMarket",
+            //"reqSource": "weapp"
+          };
+          const scanMarketRes = await scanMarket('scan', body);
+          console.log(`逛会场-${scanMarketItem.marketName}结果::${JSON.stringify(scanMarketRes)}`)
+          await $.wait(5050)
         }
       }
     }

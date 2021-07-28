@@ -1,6 +1,6 @@
 /*
 超级直播间红包雨
-更新时间：2021-07-26
+更新时间：2021-07-28
 下一场超级直播间时间:06月25日  20:00，直播间地址：https://h5.m.jd.com/dev/3pbY8ZuCx4ML99uttZKLHC2QcAMn/live.html?id=4515551
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
@@ -28,10 +28,6 @@ let bodyList = {
   "6": {
     "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627366315037&sign=9d9f89b519d386fcc9e9ee24ede71490&sv=110",
     "body": "body=%7B%22liveId%22%3A%224781172%22%7D"
-  },
-  "27": {
-    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627366326009&sign=553f3a22d81c801d631abb4649821e51&sv=112",
-    "body": "body=%7B%22liveId%22%3A%224756178%22%7D"
   },
   "30": {
     "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1627366323011&sign=87298ea8099ea243db1c0dec773044ba&sv=110",
@@ -100,33 +96,12 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     // $.activityId = id;
     if (!id) continue;
     console.log(`\n今日${new Date().getHours()}点ID：${id}\n`);
-    for (let i = 0; i < cookiesArr.length; i++) {
-      if (cookiesArr[i]) {
-        cookie = cookiesArr[i];
-        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-        $.index = i + 1;
-        $.isLogin = true;
-        $.nickName = '';
-        message = '';
-        await TotalBean();
-        console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-        if (!$.isLogin) {
-          $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
-          if ($.isNode()) {
-            await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-          }
-          continue
-        }
-        let nowTs = new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000
-        // console.log(nowTs, $.startTime, $.endTime)
-        // await showMsg();
-        if (id) await receiveRedRain(id);
-      }
-    }
+    const promiseArr = cookiesArr.map((ck, index) => receiveRedRain(id, ck, index));
+    await Promise.all(promiseArr);
   }
   if (allMessage) {
-    if ($.isNode()) await notify.sendNotify(`${$.name}`, `${allMessage}`);
     $.msg($.name, '', allMessage);
+    if ($.isNode()) await notify.sendNotify(`${$.name}`, `${allMessage}`);
   }
 })()
     .catch((e) => {
@@ -165,11 +140,13 @@ function getRedRain() {
               if (act) {
                 let url = act.data.activityUrl
                 $.activityId = url.substr(url.indexOf("id=") + 3);
-                $.newAcids.push($.activityId);
                 $.st = act.startTime
                 $.ed = act.endTime
-                console.log($.activityId)
-
+                let nowTs = new Date().getTime();
+                if (($.st <= nowTs && nowTs < $.ed) && $.activityId) {
+                  $.newAcids.push($.activityId);
+                }
+                console.log(`\n超级直播间ID：${$.activityId}`);
                 console.log(`下一场红包雨开始时间：${new Date($.st)}`)
                 console.log(`下一场红包雨结束时间：${new Date($.ed)}`)
               } else {
@@ -189,10 +166,11 @@ function getRedRain() {
   })
 }
 
-function receiveRedRain(actId) {
+function receiveRedRain(actId, taskCookie, index) {
   return new Promise(resolve => {
     const body = { actId };
-    $.get(taskUrl('noahRedRainLottery', body), (err, resp, data) => {
+    const userName = decodeURIComponent(taskCookie.match(/pt_pin=([^; ]+)(?=;?)/) && taskCookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    $.get(taskUrl('noahRedRainLottery', body, taskCookie), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -201,15 +179,15 @@ function receiveRedRain(actId) {
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.subCode === '0') {
-              console.log(`领取成功，获得${JSON.stringify(data.lotteryResult)}`)
-              // message+= `领取成功，获得${JSON.stringify(data.lotteryResult)}\n`
+              console.log(`京东账号${index + 1} ${userName} 领取成功🎉，获得${JSON.stringify(data.lotteryResult)}`)
               message += `领取成功，获得 ${(data.lotteryResult.jPeasList[0].quantity)}京豆`
-              allMessage += `京东账号${$.index}${$.nickName || $.UserName}\n领取成功，获得 ${(data.lotteryResult.jPeasList[0].quantity)}京豆${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+              // allMessage += `京东账号${index + 1} ${userName}\n领取成功，获得 ${(data.lotteryResult.jPeasList[0].quantity)}京豆${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+              allMessage += `京东账号${index + 1} ${userName}\n领取成功，获得 ${(data.lotteryResult.jPeasList[0].quantity)}京豆\n\n`;
             } else if (data.subCode === '8') {
-              console.log(`领取失败：本场已领过`)
+              console.log(`京东账号${index + 1} ${userName} 领取失败：本场已领过`)
               message += `领取失败，本场已领过`;
             } else {
-              console.log(`异常：${JSON.stringify(data)}`)
+              console.log(`京东账号${index + 1} ${userName} 领取失败：${JSON.stringify(data)}`)
             }
           }
         }
@@ -240,22 +218,7 @@ function taskGetUrl(url, body) {
   }
 }
 
-function taskPostUrl(function_id, body = body) {
-  return {
-    url: `https://api.m.jd.com/client.action?functionId=${function_id}`,
-    body: body,
-    headers: {
-      'Host': 'api.m.jd.com',
-      'content-type': 'application/x-www-form-urlencoded',
-      'accept': '*/*',
-      'user-agent': 'JD4iPhone/167408 (iPhone; iOS 14.2; Scale/3.00)',
-      'accept-language': 'zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6',
-      //"Cookie": cookie,
-    }
-  }
-}
-
-function taskUrl(function_id, body = {}) {
+function taskUrl(function_id, body = {}, taskCookie = cookie) {
   return {
     url: `${JD_API_HOST}?functionId=${function_id}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0&_=${new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000}`,
     headers: {
@@ -266,7 +229,7 @@ function taskUrl(function_id, body = {}) {
       "Content-Type": "application/x-www-form-urlencoded",
       "Host": "api.m.jd.com",
       "Referer": `https://h5.m.jd.com/active/redrain/index.html?id=${$.activityId}&lng=0.000000&lat=0.000000&sid=&un_area=`,
-      "Cookie": cookie,
+      "Cookie": taskCookie,
       "User-Agent": "JD4iPhone/9.4.5 CFNetwork/1209 Darwin/20.2.0"
     }
   }
