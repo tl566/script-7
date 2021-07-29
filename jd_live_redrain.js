@@ -71,7 +71,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.http.get({url: `https://purge.jsdelivr.net/gh/gitupdate/updateTeam@master/redrain.json`}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
     let hour = (new Date().getUTCHours() + 8) % 24;
     let redIds = await getRedRainIds();
-    if (!redIds) redIds = await getRedRainIds('https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/redrain.json');
+    if (!redIds) redIds = await getRedRainIds('https://raw.fastgit.org/gitupdate/updateTeam/master/redrain.json');
     if (redIds && Array.isArray(redIds) && redIds.length) {
       $.newAcids = [...(redIds || [])];
     }
