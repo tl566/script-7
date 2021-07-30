@@ -115,8 +115,6 @@
 10 * * * * node /scripts/jd_jxbfd_balloon.js >> /scripts/logs/jd_jxbfd_balloon.log 2>&1
 # 删除优惠券(默认注释，如需要自己开启，如有误删，已删除的券可以在回收站中还原，慎用)
 #20 9 * * 6 node /scripts/jd_delCoupon.js >> /scripts/logs/jd_delCoupon.log 2>&1
-#家庭号
-10 6,7 * * * node /scripts/jd_family.js >> /scripts/logs/jd_family.log 2>&1
 #京东直播（又回来了）
 30-50/5 12,23 * * * node /scripts/jd_live.js >> /scripts/logs/jd_live.log 2>&1
 #京东健康社区
@@ -141,16 +139,6 @@
 30 12 * * * node /scripts/jd_speed.js >> /scripts/logs/jd_speed.log 2>&1
 #电竞经理
 30 3,12,22 * * * node /scripts/jd_esManager.js >> /scripts/logs/jd_esManager.log 2>&1
-#京东到家-免费水果
-#30 8,11,17 * * * node /scripts/jd_jddj_fruit.js >> /scripts/logs/jd_jddj_fruit.log 2>&1
-#京东到家-农场收集水车水滴
-#10 0-23/2 * * * node /scripts/jd_jddj_fruit_collect.js >> /scripts/logs/jd_jddj_fruit_collect.log 2>&1
-#京东到家鲜豆任务
-#10 10 * * * node /scripts/jd_jddj_dailyTask.js >> /scripts/logs/jd_jddj_dailyTask.log 2>&1
-#京东到家鲜豆庄园
-#10 7,10,16 * * * node /scripts/jd_jddj_plantBeans.js >> /scripts/logs/jd_jddj_plantBeans.log 2>&1
-#京东到家鲜豆庄园收水车水滴
-#20 * * * * node /scripts/jd_jddj_plantBeans_collect.js >> /scripts/logs/jd_jddj_plantBeans_collect.log 2>&1
 #送豆得豆
 24 0 * * * node /scripts/jd_sendBeans.js >> /scripts/logs/jd_sendBeans.log 2>&1
 #汪汪乐园（京东极速版APP）
