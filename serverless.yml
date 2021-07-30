@@ -52,18 +52,18 @@ inputs:
           cronExpression: "0 10 0 * * * *"
           enable: true
           argument: jd_redPacket&jd_shop&jd_unsubscribe&jd_lotteryMachine&jd_car&jd_ms&jd_summer_movement_bet
-    - timer: #天天提鹅 #京喜牧场 #京东到家农场 #京东到家鲜豆庄园 #京东到家鲜豆任务 #汪汪乐园合成 #财富岛捡贝壳
+    - timer: #天天提鹅 #京喜牧场 #汪汪乐园合成 #财富岛捡贝壳
         parameters:
-          name: dailyegg_jxmc_jddjfruit_jddjplantBeans_jddjdailyTask_joyparkmerge_jxbfdcollect
+          name: dailyegg_jxmc_joyparkmerge_jxbfdcollect
           cronExpression: "0 8 */3 * * * *"
           enable: true
-          argument: jd_daily_egg&jd_jxmc&jd_jddj_fruit&jd_jddj_plantBeans&jd_jddj_dailyTask&jd_joy_park_merge&jd_jxbfd_collect
-    - timer: #东东超市 #十元街 #京东到家收集水滴 #京东到家鲜豆庄园收水车水滴 #省钱大赢家之翻翻乐 #财富岛热气球
+          argument: jd_daily_egg&jd_jxmc&jd_joy_park_merge&jd_jxbfd_collect
+    - timer: #东东超市 #十元街 #省钱大赢家之翻翻乐 #财富岛热气球
         parameters:
-          name: superMarket_syj_jddjfruitcollect_jddjplantBeanscollect_bigwinner_jxbfdballoon
+          name: superMarket_syj_bigwinner_jxbfdballoon
           cronExpression: "0 15 */1 * * * *"
           enable: true
-          argument: jd_superMarket&jd_syj&jd_jddj_fruit_collect&jd_jddj_plantBeans_collect&jd_big_winner&jd_jxbfd_balloon
+          argument: jd_superMarket&jd_syj&jd_big_winner&jd_jxbfd_balloon
     - timer: #京豆变动通知 #京东排行榜 #领京豆额外奖励 #京东保价 #闪购盲盒
         parameters:
           name: beanchange_rankingList_beanhome_price_sgmh
