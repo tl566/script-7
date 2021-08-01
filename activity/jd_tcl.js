@@ -21,8 +21,8 @@ cron "10 1 * * *" script-path=jd_tcl.js,tag=球队赢好礼
 */
 
 const $ = new Env("球队赢好礼");
-const notify = $.isNode() ? require("./sendNotify") : "";
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const notify = $.isNode() ? require("../sendNotify") : "";
+const jdCookieNode = $.isNode() ? require("../jdCookie.js") : "";
 const sck = $.isNode() ? "set-cookie" : "Set-Cookie";
 let cookiesArr = [],
   cookie = "",
