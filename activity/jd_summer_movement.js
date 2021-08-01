@@ -6,8 +6,8 @@
  *  部分解密参考了@zhangyun173
  * */
 const $ = new Env('燃动夏季');
-const notify = $.isNode() ? require('./sendNotify') : '';
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 $.inviteList = [];
 $.byInviteList = [];
 $.groupInviteIdList = [];
