@@ -48,17 +48,18 @@ async function main() {
   $.cityid = 2;
   $.o2o_m_h5_sid = '';
   $.deviceid_pdj_jd = '';
+  $.jddjCookie = ''
   if(jdjdCklist[$.UserName]){
     $.jddjCookie = jdjdCklist[$.UserName];
     $.token =$.jddjCookie.match(/deviceid_pdj_jd=([^; ]+)(?=;?)/)[1];
   }else{
-    await getJDDJCk();
-    if(!$.o2o_m_h5_sid || !$.deviceid_pdj_jd){
-      console.log(`${$.UserName}获取京东到家CK失败`);
-      return;
-    }
-    $.token = $.deviceid_pdj_jd;
-    $.jddjCookie = `deviceid_pdj_jd=${$.deviceid_pdj_jd};PDJ_H5_PIN=${$.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]};o2o_m_h5_sid=${$.o2o_m_h5_sid};`
+    let deviceid = _uuid();
+    await getJDDJCk(deviceid);
+    $.token = deviceid;
+  }
+  if($.jddjCookie === ''){
+    console.log(`获取京东到家CK失败`);
+    return;
   }
   console.log($.jddjCookie );
   await $.wait(1000);
@@ -329,30 +330,31 @@ async function getMyRequestGet(body,functionId){
   return  {url: url,method: method,headers: headers} ;
 }
 
-async function getJDDJCk() {
+async function getJDDJCk(deviceid) {
   let myRequest =  {
-    url: `https://daojia.jd.com/client?_jdrandom=${Date.now()}&platCode=H5&appName=paidaojia&channel=jdapp&appVersion=8.9.5&jdDevice=&functionId=login/treasure&body={%22refPageSource%22:%22%22,%22longitude%22:null,%22latitude%22:null,%22pageSource%22:%22home%22,%22ref%22:%22%22,%22ctp%22:%22home%22}`,
+    url: `https://daojia.jd.com/client?_jdrandom=${Date.now()}&_funid_=login/treasure&functionId=login/treasure&body={}&lat=&lng=&lat_pos=&lng_pos=&city_id=&channel=h5&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&isNeedDealError=false&traceId=${deviceid}&deviceToken=${deviceid}&deviceId=${deviceid}&_jdrandom=1627648796622&_funid_=login/treasure`,
     method: 'GET',
     headers: {
-      'Authority': 'daojia.jd.com',
-      'Accept-Encoding': `gzip, deflate, br`,
-      'Accept-Language': `zh-CN,zh;q=0.9`,
-      'Cookie': `${$.cookie}`,
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
-      'Accept': `application/json, text/plain, */*`,
+      "Cookie": 'deviceid_pdj_jd=' + deviceid + ';' + $.cookie + ';',
+      "Host": "daojia.jd.com",
+      "referer": "https://daojia.jd.com/taroh5/h5dist/",
+      'Content-Type': 'application/x-www-form-urlencoded',
+      "User-Agent": 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)'
     }
   };
   return new Promise(async resolve => {
     $.get(myRequest, (err, resp, data) => {
       try {
-        let setCookieList = resp['headers']['set-cookie'];
-        for (let i = 0; i < setCookieList.length; i++) {
-          if(setCookieList[i].match(/o2o_m_h5_sid=(.*); Version=/) && setCookieList[i].match(/o2o_m_h5_sid=(.*); Version=/)[1]){
-            $.o2o_m_h5_sid = setCookieList[i].match(/o2o_m_h5_sid=(.*); Version=/)[1]
+        if (data.indexOf('请求成功') > -1) {
+          let ckArry = [];
+          if (resp.headers['set-cookie'])
+            ckArry = resp.headers['set-cookie'];
+          else
+            ckArry = resp.headers['Set-Cookie'].split(';');
+          for (const o of ckArry) {
+            if (o.indexOf('o2o') > -1 || o.indexOf('H5_PIN') > -1) $.jddjCookie += o + ';'
           }
-          if(setCookieList[i].match(/deviceid_pdj_jd=(.*); Version=/) && setCookieList[i].match(/deviceid_pdj_jd=(.*); Version=/)[1]){
-            $.deviceid_pdj_jd = setCookieList[i].match(/deviceid_pdj_jd=(.*); Version=/)[1]
-          }
+          $.jddjCookie += 'deviceid_pdj_jd=' + deviceid
         }
       } catch (e) {
         console.log(data);
@@ -362,6 +364,12 @@ async function getJDDJCk() {
       }
     })
   })
+}
+function _uuid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
 function TotalBean() {return new Promise(async resolve => {const options = {"url": `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,"headers": {"Accept": "application/json,text/plain, */*","Content-Type": "application/x-www-form-urlencoded","Accept-Encoding": "gzip, deflate, br","Accept-Language": "zh-cn","Connection": "keep-alive","Cookie": $.cookie,"Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2","User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")}};$.post(options, (err, resp, data) => {try {if (err) {console.log(`${JSON.stringify(err)}`);            console.log(`${$.name} API请求失败，请检查网路重试`);} else {if (data) {data = JSON.parse(data);if (data['retcode'] === 13) {$.isLogin = false; return;}if (data['retcode'] === 0) {$.nickName = (data['base'] && data['base'].nickname) || $.UserName;} else {$.nickName = $.UserName;}} else {console.log(`京东服务器返回空数据`);}}} catch (e) {  $.logErr(e, resp);} finally {  resolve();}});});}
 // prettier-ignore
