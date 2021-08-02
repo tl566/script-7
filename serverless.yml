@@ -34,18 +34,18 @@ inputs:
           cronExpression: "0 5 6-18/6,8 * * * *"
           enable: true
           argument: jd_fruit&jd_pet&jd_bookshop&jd_jxnc&jd_speed_sign&jd_gold_creator&jd_foodRunning
-    - timer: #宠汪汪喂食 #宠汪汪 #摇钱树 #京东种豆得豆 #京喜工厂 #东东工厂 #东东健康社区收集能量
+    - timer: #宠汪汪喂食 #宠汪汪 #摇钱树 #京东种豆得豆 #京喜工厂 #东东工厂 #东东健康社区收集能量 #京东到家农场收集水车水滴 #京东到家鲜豆庄园收水车水滴
         parameters:
-          name: feedPets_joy_moneyTree_plantBean_dreamFactory_jdfactory_healthcollect
+          name: feedPets_joy_moneyTree_plantBean_dreamFactory_jdfactory_healthcollect_jddjfruitcollect_jddjplantBeanscollect
           cronExpression: "0 3 */1 * * * *"
           enable: true
-          argument: jd_joy_feedPets&jd_joy&jd_moneyTree&jd_plantBean&jd_dreamFactory&jd_jdfactory&jd_health_collect
-    - timer: #宠汪汪积分兑换京豆 #签到领现金 #东东小窝 #京喜财富岛 #京东直播 #东东健康社区 #每日抽奖 #女装魔盒 #东东电竞经理
+          argument: jd_joy_feedPets&jd_joy&jd_moneyTree&jd_plantBean&jd_dreamFactory&jd_jdfactory&jd_health_collect&jd_jddj_fruit_collect&jd_jddj_plantBeans_collect
+    - timer: #宠汪汪积分兑换京豆 #签到领现金 #东东小窝 #京喜财富岛 #京东直播 #东东健康社区 #每日抽奖 #女装魔盒 #东东电竞经理 #京东到家农场 #京东到家鲜豆庄园
         parameters:
-          name: joyreward_cash_smallhome_jxbfd_live_health_dailylottery_nzmh_esManager
+          name: joyreward_cash_smallhome_jxbfd_live_health_dailylottery_nzmh_esManager_jddjfruit_jddjplantBeans
           cronExpression: "0 0 0-16/8,20 * * * *"
           enable: true
-          argument: jd_joy_reward&jd_cash&jd_small_home&jd_jxbfd&jd_live&jd_health&jd_daily_lottery&jd_nzmh&jd_esManager
+          argument: jd_joy_reward&jd_cash&jd_small_home&jd_jxbfd&jd_live&jd_health&jd_daily_lottery&jd_nzmh&jd_esManager&jd_jddj_fruit&jd_jddj_plantBeans
     - timer: #京东全民开红包 #进店领豆 #取关京东店铺商品 #京东抽奖机 #京东汽车 #京东秒秒币 #燃动夏季下注
         parameters:
           name: redPacket_shop_unsubscribe_lotteryMachine_car_ms_summermovementbet
@@ -64,12 +64,12 @@ inputs:
           cronExpression: "0 15 */1 * * * *"
           enable: true
           argument: jd_superMarket&jd_syj&jd_big_winner&jd_jxbfd_balloon
-    - timer: #京豆变动通知 #京东排行榜 #领京豆额外奖励 #京东保价 #闪购盲盒
+    - timer: #京豆变动通知 #京东排行榜 #领京豆额外奖励 #京东保价 #闪购盲盒 #京东到家鲜豆任务
         parameters:
-          name: beanchange_rankingList_beanhome_price_sgmh
+          name: beanchange_rankingList_beanhome_price_sgmh_jddjdailyTask
           cronExpression: "0 30 7 * * * *"
           enable: true
-          argument: jd_bean_change&jd_rankingList&jd_bean_home&jd_price&jd_sgmh
+          argument: jd_bean_change&jd_rankingList&jd_bean_home&jd_price&jd_sgmh&jd_jddj_dailyTask
     - timer: #金融养猪 #京东快递 #京东赚赚 #京东极速版红包 #领金贴 #京小鸽吾悦寄 #送豆得豆 #汪汪乐园 #领京豆 #点点券
         parameters:
           name: pigPet_kd_jdzz_speedredpocke_jintie_jxg_sendBeans_joypark_ljd_necklace
