@@ -142,7 +142,7 @@
 #京东到家农场
 10 8,11,17 * * * node /scripts/jd_jddj_fruit.js >> /scripts/logs/jd_jddj_fruit.log 2>&1
 #京东到家农场收集水车水滴
-10 0-23/2 * * * node /scripts/jd_jddj_fruit_collect.js >> /scripts/logs/jd_jddj_fruit_collect.log 2>&1
+10 * * * * node /scripts/jd_jddj_fruit_collect.js >> /scripts/logs/jd_jddj_fruit_collect.log 2>&1
 #京东到家鲜豆庄园
 10 7,10,16 * * * node /scripts/jd_jddj_plantBeans.js >> /scripts/logs/jd_jddj_plantBeans.log 2>&1
 #京东到家鲜豆庄园收水车水滴
