@@ -153,3 +153,5 @@
 14 0-23/3 * * * node /scripts/jd_joy_park_merge.js >> /scripts/logs/jd_joy_park_merge.log 2>&1
 #领京豆
 50 4 * * * node /scripts/jd_ljd.js >> /scripts/logs/jd_ljd.log 2>&1
+#特务Z，做任务抽奖，不定期出现活动
+50 7,8 * * * node /scripts/jd_productBrand.js >> /scripts/logs/jd_productBrand.log 2>&1
