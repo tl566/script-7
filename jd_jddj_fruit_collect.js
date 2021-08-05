@@ -1,7 +1,7 @@
 /*
 * 京东到家农场收集水车水滴
 * 需要先手动进系统种一棵果树
-* cron 10 0-23/2 * * *
+* cron 10 * * * *
 * */
 const $ = new Env('京东到家农场收集水车水滴');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
