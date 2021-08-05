@@ -768,7 +768,7 @@ function UserMedal(body) {
 //沙滩捡东西api
 function pickshell(body = '', type = 1) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : ''
+    const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 4 ? '扇贝' : '未知种类'
     let options = taskUrl(`story/pickshell`, body, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone');
     if (!body) {
       options = taskUrl(`story/queryshell`, body, '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
@@ -1286,7 +1286,7 @@ function helpbystage(strShareId) {
   });
 }
 async function sell(dwSceneId = 1, type = 0) {
-  const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
+  const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 4 ? '扇贝' : '全部贝壳'
   return new Promise(async (resolve) => {
     const options = taskUrl('story/querystorageroom', ``, '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
     $.get(options, async (err, resp, data) => {
@@ -1340,7 +1340,7 @@ async function sell(dwSceneId = 1, type = 0) {
 }
 function sellgoods(body, type) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
+    const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 4 ? '扇贝' : '全部贝壳'
     const options = taskUrl('story/sellgoods', body, '_cfd_t,bizCode,dwEnv,dwSceneId,ptag,source,strTypeCnt,strZone');
     $.get(options, async (err, resp, data) => {
       try {

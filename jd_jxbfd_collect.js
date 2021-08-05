@@ -133,7 +133,7 @@ async function pickShells(ck = cookie, index = $.index) {
 //沙滩捡东西api
 function pickshell(body = '', type = 1, ck, index) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : ''
+    const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 4 ? '扇贝' : '未知'
     let options = taskUrl(`story/pickshell`, body, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', ck);
     if (!body) {
       options = taskUrl(`story/queryshell`, body, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', ck);
@@ -172,7 +172,7 @@ function pickshell(body = '', type = 1, ck, index) {
 }
 async function sell(dwSceneId = 1, type = 0, ck, index) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
+    const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 4 ? '扇贝' : '全部贝壳'
     const options = taskUrl('story/querystorageroom', ``, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', ck);
     $.get(options, async (err, resp, data) => {
       try {
@@ -216,7 +216,7 @@ async function sell(dwSceneId = 1, type = 0, ck, index) {
 }
 function sellgoods(body, type, ck, index) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : '全部贝壳'
+    const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 4 ? '扇贝' : '全部贝壳'
     const options = taskUrl('story/sellgoods', body, '_cfd_t,bizCode,dwEnv,dwSceneId,ptag,source,strTypeCnt,strZone', ck);
     $.get(options, async (err, resp, data) => {
       try {
