@@ -1,6 +1,6 @@
 /*
 京东手机狂欢城活动，每日可获得20+以上京豆（其中20京豆是往期奖励，需第一天参加活动后，第二天才能拿到）
-活动时间: 2021-5-24至2021-6-20
+活动时间: 2021-8-9至2021-8-28
 活动入口：暂无 [活动地址](https://carnivalcity.m.jd.com/)
 
 往期奖励：
@@ -119,7 +119,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
   if (allMessage) {
     //NODE端,默认每月一日运行进行推送通知一次
     if ($.isNode()) {
-      await notify.sendNotify($.name, allMessage, { url: JD_API_HOST });
+      await notify.sendNotify($.name, allMessage, { url: 'https://carnivalcity.m.jd.com/' });
       $.msg($.name, '', allMessage);
     }
   }
@@ -734,7 +734,7 @@ function getListRank() {
   })
 }
 
-function updateShareCodesCDN(url = 'https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_cityShareCodes.json') {
+function updateShareCodesCDN(url = 'https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/jd_cityShareCodes.json') {
   return new Promise(resolve => {
     $.get({url , headers:{"User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")}, timeout: 200000}, async (err, resp, data) => {
       try {
