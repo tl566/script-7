@@ -27,9 +27,9 @@ cron "0 0-18/6 * * *" script-path=jd_carnivalcity.js, tag=京东手机狂欢城
 5G狂欢城 = type=cron,script-path=jd_carnivalcity.js, cronexpr="0 0,6,12,18 * * *", timeout=3600, enable=true
 */
 const $ = new Env('京东手机狂欢城');
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 
@@ -46,8 +46,8 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 let inviteCodes = [];
-const JD_API_HOST = 'https://carnivalcity.m.jd.com';
-const activeEndTime = '2021/06/21 00:00:00+08:00';//活动结束时间
+const JD_API_HOST = 'https://api.m.jd.com/api';
+const activeEndTime = '2021/08/29 00:00:00+08:00';//活动结束时间
 let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
 !(async () => {
   if (!cookiesArr[0]) {
@@ -166,7 +166,14 @@ async function doHotProducttask() {
 //做任务 API
 function doBrowse(id = "", brandId = "", taskMark = "hot", type = "browse", logMark = "browseHotSku") {
   return new Promise(resolve => {
-    const body = `brandId=${brandId}&id=${id}&taskMark=${taskMark}&type=${type}&logMark=${logMark}`;
+    // const body = `brandId=${brandId}&id=${id}&taskMark=${taskMark}&type=${type}&logMark=${logMark}`;
+    const body = {
+      brandId: `${brandId}`,
+      id: `${id}`,
+      taskMark: `${taskMark}`,
+      type: `${type}`,
+      logMark: `${logMark}`
+    }
     const options = taskPostUrl('/khc/task/doBrowse', body)
     $.post(options, (err, resp, data) => {
       try {
@@ -193,7 +200,11 @@ function doBrowse(id = "", brandId = "", taskMark = "hot", type = "browse", logM
 //领取奖励
 function getBrowsePrize(browseId, brandId = '') {
   return new Promise(resolve => {
-    const body = `brandId=${brandId}&browseId=${browseId}`;
+    // const body = `brandId=${brandId}&browseId=${browseId}`;
+    const body = {
+      brandId:`${brandId}`,
+      browseId:`${browseId}`
+    }
     const options = taskPostUrl('/khc/task/getBrowsePrize', body)
     $.post(options, (err, resp, data) => {
       try {
@@ -222,13 +233,13 @@ async function doBrandTask() {
   }
 }
 function brandTaskInfo(brandId) {
-  const options = taskUrl('/khc/index/brandTaskInfo', { t: Date.now(), brandId })
+  const options = taskPostUrl('/khc/index/brandTaskInfo', { t: Date.now(), brandId })
   $.skuTask = [];
   $.shopTask = [];
   $.meetingTask = [];
   $.questionTask = {};
   return new Promise( (resolve) => {
-    $.get(options, async (err, resp, data) => {
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -289,7 +300,7 @@ function brandTaskInfo(brandId) {
 }
 function doQuestion(brandId, questionId, result) {
   return new Promise(resolve => {
-    const body = `brandId=${brandId}&questionId=${questionId}&result=${result}`;
+    const body = {brandId: `${brandId}`, questionId: `${questionId}`, result: `${result}`};
     const options = taskPostUrl('/khc/task/doQuestion', body)
     $.post(options, (err, resp, data) => {
       try {
@@ -324,12 +335,12 @@ async function doBrowseshopTask() {
   }
 }
 function indexInfo(flag = false) {
-  const options = taskUrl('/khc/index/indexInfo', { t: Date.now() })
+  const options = taskPostUrl('/khc/index/indexInfo', { t: Date.now() })
   $.hotProductList = [];
   $.brandList = [];
   $.browseshopList = [];
   return new Promise( (resolve) => {
-    $.get(options, async (err, resp, data) => {
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -358,9 +369,9 @@ function indexInfo(flag = false) {
 }
 //获取助力信息
 function supportList() {
-  const options = taskUrl('/khc/index/supportList', { t: Date.now() })
+  const options = taskPostUrl('/khc/index/supportList', { t: Date.now() })
   return new Promise( (resolve) => {
-    $.get(options, async (err, resp, data) => {
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -382,9 +393,9 @@ function supportList() {
 }
 //积分抽奖
 function lottery() {
-  const options = taskUrl('/khc/record/lottery', { t: Date.now() })
+  const options = taskPostUrl('/khc/record/lottery', { t: Date.now() })
   return new Promise( (resolve) => {
-    $.get(options, async (err, resp, data) => {
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -414,9 +425,9 @@ function lottery() {
 }
 //查询抽奖记录(未兑换的)
 function check() {
-  const options = taskUrl('/khc/record/convertRecord', { t: Date.now(), pageNum: 1 })
+  const options = taskPostUrl('/khc/record/convertRecord', { t: Date.now(), pageNum: 1 })
   return new Promise( (resolve) => {
-    $.get(options, async (err, resp, data) => {
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -491,8 +502,8 @@ function myRank() {
     const body = {
       t: Date.now()
     }
-    const options = taskUrl("/khc/rank/myPastRanks", body);
-    $.get(options, async (err, resp, data) => {
+    const options = taskPostUrl("/khc/rank/myPastRanks", body);
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -534,7 +545,7 @@ function myRank() {
 //领取往期奖励API
 function saveJbean(date) {
   return new Promise(resolve => {
-    const body = "date=" + date;
+    const body = {"date": date};
     const options = taskPostUrl('/khc/rank/getRankJingBean', body)
     $.post(options, (err, resp, data) => {
       try {
@@ -567,7 +578,7 @@ async function doHelp() {
 //助力API
 function toHelp(code = "7c4deed4-2a26-4fa1-bb27-8421f02f30a6") {
   return new Promise(resolve => {
-    const body = "shareId=" + code;
+    const body = {"shareId" : code};
     const options = taskPostUrl('/khc/task/doSupport', body)
     $.post(options, (err, resp, data) => {
       try {
@@ -596,8 +607,8 @@ function getHelp() {
     const body = {
       t: Date.now()
     }
-    const options = taskUrl("/khc/task/getSupport", body);
-    $.get(options, async (err, resp, data) => {
+    const options = taskPostUrl("/khc/task/getSupport", body);
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -628,8 +639,8 @@ function getListJbean() {
       t: Date.now(),
       pageNum: ``
     }
-    const options = taskUrl("/khc/record/jingBeanRecord", body);
-    $.get(options, async (err, resp, data) => {
+    const options = taskPostUrl("/khc/record/jingBeanRecord", body);
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -658,8 +669,8 @@ function getListIntegral() {
       t: Date.now(),
       pageNum: ``
     }
-    const options = taskUrl("/khc/record/integralRecord", body);
-    $.get(options, async (err, resp, data) => {
+    const options = taskPostUrl("/khc/record/integralRecord", body);
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -693,8 +704,8 @@ function getListRank() {
     const body = {
       t: Date.now()
     }
-    const options = taskUrl("/khc/rank/dayRank", body);
-    $.get(options, async (err, resp, data) => {
+    const options = taskPostUrl("/khc/rank/dayRank", body);
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -778,7 +789,7 @@ function shareCodesFormat() {
       $.newShareCodes = inviteCodes[tempIndex] && inviteCodes[tempIndex].split('@') || [];
       if ($.updatePkActivityIdRes && $.updatePkActivityIdRes.length) $.newShareCodes = [...$.updatePkActivityIdRes, ...$.newShareCodes];
     }
-    const readShareCodeRes = await readShareCode();
+    const readShareCodeRes = {};
     if (readShareCodeRes && readShareCodeRes.code === 200) {
       $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
     }
@@ -850,22 +861,23 @@ function taskPostUrl(t, a) {
   let o = "07035cabb557f09a5" + r;
   // let t = "/khc/task/doQuestion";
   // let a = "brandId=555555&questionId=2&result=1"
+  const body = $.toStr({...a,"apiMapping":`${t}`});
   return {
-    url: `${JD_API_HOST}${t}`,
-    body: a,
+    url: `${JD_API_HOST}`,
+    body: `appid=guardian-starjd&functionId=carnivalcity_jd_prod&body=${body}&t=${r}&loginType=2`,
     headers: {
       "Accept": "application/json, text/plain, */*",
       "Accept-Encoding": "gzip, deflate, br",
       "Accept-Language": "zh-cn",
       "Connection": "keep-alive",
       "Content-Type": "application/x-www-form-urlencoded",
-      "Host": "carnivalcity.m.jd.com",
+      // "Host": "carnivalcity.m.jd.com",
       "Origin": "https://carnivalcity.m.jd.com",
-      "Referer": "https://carnivalcity.m.jd.com/?lng=113.325695&lat=23.198318&sid=dfb50c19b37544d6ce10759e26c451dw&un_area=19_1601_50258_62858",
-      "User-Agent": "jdapp;iPhone;9.4.4;14.3;88732f840b77821b345bf07fd71f609e6ff12f43;network/4g;ADID/B28DA848-0DA0-4AAA-AE7E-A6F55695C590;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone11,8;addressid/2005183373;supportBestPay/0;appBuild/167588;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+      "Referer": "https://carnivalcity.m.jd.com/?lng=&lat=&sid=&un_area=",
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
       "Cookie": cookie,
-      sign: za(a, o, t).toString(),
-      timestamp: r,
+      // sign: za(a, o, t).toString(),
+      // timestamp: r,
     }
   }
 }
