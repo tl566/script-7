@@ -187,8 +187,15 @@ async function stealFriendWater() {
             await collectUserNutr(item.paradiseUuid);
             console.log(`偷取好友营养液情况:${JSON.stringify($.stealFriendRes)}`)
             if ($.stealFriendRes && $.stealFriendRes.code === '0' && $.stealFriendRes.data) {
-              console.log(`偷取好友营养液成功`)
-              await $.wait(500)
+              if ($.stealFriendRes.data.hasOwnProperty('timeNutrientsRes')) {
+                console.log(`偷取好友营养液成功`)
+                await $.wait(500)
+              } else if ($.stealFriendRes.data.collectMsg.includes('已达上限')) {
+                console.log(`偷取好友营养液失败，已达上限`)
+                break
+              } else {
+                console.log(`偷取好友营养液失败，未知情况！`)
+              }
             }
           }
         } else {
@@ -197,9 +204,16 @@ async function stealFriendWater() {
             console.log(`可以偷的好友的信息paradiseUuid::${JSON.stringify(item.paradiseUuid)}`);
             await collectUserNutr(item.paradiseUuid);
             console.log(`偷取好友营养液情况:${JSON.stringify($.stealFriendRes)}`)
-            if ($.stealFriendRes && $.stealFriendRes.code === '0') {
-              console.log(`偷取好友营养液成功`)
-              await $.wait(500)
+            if ($.stealFriendRes && $.stealFriendRes.code === '0' && $.stealFriendRes.data) {
+              if ($.stealFriendRes.data.hasOwnProperty('timeNutrientsRes')) {
+                console.log(`偷取好友营养液成功`)
+                await $.wait(500)
+              } else if ($.stealFriendRes.data.collectMsg.includes('已达上限')) {
+                console.log(`偷取好友营养液失败，已达上限`)
+                break
+              } else {
+                console.log(`偷取好友营养液失败，未知情况！`)
+              }
             }
           }
         }
