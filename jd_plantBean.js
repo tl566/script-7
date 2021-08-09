@@ -89,16 +89,16 @@ async function jdPlantBean() {
   try {
     console.log(`获取任务及基本信息`)
     await plantBeanIndex();
-    let count=$.plantBeanIndexResult.data.roundList.length
     // console.log(plantBeanIndexResult.data.taskList);
     if ($.plantBeanIndexResult && $.plantBeanIndexResult.code === '0' && $.plantBeanIndexResult.data) {
+      let count = $.plantBeanIndexResult.data.roundList.length;
       const shareUrl = $.plantBeanIndexResult.data.jwordShareInfo.shareUrl
       $.myPlantUuid = getParam(shareUrl, 'plantUuid')
       console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.myPlantUuid}\n`);
       roundList = $.plantBeanIndexResult.data.roundList;
-        currentRoundId = roundList[count-1].roundId;//本期的roundId
-        lastRoundId = roundList[count-2].roundId;//上期的roundId
-        awardState = roundList[count-2].awardState;
+      currentRoundId = roundList[count-1].roundId;//本期的roundId
+      lastRoundId = roundList[count-2].roundId;//上期的roundId
+      awardState = roundList[count-2].awardState;
       $.taskList = $.plantBeanIndexResult.data.taskList;
       subTitle = `【京东昵称】${$.plantBeanIndexResult.data.plantUserInfo.plantNickName}`;
       message += `【上期时间】${roundList[0].dateDesc.replace('上期 ', '')}\n`;
@@ -565,7 +565,7 @@ function shareCodesFormat() {
       const tempIndex = $.index > shareCodes.length ? (shareCodes.length - 1) : ($.index - 1);
       newShareCodes = shareCodes[tempIndex].split('@');
     }
-    const readShareCodeRes = await readShareCode();
+    const readShareCodeRes = {};
     if (readShareCodeRes && readShareCodeRes.code === 200) {
       newShareCodes = [...new Set([...newShareCodes, ...(readShareCodeRes.data || [])])];
     }
