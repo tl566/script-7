@@ -451,12 +451,12 @@ async function takePostRequest(type) {
       myRequest = getPostRequest(url, body);
       break;
     case 'watering':
-      let bodyInfo = `{"waterTime":${$.waterTime}}`;
-      let functionId = `fruit/watering`;
-      url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}`;
-      body = `functionId=${encodeURI(functionId)}&isNeedDealError=true&method=POST&body=${encodeURI(bodyInfo)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
-      myRequest = getPostRequest(url, body);
-      break;
+        let bodyInfo = `{"waterTime":${$.waterTime}}`;
+        let functionId = `fruit/watering`;
+        url = `https://daojia.jd.com/client`;
+        body = `functionId=${encodeURI(functionId)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&deviceToken=${$.token}&deviceId=${$.token}&channel=wx_xcx&mpChannel=wx_xcx&platform=5.0.0&platCode=mini&appVersion=5.0.0&appName=paidaojia&deviceModel=appmodel&xcxVersion=8.10.1&isNeedDealError=true&business=wxshouyeqiu&method=POST&body=${encodeURI(bodyInfo)}`;
+        myRequest = getPostRequest(url, body);
+        break;
     default:
       console.log(`错误${type}`);
   }
@@ -483,19 +483,22 @@ function getPostRequest(url, body){
   return {url: url, method: 'POST', headers: headers,body:body};
 }
 async function getMyRequestGet(body,functionId){
-  let url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&functionId=${encodeURI(functionId)}&isNeedDealError=true&body=${encodeURI(body)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
-  const method = `GET`;
-  const headers = {
-    'Host': 'daojia.jd.com',
-    'Content-Type': 'application/x-www-form-urlencoded;',
-    'Origin': 'https://daojia.jd.com',
-    'Cookie': $.jddjCookie,
-    'Connection': 'keep-alive',
-    'Accept': '*/*',
-    "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
-    'Accept-Language': 'zh-cn'
-  };
-  return  {url: url,method: method,headers: headers} ;
+    let url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&functionId=${encodeURI(functionId)}&isNeedDealError=true&body=${encodeURI(body)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
+    if(functionId === 'fruit/collectWater'){
+        url = `https://daojia.jd.com/client?lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&deviceToken=${$.token}&deviceId=${$.token}&channel=wx_xcx&mpChannel=wx_xcx&platform=5.0.0&platCode=mini&appVersion=5.0.0&appName=paidaojia&deviceModel=appmodel&xcxVersion=8.10.1&isNeedDealError=true&business=wxshouyeqiu&functionId=fruit%2FcollectWater&body=%7B%7D`
+    }
+    const method = `GET`;
+    const headers = {
+        'Host': 'daojia.jd.com',
+        'Content-Type': 'application/x-www-form-urlencoded;',
+        'Origin': 'https://daojia.jd.com',
+        'Cookie': $.jddjCookie,
+        'Connection': 'keep-alive',
+        'Accept': '*/*',
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+        'Accept-Language': 'zh-cn'
+    };
+    return  {url: url,method: method,headers: headers} ;
 }
 
 async function getJDDJCk(deviceid) {

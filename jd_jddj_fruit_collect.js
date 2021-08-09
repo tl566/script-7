@@ -96,33 +96,35 @@ function dealReturn(type, data) {
   }
 }
 async function takeGetRequest(type) {
-  let body = ``;
-  let functionId = ``;
-  switch (type) {
-    case 'getWaterWheelInfo':
-      body = `{}`;
-      functionId = `fruit/getWaterWheelInfo`;
-      break;
-    case 'collectWater':
-      body = `{}`;
-      functionId = `fruit/collectWater`;
-      break;
-    default:
-      console.log(`错误${type}`);
-  }
-  let myRequest = await getMyRequestGet(body, functionId);
-  return new Promise(async resolve => {
-    $.get(myRequest, (err, resp, data) => {
-      try {
-        dealReturn(type, data);
-      } catch (e) {
-        console.log(data);
-        $.logErr(e, resp)
-      } finally {
-        resolve();
-      }
-    });
-  })
+    let body = ``;
+    let functionId = ``;
+    let url = ``;
+    switch (type) {
+        case 'getWaterWheelInfo':
+            body = `{}`;
+            functionId = `fruit/getWaterWheelInfo`;
+            url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&functionId=${encodeURI(functionId)}&isNeedDealError=true&body=${encodeURI(body)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
+            break;
+        case 'collectWater':
+            body = `{}`;
+            functionId = `fruit/collectWater`;
+            url = `https://daojia.jd.com/client?lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&deviceToken=${$.token}&deviceId=${$.token}&channel=wx_xcx&mpChannel=wx_xcx&platform=5.0.0&platCode=mini&appVersion=5.0.0&appName=paidaojia&deviceModel=appmodel&xcxVersion=8.10.1&isNeedDealError=true&business=wxshouyeqiu&functionId=fruit%2FcollectWater&body=%7B%7D`
+            break;
+        default:
+            console.log(`错误${type}`);
+    }
+    return new Promise(async resolve => {
+        $.get(myRequest, (err, resp, data) => {
+          try {
+            dealReturn(type, data);
+          } catch (e) {
+            console.log(data);
+            $.logErr(e, resp)
+          } finally {
+            resolve();
+          }
+        });
+    })
 }
 
 async function getMyRequestGet(body, functionId) {

@@ -291,6 +291,9 @@ async function takePostRequest(type) {
   }
   let url = `https://daojia.jd.com/client?_jdrandom=${Date.now()}&_funid_=${functionId}`;
   let body = `functionId=${encodeURI(functionId)}&isNeedDealError=true&method=POST&body=${encodeURI(bodyInfo)}&lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&channel=ios&platform=6.6.0&platCode=h5&appVersion=6.6.0&appName=paidaojia&deviceModel=appmodel&traceId=${$.token}${Date.now()}&deviceToken=${$.token}&deviceId=${$.token}`;
+    if(type === 'getWater'){
+        body = `lat=${$.lat}&lng=${$.lng}&lat_pos=${$.lat}&lng_pos=${$.lng}&city_id=${$.cityId}&deviceToken=${$.token}&deviceId=${$.token}&channel=wx_xcx&mpChannel=wx_xcx&platform=5.0.0&platCode=mini&appVersion=5.0.0&appName=paidaojia&deviceModel=appmodel&xcxVersion=8.10.1&isNeedDealError=true&business=undefined&functionId=plantBeans%2FgetWater&method=POST&body=%7B%22activityId%22%3A%2224226e4f763c4e1%22%7D`
+    }
   let myRequest = getPostRequest(url, body);
   return new Promise(async resolve => {
     $.post(myRequest, (err, resp, data) => {
