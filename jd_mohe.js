@@ -74,8 +74,9 @@ $.shareId = [];
         getCoin(),
         task0(),
         task1(),
+        taskList(),
       ])
-      await taskList();//做任务开盲盒
+      // await taskList();//做任务开盲盒
       await getAward();//抽奖
     }
   }
@@ -353,28 +354,7 @@ function strollShop(shopId) {
     $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
-        data = JSON.parse(data);
-        // console.log('homeGoBrowse', data)
-        // console.log(`成功领取${data.data}热力值`)
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve(data);
-      }
-    })
-  })
-}
-// 加入会员(7)
-function strollMember(venderId) {
-  return new Promise((resolve) => {
-    const url = `/active/strollMember`;
-    const body = {
-      venderId: `${venderId}`
-    };
-    $.post(taskurl(url, body), (err, resp, data) => {
-      try {
-        // console.log('homeGoBrowse', data)
-        data = JSON.parse(data);
+        data = $.toObj(data);
         // console.log('homeGoBrowse', data)
         // console.log(`成功领取${data.data}热力值`)
       } catch (e) {
@@ -408,7 +388,7 @@ function taskCoin(type) {
 }
 async function getAward() {
   const coinRes = await coin();
-  if (coinRes.code === 200) {
+  if (coinRes && coinRes.code === 200) {
     const { total, need } = coinRes.data;
     if (total > need) {
       const times = Math.floor(total / need);
@@ -440,7 +420,7 @@ function coin() {
     $.post(taskurl(url), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
-        data = JSON.parse(data);
+        data = $.toObj(data);
         // console.log('homeGoBrowse', data)
         // console.log(`成功领取${data.data}热力值`)
       } catch (e) {
@@ -512,7 +492,7 @@ function taskurl(url, bo = {}) {
     }
   }
 }
-function updateShareCodesCDN(url = 'https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_shareCodes.json') {
+function updateShareCodesCDN(url = 'https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/jd_shareCodes.json') {
   return new Promise(resolve => {
     $.get({
       url ,
