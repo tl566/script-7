@@ -1,7 +1,7 @@
 /*
 京东极速版红包
 自动提现微信现金
-更新时间：2021-5-31
+更新时间：2021-8-10
 活动时间：2021-4-6至2021-5-30
 活动地址：https://prodev.m.jd.com/jdlite/active/31U4T6S4PbcK83HyLPioeCWrD63j/index.html
 活动入口：京东极速版-领红包
@@ -29,7 +29,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [], cookie = '', message;
-const linkId = "AkOULcXbUA_8EAPbYLLMgg";
+const linkId = "9wdf1YTT2L59Vr-meKskLA";
 const signLinkId = '9WA12jYGulArzWS7vcrwhw';
 
 if ($.isNode()) {
@@ -87,7 +87,7 @@ async function jsRedPacket() {
       await $.wait(500)
     }
     await getPacketList();//领红包提现
-    await signPrizeDetailList();
+    await signPrizeDetailList();//极速版签到提现
     await showMsg()
   } catch (e) {
     $.logErr(e)
@@ -164,7 +164,11 @@ function reward_query() {
             if (data.code === 0) {
 
             } else {
-              console.log(data.errMsg)
+              console.log('spring_reward_query 异常' + $.toStr(data))
+              if (data && data.code === 12 && $.index === 1) {
+                $.msg($.name, '', 'linkId已过期，请联系作者更换！')
+                if ($.isNode()) await notify.sendNotify($.name, 'linkId已过期，请联系作者更换！')
+              }
             }
           }
         }
@@ -195,7 +199,7 @@ async function redPacket() {
                     console.log("获得优惠券")
                   }
                 } else {
-                  console.log(data.errMsg)
+                  console.log('spring_reward_receive 异常' + $.toStr(data))
                 }
               }
             }
@@ -227,7 +231,7 @@ function getPacketList() {
                 }
               }
             } else {
-              console.log(data.errMsg)
+              console.log('spring_reward_list 异常' + $.toStr(data))
             }
           }
         }
