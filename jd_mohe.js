@@ -1,8 +1,8 @@
 /*
 5G超级盲盒，可抽奖获得京豆，建议在凌晨0点时运行脚本，白天抽奖基本没有京豆，4小时运行一次收集热力值
 活动地址: https://isp5g.m.jd.com
-活动时间：2021-06-2到2021-07-31
-更新时间：2021-06-3 12:00
+活动时间：2021-08-2到2021-10-29
+更新时间：2021-08-10 12:00
 脚本兼容: QuantumultX, Surge,Loon, JSBox, Node.js
 =================================Quantumultx=========================
 [task_local]
@@ -20,9 +20,9 @@ cron "0 0,1-23/3 * * *" script-path=jd_mohe.js,tag=5G超级盲盒
 5G超级盲盒 = type=cron,script-path=jd_mohe.js, cronexpr="0 0,1-23/3 * * *", timeout=3600, enable=true
  */
 const $ = new Env('5G超级盲盒');
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message, allMessage = '';
@@ -45,8 +45,8 @@ $.shareId = [];
   }
   console.log('5G超级盲盒，可抽奖获得京豆，建议在凌晨0点时运行脚本，白天抽奖基本没有京豆，4小时运行一次收集热力值\n' +
       '活动地址: https://isp5g.m.jd.com\n' +
-      '活动时间：2021-06-2到2021-07-31\n' +
-      '更新时间：2021-06-3 12:00');
+      '活动时间：2021-08-2到2021-10-29\n' +
+      '更新时间：2021-08-10 12:00');
   await updateShareCodesCDN()
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
@@ -55,8 +55,9 @@ $.shareId = [];
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
+      $.blackAccount = false;
       message = '';
-      await TotalBean();
+      // await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -67,12 +68,14 @@ $.shareId = [];
         continue
       }
       await shareUrl();
-      await getCoin();//领取每三小时自动生产的热力值
+      if ($.blackAccount) continue ;
+      // await getCoin();//领取每三小时自动生产的热力值
       await Promise.all([
+        getCoin(),
         task0(),
         task1(),
       ])
-      await taskList();
+      await taskList();//做任务开盲盒
       await getAward();//抽奖
     }
   }
@@ -121,7 +124,7 @@ async function task0() {
           //   await taskHomeCoin(0, item.id);
           // }
         } else {
-          console.log('精选好物任务已完成')
+          console.log('精彩好物 任务已完成')
         }
       }
     }
@@ -147,13 +150,18 @@ async function task1() {
           console.log('精选店铺-任务已完成')
         }
       }
+    } else {
+      console.log('\n精选店铺-暂无任务\n')
     }
   }
 }
 function addShare(shareId) {
   return new Promise((resolve) => {
-    const url = `addShare?shareId=${shareId}&t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/addShare`;
+    const body = {
+      shareId: `${shareId}`
+    }
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -176,8 +184,8 @@ function addShare(shareId) {
 }
 function conf() {
   return new Promise((resolve) => {
-    const url = `conf`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/conf`;
+    $.post(taskurl(url), (err, resp, data) => {
       try {
         // console.log('ddd----ddd', data)
         data = JSON.parse(data);
@@ -192,8 +200,12 @@ function conf() {
 }
 function homeGoBrowse(type, id) {
   return new Promise((resolve) => {
-    const url = `homeGoBrowse?type=${type}&id=${id}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/homeGoBrowse`;
+    const body = {
+      type: `${type}`,
+      id: `${id}`
+    }
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -208,8 +220,9 @@ function homeGoBrowse(type, id) {
 }
 function taskHomeCoin(type, id) {
   return new Promise((resolve) => {
-    const url = `taskHomeCoin?type=${type}&id=${id}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = "/active/taskHomeCoin";
+    const body = {"type": type,"id":id}
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -224,18 +237,16 @@ function taskHomeCoin(type, id) {
 }
 function getCoin() {
   return new Promise((resolve) => {
-    const url = `getCoin?t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/getCoin`;
+    $.post(taskurl(url), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
         // console.log('homeGoBrowse', data)
-        if (data.code === 1001) {
-          console.log(data.msg);
-          $.msg($.name, '领取失败', `${data.msg}`);
-          $.done();
+        if (data.code === 200) {
+          console.log(`\n成功领取${data.data}热力值`)
         } else {
-          console.log(`成功领取${data.data}热力值`)
+          console.log('\n领取热力值失败 ' + data.msg);
           resolve(data);
         }
       } catch (e) {
@@ -248,8 +259,8 @@ function getCoin() {
 }
 function taskList() {
   return new Promise((resolve) => {
-    const url = `taskList?t=${Date.now()}`;
-    $.get(taskurl(url), async (err, resp, data) => {
+    const url = `/active/taskList`;
+    $.post(taskurl(url), async (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -275,7 +286,7 @@ function taskList() {
           //   console.log(`\n\n分享好友助力 ${task5.finishNum}/${task5.totalNum}\n\n`)
           // }
           if (task4.state === 2 && task1.state === 2 && task2.state === 2) {
-            console.log('\n\n----taskList的任务全部做完了---\n\n')
+            console.log('\n\n----【做任务开盲盒】的任务全部做完了---')
             console.log(`分享好友助力 ${task5.finishNum}/${task5.totalNum}\n\n`)
           } else {
             console.log(`请继续等待,正在做任务,不要退出哦`)
@@ -293,8 +304,11 @@ function taskList() {
 //浏览商品(16个)
 function browseProduct(skuId) {
   return new Promise((resolve) => {
-    const url = `browseProduct?0=${skuId}&t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/browseProduct`;
+    const body = {
+      0: `${skuId}`,
+    }
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -311,8 +325,11 @@ function browseProduct(skuId) {
 // 浏览会场(10个)
 function strollActive(index) {
   return new Promise((resolve) => {
-    const url = `strollActive?0=${index}&t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/strollActive`;
+    const body = {
+      0: `${index}`,
+    }
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -329,8 +346,11 @@ function strollActive(index) {
 //关注或浏览店铺(9个)
 function strollShop(shopId) {
   return new Promise((resolve) => {
-    const url = `strollShop?shopId=${shopId}&t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/strollShop`;
+    const body = {
+      shopId: `${shopId}`
+    };
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -347,8 +367,11 @@ function strollShop(shopId) {
 // 加入会员(7)
 function strollMember(venderId) {
   return new Promise((resolve) => {
-    const url = `strollMember?venderId=${venderId}&t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/strollMember`;
+    const body = {
+      venderId: `${venderId}`
+    };
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -365,8 +388,11 @@ function strollMember(venderId) {
 
 function taskCoin(type) {
   return new Promise((resolve) => {
-    const url = `taskCoin?type=${type}&t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/taskCoin`;
+    const body = {
+      type: `${type}`
+    }
+    $.post(taskurl(url, body), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -410,8 +436,8 @@ async function getAward() {
 //获取有多少热力值
 function coin() {
   return new Promise((resolve) => {
-    const url = `coin?t=${Date.now()}`;
-    $.get(taskurl(url), (err, resp, data) => {
+    const url = `/active/coin`;
+    $.post(taskurl(url), (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -428,19 +454,8 @@ function coin() {
 //抽奖API
 function lottery() {
   return new Promise((resolve) => {
-    const options = {
-      'url': `${JD_API_HOST}/prize/lottery?t=${Date.now()}`,
-      'headers': {
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        "content-type": "application/x-www-form-urlencoded",
-        "cookie": cookie,
-        "referer": "https://isp5g.m.jd.com",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
-      }
-    }
-    $.get(options, (err, resp, data) => {
+    const options = taskurl('/prize/lottery')
+    $.post(options, (err, resp, data) => {
       try {
         // console.log('homeGoBrowse', data)
         data = JSON.parse(data);
@@ -456,24 +471,16 @@ function lottery() {
 }
 function shareUrl() {
   return new Promise((resolve) => {
-    const options = {
-      'url': `${JD_API_HOST}/active/shareUrl?t=${Date.now()}`,
-      'headers': {
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        "content-type": "application/x-www-form-urlencoded",
-        "cookie": cookie,
-        "referer": "https://isp5g.m.jd.com",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
-      }
-    }
-    $.get(options, async (err, resp, data) => {
+    const options = taskurl('/active/shareUrl')
+    $.post(options, async (err, resp, data) => {
       try {
         console.log('好友邀请码', data)
         data = JSON.parse(data);
         if (data['code'] === 5000) {
           console.log(`尝试多次运行脚本即可获取好友邀请码`)
+        }
+        if (data['code'] === 1002) {
+          $.blackAccount = true;
         }
         // console.log('homeGoBrowse', data)
         if (data['code'] === 200) {
@@ -489,9 +496,11 @@ function shareUrl() {
     })
   })
 }
-function taskurl(url) {
+function taskurl(url, bo = {}) {
+  const body = { "apiMapping": url, ...bo };
   return {
-    'url': `${JD_API_HOST}/active/${url}`,
+    'url': `https://api.m.jd.com/api`,
+    'body': `appid=blind-box&functionId=blindbox_prod&body=${$.toStr(body)}&t=${+ new Date()}&loginType=2`,
     'headers': {
       "accept": "*/*",
       "accept-encoding": "gzip, deflate, br",
