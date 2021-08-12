@@ -114,8 +114,13 @@ async function main() {
         $.inviteTaskId = t['id'];
       } else if (t.taskType === 'SIGN') {
         console.log(`${t['taskShowTitle']}任务：${t['taskDoTimes']}/${t['taskLimitTimes']}`);
-        let res = await api('apDoTask', {"taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg"})
+        let res = await api('apDoTask', { "taskType": t.taskType, "taskId": t.id, linkId })
         console.log('签到结果', res)
+        await $.wait(1000);
+      } else if (t.taskType === 'BROWSE_CHANNEL') {
+        console.log(`${t['taskShowTitle']}任务：${t['taskDoTimes']}/${t['taskLimitTimes']}`);
+        let res = await api('apDoTask', { "taskType": t.taskType, "taskId": t.id, "itemId": t['taskSourceUrl'], linkId })
+        console.log('浏览会场结果', res)
         await $.wait(1000);
       } else if (
           t.taskType === 'BROWSE_CHANNEL' ||
