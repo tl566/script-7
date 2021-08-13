@@ -1,6 +1,6 @@
 /*
 5G超级盲盒，可抽奖获得京豆，建议在凌晨0点时运行脚本，白天抽奖基本没有京豆，4小时运行一次收集热力值
-活动地址: https://isp5g.m.jd.com
+活动地址: https://blindbox5g.jd.com
 活动时间：2021-08-2到2021-10-29
 更新时间：2021-08-10 12:00
 脚本兼容: QuantumultX, Surge,Loon, JSBox, Node.js
@@ -44,7 +44,7 @@ $.shareId = [];
     return;
   }
   console.log('5G超级盲盒，可抽奖获得京豆，建议在凌晨0点时运行脚本，白天抽奖基本没有京豆，4小时运行一次收集热力值\n' +
-      '活动地址: https://isp5g.m.jd.com\n' +
+      '活动地址: https://blindbox5g.jd.com\n' +
       '活动时间：2021-08-2到2021-10-29\n' +
       '更新时间：2021-08-10 12:00');
   await updateShareCodesCDN()
@@ -82,7 +82,7 @@ $.shareId = [];
   }
   if (allMessage) {
     if ($.isNode()) await notify.sendNotify($.name, allMessage);
-    $.msg($.name, '', allMessage, {"open-url": "https://isp5g.m.jd.com"})
+    $.msg($.name, '', allMessage, {"open-url": "https://blindbox5g.jd.com"})
   }
   $.shareId = [...($.shareId || []), ...($.updatePkActivityIdRes || [])];
   for (let v = 0; v < cookiesArr.length; v++) {
@@ -407,7 +407,7 @@ async function getAward() {
           break;
         }
       }
-      if (message) allMessage += `京东账号${$.index} ${$.nickName}\n${message}抽奖详情查看 https://isp5g.m.jd.com/#/myPrize${$.index !== cookiesArr.length ? '\n\n' : ''}`
+      if (message) allMessage += `京东账号${$.index} ${$.nickName}\n${message}抽奖详情查看 https://blindbox5g.jd.com/#/myPrize${$.index !== cookiesArr.length ? '\n\n' : ''}`
     } else {
       console.log(`目前热力值${total},不够抽奖`)
     }
