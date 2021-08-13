@@ -1,17 +1,18 @@
-/*
-明星小店
+/**
+ 明星小店
+ 没啥水，就是跑个乐呵
+ cron 10 9,18 9-25 8 * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_star_shop.js
  */
 const $ = new Env('明星小店');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.inviteCodeList = [];
-$.authorCodeList = [
-];
+$.authorCodeList = [];
 let cookiesArr = [];
 let uniqueIdList = [
-    {'id':'L74LC5','name':'肖战'}
+    {'id':'L74LC5','name':'肖战','linkID':'P8Iw2eXANcZA4r_ofEDaAQ'}
 ];
-$.linkID = 'P8Iw2eXANcZA4r_ofEDaAQ';
+$.linkID = '';
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -28,6 +29,7 @@ if ($.isNode()) {
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
         return;
     }
+    console.log(`\n哎，这活动没水，就是跑着玩\n`);
     console.log(`==================开始执行明星小店任务==================`);
     for (let i = 0; i < cookiesArr.length; i++) {
         $.index = i + 1;
@@ -48,6 +50,7 @@ if ($.isNode()) {
         await main();
     }
     // $.inviteCodeList.push(...getRandomArrayElements($.authorCodeList, 1));
+    // cookiesArr = getRandomArrayElements(cookiesArr,cookiesArr.length);
     // for (let i = 0; i < cookiesArr.length; i++) {
     //     $.cookie = cookiesArr[i];
     //     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -77,6 +80,7 @@ async function main() {
             $.uniqueId = uniqueIdList[j].id;
             $.helpCode = '';
             console.log(`开始第${j + 1}个明星小店，ID：${$.uniqueId},明星：${uniqueIdList[j].name}`);
+            $.linkID = uniqueIdList[j].linkID;
             await starShop();
             await $.wait(1000);
             if (j === 0) {
@@ -88,7 +92,7 @@ async function main() {
             console.log(JSON.stringify(e.message));
         }
     }
-    console.log(`=============${$.UserName }：星店长奖励汇总================`);
+    console.log(`=============${$.UserName }：明星小店奖励汇总================`);
     await $.wait(1000);
     $.rewards = [];
     await getReward();
@@ -111,7 +115,7 @@ async function main() {
         }
     }
     if(sendMessage){
-        sendMessage += `填写收货地址路径：\n京东首页，搜索明星（陈坤），进入明星小店，我的礼物，填写收货地址`;
+        sendMessage += `填写收货地址路径：\n京东首页，搜索明星（肖战），进入明星小店，我的礼物，填写收货地址`;
         await notify.sendNotify(`星店长`, sendMessage);
     }
 }
@@ -134,8 +138,6 @@ Date.prototype.Format = function (fmt) { //author: meizz
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
-
-
 async function getReward() {
     const url = `https://api.m.jd.com/?functionId=activityStarBackGetRewardList&body={%22linkId%22:%22${$.linkID}%22}&_t=${Date.now()}&appid=activities_platform`;
     const method = `GET`;
@@ -150,7 +152,6 @@ async function getReward() {
         'Accept-Encoding': `gzip, deflate, br`,
         'Accept-Language': `zh-cn`
     };
-
     const myRequest = {url: url, method: method, headers: headers,};
     return new Promise(async resolve => {
         $.get(myRequest, (err, resp, data) => {
@@ -315,7 +316,7 @@ function dealReturn(type, data) {
                 if(data.data.prizeType === 0){
                     console.log(`未抽中`);
                 }else{
-                    console.log(`恭喜你、抽中了`);
+                    console.log(`恭喜你、可能抽中了（以明星小店奖励汇总为准）`);
                 }
             }
             console.log(JSON.stringify(data));
