@@ -123,12 +123,12 @@ function jdhealth_getCommodities() {
               let msg = ``;
               if ($.physicals && Array.isArray($.physicals) && $.physicals.length) {
                 for (let physical of $.physicals) {
-                  msg += `${physical['title']} | ${(physical['exchangePoints'] / 10000).toFixed(1)}万 | ${physical['status'] === 0 ? '库存充足' : '库存不足'}\n`;
+                  msg += `${physical['title']} | 需健康值：${(physical['exchangePoints'] / 10000).toFixed(1)}万 | ${physical['status'] === 0 ? '库存充足' : '库存不足'}\n`;
                 }
                 if (msg) {
                   msg += `\n\n前往兑换：https://h5.m.jd.com/babelDiy/Zeus/D2CwCLVmaP3QonubWFJeTVhYRyT/index.html`;
-                  $.msg('一元兑换专区', '', msg);
-                  if ($.isNode()) await notify.sendNotify('一元兑换专区', msg);
+                  $.msg('东东健康一元兑换专区', '', msg);
+                  if ($.isNode()) await notify.sendNotify('东东健康一元兑换专区', msg);
                 }
               }
             } else {
