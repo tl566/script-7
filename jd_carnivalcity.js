@@ -134,32 +134,63 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
 async function JD818() {
   try {
     await indexInfo();//获取任务
-    await supportList();//助力情况
-    await getHelp();//获取邀请码
+    // await supportList();//助力情况
+    // await getHelp();//获取邀请码
+    await Promise.all([
+      supportList(),
+      getHelp()
+    ])
     if ($.blockAccount) return
     await indexInfo(true);//获取任务
-    await doHotProducttask();//做热销产品任务
-    await doBrandTask();//做品牌手机任务
+    await doHotProductTask();//做热销产品任务
     await doBrowseshopTask();//逛好货街，做任务
+    await doBrandTask();//做品牌手机任务
     // await doHelp();
-    await myRank();//领取往期排名奖励
-    await getListRank();
-    await getListIntegral();
-    await getListJbean();
-    await check();//查询抽奖记录(未兑换的，发送提醒通知);
+    // await myRank();//领取往期排名奖励
+    // await getListRank();
+    // await getListIntegral();
+    // await getListJbean();
+    // await check();//查询抽奖记录(未兑换的，发送提醒通知);
+    await Promise.all([
+      doBrandTask(),
+      myRank(),
+      getListRank(),
+      getListIntegral(),
+      getListJbean(),
+      check(),
+    ])
     await showMsg()
   } catch (e) {
     $.logErr(e)
   }
 }
-async function doHotProducttask() {
+//做热销产品任务
+async function doHotProductTask() {
   $.hotProductList = $.hotProductList.filter(v => !!v && v['status'] === "1");
   if ($.hotProductList && $.hotProductList.length) console.log(`开始 【浏览热销手机产品】任务,需等待6秒`)
+  $.browseHotProductIdArr = [];
   for (let item of $.hotProductList) {
     await doBrowse(item['id'], "", "hot", "browse", "browseHotSku");
-    await $.wait(1000 * 6);
-    if ($.browseId) {
-      await getBrowsePrize($.browseId)
+  }
+  await $.wait(1000 * 6);
+  for (let id of $.browseHotProductIdArr) {
+    if (id) {
+      await getBrowsePrize(id)
+    }
+  }
+}
+//逛好货街，做任务
+async function doBrowseshopTask() {
+  $.browseshopList = $.browseshopList.filter(v => !!v && v['status'] === "6");
+  if ($.browseshopList && $.browseshopList.length) console.log(`\n开始 【逛好货街，做任务】，需等待10秒`)
+  $.browseShopIdArr = [];
+  for (let shop of $.browseshopList) {
+    await doBrowse(shop['id'], "", "browseShop", "browse", "browseShop");
+  }
+  await $.wait(10000);
+  for (let id of $.browseShopIdArr) {
+    if (id) {
+      await getBrowsePrize(id)
     }
   }
 }
@@ -185,6 +216,8 @@ function doBrowse(id = "", brandId = "", taskMark = "hot", type = "browse", logM
           data = JSON.parse(data);
           if (data && data['code'] === 200) {
             $.browseId = data['data']['browseId'] || "";
+            if (data['data']['browseId'] && taskMark === 'hot') $.browseHotProductIdArr.push(data['data']['browseId'])
+            if (data['data']['browseId'] && taskMark === 'browseShop') $.browseShopIdArr.push(data['data']['browseId'])
           } else {
             console.log(`doBrowse异常`);
           }
@@ -322,18 +355,6 @@ function doQuestion(brandId, questionId, result) {
     })
   })
 }
-//逛好货街，做任务
-async function doBrowseshopTask() {
-  $.browseshopList = $.browseshopList.filter(v => !!v && v['status'] === "6");
-  if ($.browseshopList && $.browseshopList.length) console.log(`\n开始 【逛好货街，做任务】，需等待10秒`)
-  for (let shop of $.browseshopList) {
-    await doBrowse(shop['id'], "", "browseShop", "browse", "browseShop");
-    await $.wait(10000);
-    if ($.browseId) {
-      await getBrowsePrize($.browseId)
-    }
-  }
-}
 function indexInfo(flag = false) {
   const options = taskPostUrl('/khc/index/indexInfo', { t: Date.now() })
   $.hotProductList = [];
@@ -411,7 +432,7 @@ function lottery() {
               $.msg($.name, '', `京东账号 ${$.index} ${$.nickName || $.UserName}\n积分抽奖获得：${data.data.prizeName}\n兑换地址：${url}`, { 'open-url': url });
               if ($.isNode()) await notify.sendNotify($.name, `京东账号 ${$.index} ${$.nickName || $.UserName}\n积分抽奖获得：${data.data.prizeName}\n兑换地址：${url}`);
             } else {
-              console.log(`积分抽奖结果:${data['data']['prizeName']}}`);
+              console.log(`积分抽奖结果:${data['data']['prizeName']}`);
             }
           }
         }
