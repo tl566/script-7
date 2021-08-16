@@ -130,7 +130,7 @@ function skuApply(order) {
 
 function getApplyResult() {
   return new Promise((resolve, reject) => {
-    let paramObj = {"sid":"","type":"3","forcebot":"","num":0}
+    let paramObj = {"sid":"","type":"3","forcebot":"","num":15}
     $.post(taskUrl('siteppM_appliedSuccAmount', paramObj), (err, resp, data) => {
       try {
         if (err) {
