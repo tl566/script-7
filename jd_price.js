@@ -108,11 +108,11 @@ function skuApply(order) {
         } else {
           console.log(`一键保价申请结果：`, data);
           data = JSON.parse(data);
-          if (data.flag) {
+          if (data && data.flag) {
             console.log(`一键保价申请成功！`);
             await getApplyResult();
           } else {
-            console.log(`🚫 一键保价 申请失败：${data.responseMessage}`);
+            console.log(`🚫 一键保价 申请失败：${data && data.responseMessage}`);
           }
         }
       } catch (e) {
@@ -144,7 +144,7 @@ function getApplyResult() {
           if (data && data.flag) {
             $.refundtotalamount = data.succAmount
           } else {
-            console.log(`一键价格保护结果：${JSON.stringify(data)}`)
+            console.log(`一键价格保护金额查询成功：${JSON.stringify(data)}`)
           }
         }
       } catch (e) {
