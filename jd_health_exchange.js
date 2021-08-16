@@ -110,7 +110,7 @@ async function main() {
 }
 function jdhealth_getCommodities() {
 	return new Promise((resolve) => {
-		$.post(taskUrl("jdhealth_getCommodities", {}), (err, resp, data) => {
+		$.post(taskUrl("jdhealth_getCommodities", {}), async (err, resp, data) => {
 			try {
 			  if (err) {
           $.logErr(err);
@@ -120,6 +120,17 @@ function jdhealth_getCommodities() {
             if (data.data.bizCode === 0) {
               $.jBeans = data.data.result.jBeans;
               $.physicals = data.data.result.physicals;
+              let msg = ``;
+              if ($.physicals && Array.isArray($.physicals) && $.physicals.length) {
+                for (let physical of $.physicals) {
+                  msg += `${physical['title']} | 需健康值：${(physical['exchangePoints'] / 10000).toFixed(1)}万 | ${physical['status'] === 0 ? '库存充足' : '库存不足'}\n`;
+                }
+                if (msg) {
+                  msg += `\n\n前往兑换：https://h5.m.jd.com/babelDiy/Zeus/D2CwCLVmaP3QonubWFJeTVhYRyT/index.html`;
+                  $.msg('东东健康一元兑换专区', '', msg);
+                  if ($.isNode()) await notify.sendNotify('东东健康一元兑换专区', msg);
+                }
+              }
             } else {
               console.log(`jdhealth_getCommodities 失败：${JSON.stringify(data)}`);
             }

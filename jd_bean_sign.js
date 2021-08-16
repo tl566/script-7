@@ -3,7 +3,7 @@
 活动入口：各处的签到汇总
 Node.JS专用
 IOS软件用户请使用 https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js
-更新时间：2021-6-18
+更新时间：2021-8-15
 推送通知默认简洁模式(多账号只发送一次)。如需详细通知，设置环境变量 JD_BEAN_SIGN_NOTIFY_SIMPLE 为false即可(N账号推送N次通知)。
 Modified From github https://github.com/ruicky/jd_sign_bot
  */
@@ -131,6 +131,7 @@ async function downFile () {
   try {
     const options = { }
     if (process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
+      url = 'https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js';
       const tunnel = require("tunnel");
       const agent = {
         https: tunnel.httpsOverHttp({
@@ -151,7 +152,8 @@ async function downFile () {
 
 async function changeFile (content) {
   console.log(`开始替换变量`)
-  let newContent = content.replace(/var Key = '.*'/, `var Key = '${cookie}'`);
+  // let newContent = content.replace(/var OtherKey = `.*`/, "var OtherKey = " + "`[{\"cookie\":\"" +  cookie+ "\"}]`");
+  let newContent = content.replace(/var OtherKey = `.*`/, `var OtherKey = \`[{"cookie":"${cookie}"}]\``);
   newContent = newContent.replace(/const NodeSet = 'CookieSet.json'/, `const NodeSet = '${NodeSet}'`)
   if (process.env.JD_BEAN_STOP && process.env.JD_BEAN_STOP !== '0') {
     newContent = newContent.replace(/var stop = '0'/, `var stop = '${process.env.JD_BEAN_STOP}'`);
