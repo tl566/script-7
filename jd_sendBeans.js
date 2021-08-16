@@ -3,7 +3,7 @@
 * cron 45 4 * * *
 * */
 const $ = new Env('送豆得豆');
-const invokeKey = 'qRKHmL4sna8ZOP9F';
+const invokeKey = 'ztmFUCxcPMNyUq0P';
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
