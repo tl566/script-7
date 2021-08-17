@@ -6,7 +6,7 @@
 
 const validator = require('./utils/JDJRValidator_Pure.js');
 const Faker = require('./utils/jd_sign_validate.js')
-const invokeKey = 'ztmFUCxcPMNyUq0P';
+const invokeKey = $.isNode() ? require('./utils/config').invokeKey : 'ztmFUCxcPMNyUq0P';
 const $ = new Env('京东签到图形验证');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
