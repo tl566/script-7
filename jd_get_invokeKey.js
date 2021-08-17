@@ -62,15 +62,19 @@ async function writeFile() {
   try {
     const config = require('./utils/config.js');
     const invokeKey = config['invokeKey'];//config.js里面的invokeKey
-    if (invokeKey && invokeKey !== $.invokeKey) {
-      $.msg('宠旺旺-invokeKey已发生变化', '', `新的invokeKey：${$.invokeKey} 请更新`);
-      await notify.sendNotify(`宠旺旺-invokeKey已发生变化`, `新的invokeKey：${$.invokeKey} 请更新`);
+    if (invokeKey) {
+      if (invokeKey !== $.invokeKey) {
+        $.msg('宠旺旺-invokeKey已发生变化', '', `新的invokeKey：${$.invokeKey} 请更新`);
+        await notify.sendNotify(`宠旺旺-invokeKey已发生变化`, `新的invokeKey：${$.invokeKey} 请更新`);
+        const info = `module.exports = { "invokeKey": "${$.invokeKey}" }`
+        if (!fs.existsSync(`./utils`)) fs.mkdirSync(`./utils`);
+        await fs.writeFileSync(`./utils/config.js`, info);
+        console.log(`\n\n${(info)}\n\n`);
+        console.log(`文件写入成功，新的invokeKey：${$.invokeKey}已经替换`);
+      } else {
+        console.log(`自动获取的invokeKey（${$.invokeKey}）与/utils/config.js里面的invokeKey（${invokeKey}）相同，不做替换！`);
+      }
     }
-    const info = `module.exports = { "invokeKey": "${$.invokeKey}" }`
-    if (!fs.existsSync(`./utils`)) fs.mkdirSync(`./utils`);
-    await fs.writeFileSync(`./utils/config.js`, info);
-    console.log(`\n\n${(info)}\n\n`);
-    console.log(`文件写入成功，新的invokeKey：${$.invokeKey}已经替换`);
   } catch (e) {
     $.logErr(e);
   }
