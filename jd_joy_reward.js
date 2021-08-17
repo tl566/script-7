@@ -135,6 +135,10 @@ async function joyReward() {
         giftSaleInfos = 'beanConfigs16';
       }
       console.log(`\ndebug场次:${giftSaleInfos}\n`)
+      if (!data.hasOwnProperty(giftSaleInfos)) {
+        console.log(`没有京豆可兑换，跳出，详情请去相应活动页面查看！\n`);
+        return
+      }
       for (let item of data[giftSaleInfos]) {
         console.log(`${item['giftName']}当前库存:${item['leftStock']}，id：${item.id}`)
         if (item.giftType === 'jd_bean' && item['giftValue'] === rewardNum) {
