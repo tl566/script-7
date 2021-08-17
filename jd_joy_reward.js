@@ -135,7 +135,7 @@ async function joyReward() {
         giftSaleInfos = 'beanConfigs16';
       }
       console.log(`\ndebug场次:${giftSaleInfos}\n`)
-      if (!data.hasOwnProperty(giftSaleInfos)) {
+      if (data && !data.hasOwnProperty(giftSaleInfos)) {
         console.log(`没有京豆可兑换，跳出，详情请去相应活动页面查看！\n`);
         return
       }
