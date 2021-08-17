@@ -1,6 +1,7 @@
 /*
 口袋书店
 活动入口：京东app首页-京东图书-右侧口袋书店
+口袋书店活动链接：https://lzdz-isv.isvjcloud.com/dingzhi/book/develop/activity?activityId=dz2010100034444201
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ============Quantumultx===============
