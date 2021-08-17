@@ -1,6 +1,7 @@
 /*
 口袋书店
 活动入口：京东app首页-京东图书-右侧口袋书店
+口袋书店活动链接：https://lzdz-isv.isvjcloud.com/dingzhi/book/develop/activity?activityId=dz2010100034444201
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ============Quantumultx===============
@@ -31,7 +32,7 @@ ADD_CART = $.isNode() ? (process.env.PURCHASE_SHOPS ? process.env.PURCHASE_SHOPS
 
 let inviteCodes = [
   '28a699ac78d74aa3b31f7103597f8927@2f14ee9c92954cf79829320dd482bf49@fdf827db272543d88dbb51a505c2e869@ce2536153a8742fb9e8754a9a7d361da@38ba4e7ba8074b78851e928af2b4f6b2',
-  '28a699ac78d74aa3b31f7103597f8927@2f14ee9c92954cf79829320dd482bf49@fdf827db272543d88dbb51a505c2e869'
+  '28a699ac78d74aa3b31f7103597f8927@2f14ee9c92954cf79829320dd482bf49@fdf827db272543d88dbb51a505c2e869@c663d7a9a1674bd68f8010e98ef592ff'
 ]
 
 if ($.isNode()) {
