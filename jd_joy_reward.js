@@ -23,7 +23,7 @@ cron "0 0-16/8 * * *" script-path=jd_joy_reward.js,tag=宠汪汪积分兑换奖�
  */
 // prettier-ignore
 const $ = new Env('宠汪汪积分兑换奖品');
-const invokeKey = 'ztmFUCxcPMNyUq0P';
+const invokeKey = $.isNode() ? require('./utils/config').invokeKey : 'ztmFUCxcPMNyUq0P';
 let allMessage = '';
 let joyRewardName = 20;//是否兑换京豆，默认0不兑换京豆，其中20为兑换20京豆,500为兑换500京豆，0为不兑换京豆.数量有限先到先得
 //Node.js用户请在jdCookie.js处填写京东ck;

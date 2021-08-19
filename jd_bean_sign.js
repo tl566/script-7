@@ -3,7 +3,7 @@
 活动入口：各处的签到汇总
 Node.JS专用
 IOS软件用户请使用 https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js
-更新时间：2021-8-15
+更新时间：2021-8-18
 推送通知默认简洁模式(多账号只发送一次)。如需详细通知，设置环境变量 JD_BEAN_SIGN_NOTIFY_SIMPLE 为false即可(N账号推送N次通知)。
 Modified From github https://github.com/ruicky/jd_sign_bot
  */
@@ -49,7 +49,7 @@ if ($.isNode()) {
       $.nickName = '';
       $.isLogin = true;
       await TotalBean();
-      console.log(`*****************开始京东账号${$.index} ${$.nickName || $.UserName}京豆签到*******************\n`);
+      console.log(`*****************开始京东账号${$.index} ${$.nickName || $.UserName} ${$.name}*******************\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
         if ($.isNode()) {
@@ -82,7 +82,7 @@ async function execSign() {
     // }
     await exec(`${process.execPath} ${JD_DailyBonusPath} >> ${resultPath}`);
     const notifyContent = await fs.readFileSync(resultPath, "utf8");
-    console.error(`👇👇👇👇👇👇👇👇👇👇👇签到详情👇👇👇👇👇👇👇👇👇👇👇\n${notifyContent}\n👆👆👆👆👆👆👆👆👆签到详情👆👆👆👆👆👆👆👆👆👆👆`);
+    console.log(`👇👇👇👇👇👇👇👇👇👇👇签到详情👇👇👇👇👇👇👇👇👇👇👇\n${notifyContent}\n👆👆👆👆👆👆👆👆👆签到详情👆👆👆👆👆👆👆👆👆👆👆`);
     // await exec("node JD_DailyBonus.js", { stdio: "inherit" });
     // console.log('执行完毕', new Date(new Date().getTime() + 8 * 3600000).toLocaleDateString())
     //发送通知
@@ -114,7 +114,10 @@ async function execSign() {
       }
     }
     //运行完成后，删除下载的文件
-    await deleteFile(resultPath);//删除result.txt
+    await Promise.all([
+      deleteFile(resultPath),//删除result.txt
+      deleteFile(NodeSet),//删除CookieSet.json
+    ])
     console.log(`\n\n*****************${new Date(new Date().getTime()).toLocaleString('zh', {hour12: false})} 京东账号${$.index} ${$.nickName || $.UserName} ${$.name}完成*******************\n\n`);
   } catch (e) {
     console.log("京东签到脚本执行异常:" + e);
