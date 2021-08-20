@@ -71,7 +71,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
     })
 async function jdUnbind() {
   await getCards()
-  await unsubscribeCards()
+  // await unsubscribeCards()
 }
 async function unsubscribeCards() {
   let count = 0
@@ -105,8 +105,8 @@ function showMsg() {
 function getCards() {
   return new Promise((resolve) => {
     const option = {
-      url: `${JD_API_HOST}client.action?functionId=getWalletReceivedCardList`,
-      body: 'body=%7B%22version%22%3A1580659200%7D&build=167490&client=apple&clientVersion=9.3.2&openudid=53f4d9c70c1c81f1c8769d2fe2fef0190a3f60d2&rfs=0000&scope=01&sign=aa00f715800e252fcebcb11573f4a505&st=1608612985755&sv=102',
+      url: `https://api.m.jd.com/client.action?functionId=getWalletReceivedCardList_New`,
+      body: 'area=12_904_3375_62168&body=%7B%22v%22%3A%224.1%22%2C%22version%22%3A1580659200%7D&build=167568&client=apple&clientVersion=9.4.2&d_brand=apple&d_model=iPhone10%2C1&eid=eidI7e0881206ds1SM32L/0VTwCr9pypbIK71EjN96Ar5iWtIQ80IdYlQ%2BS9Hquok3hgImlD95zTSq6RCyVM6OOO/6bine%2BXwICjjYPHS2HNCOJRYpA3&isBackground=N&joycious=80&lang=zh_CN&networkType=4g&networklibtype=JDNetworkBaseAF&openudid=e9241834b8e0994edf39389a4d18ff6eeba990f5&osVersion=13.4.1&partner=apple&rfs=0000&scope=10&screen=750%2A1334&sign=4a7065da773fd68c8e35566809428a53&st=1621151850773&sv=102&uts=0f31TVRjBStH5BA4ZFSsIY%2BS19027VHz6IeXya4kSMi/n7gLkNKRJEBendkQ8sk9uB5sX8SQ8TRXOdE7IOJ2oDBrKcrQGnz0I%2BNDDQx7a2tM0SRyBlrywEtuhjEaGyN/ThyfbOxd4UVkXyhbQsHuw29fvOYRpV0kJkpopvkUlviW1KaCGoxDGoeKW8wsycYQ5hqZxM7NIrtFduI9SOVIkg%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=unknown',
       headers: {
         "Host": "api.m.jd.com",
         "Accept": "*/*",
@@ -123,10 +123,17 @@ function getCards() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
+          // console.log(data)
           if (safeGet(data)) {
             data = JSON.parse(data);
             $.cardsTotalNum = data.result.cardList ? data.result.cardList.length : 0;
             $.cardList = data.result.cardList || []
+            for (var i = 0; i < $.cardList.length; i++) {
+              var id = $.cardList[i].brandId;
+              var name = $.cardList[i].brandName;
+              var ulink = name + '\r\n' + 'https://shopmember.m.jd.com/member/memberCloseAccount?venderId=' + id;
+              console.log('手动注销链接：', ulink);
+            }
           }
         }
       } catch (e) {

@@ -20,7 +20,16 @@ cron "0,30 0-23/1 * * *" script-path=jd_live_redrain.js,tag=超级直播间红�
 */
 const $ = new Env('超级直播间红包雨');
 let allMessage = '', id = 'RRA2cUocg5uYEyuKpWNdh4qE4NW1bN2';
-let bodyList = {"17":{"url":"https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1629180789075&sign=507c083c9da6bf7be5c0d975028c44a6&sv=121","body":"body=%7B%22liveId%22%3A%224897467%22%7D"},"20":{"url":"https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1629180788072&sign=59efa08c605af9cb90b26edb1ff16590&sv=102","body":"body=%7B%22liveId%22%3A%224972953%22%7D"}}
+let bodyList = {
+  "20": {
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1629443512036&sign=8dd1fd2a11e544260fc13a98a2e6c489&sv=100",
+    "body": "body=%7B%22liveId%22%3A%224972953%22%7D"
+  },
+  "24": {
+    "url": "https://api.m.jd.com/client.action?functionId=liveActivityV946&uuid=8888888&client=apple&clientVersion=9.4.1&st=1629443507079&sign=b07eecbd47614eaaf493adbcd7807697&sv=121",
+    "body": "body=%7B%22liveId%22%3A%225005590%22%7D"
+  }
+}
 let ids = {}
 for (let i = 0; i < 24; i++) {
   ids[i] = id;
