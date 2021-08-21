@@ -512,12 +512,13 @@ function ChangeUserId(desp) {
 function qywxamNotify(text, desp) {
   return new Promise(resolve => {
     if (QYWX_AM) {
-      const QYWX_AM_AY = QYWX_AM.split(',');
+      // const QYWX_AM_AY = QYWX_AM.split(',');
+      const [corpid, corpsecret, userId, agentid, thumb_media_id] = QYWX_AM.split(',');
       const options_accesstoken = {
         url: `https://qyapi.weixin.qq.com/cgi-bin/gettoken`,
         json: {
-          corpid: `${QYWX_AM_AY[0]}`,
-          corpsecret: `${QYWX_AM_AY[1]}`,
+          corpid,
+          corpsecret,
         },
         headers: {
           'Content-Type': 'application/json',
@@ -530,7 +531,7 @@ function qywxamNotify(text, desp) {
         accesstoken = json.access_token;
         let options;
 
-        switch (QYWX_AM_AY[4]) {
+        switch (thumb_media_id) {
           case '0':
             options = {
               msgtype: 'textcard',
@@ -559,7 +560,7 @@ function qywxamNotify(text, desp) {
                 articles: [
                   {
                     title: `${text}`,
-                    thumb_media_id: `${QYWX_AM_AY[4]}`,
+                    thumb_media_id,
                     author: `智能助手`,
                     content_source_url: ``,
                     content: `${html}`,
@@ -569,7 +570,7 @@ function qywxamNotify(text, desp) {
               }
             }
         };
-        if (!QYWX_AM_AY[4]) {
+        if (!thumb_media_id) {
           //如不提供第四个参数,则默认进行文本消息类型推送
           options = {
             msgtype: 'text',
@@ -582,7 +583,7 @@ function qywxamNotify(text, desp) {
           url: `https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=${accesstoken}`,
           json: {
             touser: `${ChangeUserId(desp)}`,
-            agentid: `${QYWX_AM_AY[3]}`,
+            agentid: agentid,
             safe: '0',
             ...options
           },
