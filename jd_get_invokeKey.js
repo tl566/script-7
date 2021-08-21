@@ -43,10 +43,17 @@ function getInfo(url = 'https://prodev.m.jd.com/mall/active/2tZssTgnQsiUqhmg5ooL
           }
         }
         if (type === 3) {
-          data = data && data.match(/"channel_sign_invoke_key":"([^\"]+)"/);
-          if (data && data[1]) {
-            $.invokeKey = data[1];
+          let res = data && data.match(/"channel_sign_invoke_key":"([^\"]+)"/);
+          if (res && res[1]) {
+            $.invokeKey = res[1];
             console.log('\ninvokeKey获取成功：' + $.invokeKey);
+            return
+          }
+          res = data && data.match(/h=n\(\d+\),v="([^\"]+)"/);
+          if (res && res[1]) {
+            $.invokeKey = res[1];
+            console.log('\ninvokeKey获取成功：' + $.invokeKey);
+            return
           }
         }
         resolve()
