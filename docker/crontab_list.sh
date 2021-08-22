@@ -30,6 +30,8 @@
 33 4,7 8-20 8 * node /scripts/jd_golden_machine.js >> /scripts/logs/jd_golden_machine.log 2>&1
 #星小店-肖战（8.9-8.25）
 33 1,2,23 9-25 8 * node /scripts/jd_star_shop.js >> /scripts/logs/jd_star_shop.log 2>&1
+#王者荣耀投票（8.22-9.5）
+23 8,9 22-31,1-5 8,9 * node /scripts/jd_king.js >> /scripts/logs/jd_king.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
