@@ -176,7 +176,7 @@ async function getActivityList() {
       try {
         data = JSON.parse(data);
         if (data.success) {
-          $.activityList = data.data.items;
+          $.activityList = data.data.items || [];
         } else {
           console.log(JSON.stringify(data));
         }
