@@ -1,6 +1,6 @@
 /*
 京东全民开红包
-Last Modified time: 2021-05-19 16:27:18
+Last Modified time: 2021-08-25 16:27:18
 活动入口：京东APP首页-领券-锦鲤红包。[活动地址](https://happy.m.jd.com/babelDiy/zjyw/3ugedFa7yA6NhxLN5gw2L3PF9sQC/index.html)
 未实现功能：领3张券功能
 
@@ -292,17 +292,18 @@ async function red() {
     //20001:红包活动正在进行，可拆
     const redPacketId = $.h5activityIndex['data']['result']['redpacketInfo']['id'];
     if (redPacketId) $.redPacketId.push(redPacketId);
-    console.log(`\n\n当前待拆红包ID:${$.h5activityIndex['data']['result']['redpacketInfo']['id']}，进度：再邀${$.h5activityIndex['data']['result']['requireAssistNum']}个好友，开第${$.hasSendNumber + 1}个红包。当前已拆红包：${$.hasSendNumber}个，剩余${$.h5activityIndex['data']['result']['remainRedpacketNumber']}个红包待开，已有${$.assistants}好友助力\n\n`)
-    const waitOpenTimes = $.h5activityIndex['data']['result']['redpacketInfo']['waitOpenTimes'] || 0;
-    console.log(`当前可拆红包个数：${waitOpenTimes}`)
-    if (waitOpenTimes > 0) {
-      for (let i = 0; i < new Array(waitOpenTimes).fill('').length; i++) {
-        if (!redPacketId) break
+    console.log(`\n\n当前待拆红包ID:${$.h5activityIndex['data']['result']['redpacketInfo']['id']}，进度：当前已拆红包：${$.hasSendNumber}个，剩余${$.h5activityIndex['data']['result']['remainRedpacketNumber']}个红包完成！\n\n`)
+    const waitOpenTimes = $.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'].filter(vo => vo['packetStatus'] === 1).length|| 0;
+    console.log(`当前可拆红包个数：${waitOpenTimes}\n`)
+    for (const item of $.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo']) {
+      console.log(`${item['packetStep']}级 ${item['operationWord']} 红包：助力进度：${item['hasAssistNum']}/${item['requireAssistNum']}`)
+      if (redPacketId && item['packetStatus'] === 1) {
         await h5receiveRedpacket(redPacketId);
         await $.wait(500);
       }
     }
   } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['biz_code'] === 20002) {
+    //已达拆红包数量限制
     console.log(`\n${$.h5activityIndex.data['biz_msg']}\n`);
   }
 }
@@ -483,7 +484,7 @@ function h5receiveRedpacket(redPacketId) {
         } else {
           data = JSON.parse(data);
           if (data && data.data && data.data['biz_code'] === 0) {
-            console.log(`拆红包获得：${data['data']['result']['discount']}元`)
+            console.log(`拆红包获得：${data['data']['result']['discount']}元\n`)
           } else {
             console.log(`领红包失败：${JSON.stringify(data)}`)
           }
