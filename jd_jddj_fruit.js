@@ -7,7 +7,7 @@ const $ = new Env('京东到家农场');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //环境变量，是否保存执行数据，（false：否，true：是）默认否
-const saveRunFlag =  $.isNode() ? (process.env.SAVE_RUN_INFO ? process.env.SAVE_RUN_INFO : false):false;
+const saveRunFlag =  $.isNode() ? (process.env.SAVE_RUN_INFO ? process.env.SAVE_RUN_INFO : true): true;
 let cookiesArr = [];
 let inviteList = [];
 let jdjdCklist = {};
