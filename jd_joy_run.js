@@ -123,6 +123,15 @@ async function main() {
     $.LKYLToken = readTokenRes.data[0] || ($.isNode() ? (process.env.JOY_RUN_TOKEN ? process.env.JOY_RUN_TOKEN : jdJoyRunToken) : ($.getdata('jdJoyRunToken') || jdJoyRunToken));
   } else {
     $.LKYLToken = $.isNode() ? (process.env.JOY_RUN_TOKEN ? process.env.JOY_RUN_TOKEN : jdJoyRunToken) : ($.getdata('jdJoyRunToken') || jdJoyRunToken);
+    if ($.isNode()) {
+      const args = process.argv.splice(2);
+      if (args.length == 1) {
+        $.LKYLToken = args[0];
+      } else {
+        console.log("参数个数不对，请重新发送正确的执行指令");
+        return;
+      }
+    }
   }
   console.log(`打印token：${$.LKYLToken ? $.LKYLToken : '暂无token'}\n`)
   if (!$.LKYLToken) {
