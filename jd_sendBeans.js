@@ -268,12 +268,14 @@ async function openTuan() {
   } else {
     console.log(`【京东账号${$.index}】${$.UserName} 瓜分ID:${$.rewardRecordId}`);
   }
-  $.openTuanList.push({
-    'user': $.UserName,
-    'rewardRecordId': $.rewardRecordId,
-    'completed': $.detail.completed,
-    'rewardOk': $.detail.rewardOk
-  });
+  if($.rewardRecordId){
+      $.openTuanList.push({
+          'user': $.UserName,
+          'rewardRecordId': $.rewardRecordId,
+          'completed': $.detail.completed,
+          'rewardOk': $.detail.rewardOk
+      });
+  }
 }
 
 async function helpMain() {
