@@ -95,13 +95,13 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
     cookie = cookiesArr[i];
     $.canOpenGrade = true;
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-    const grades = [1, 2, 3, 4, 5, 6, 7];
-    for (let grade of grades) {
+    $.grades = [1, 2, 3, 4, 5, 6, 7];
+    for (let grade of $.grades) {
       if (!$.canOpenGrade) break;
       if (!$.packetIdArr[i]) continue;
       console.log(`\n【${$.UserName}】去拆第${grade}个红包`);
       await openRedPack($.packetIdArr[i]['strUserPin'], grade);
-      await $.wait(5000);
+      await $.wait(10 * 1000);
     }
   }
 })()
@@ -216,7 +216,7 @@ function openRedPack(strPin, grade) {
   return new Promise(resolve => {
     const body = `strPin=${strPin}&grade=${grade}`
     const options = taskurl('DoGradeDraw', body, 'activeId,channel,grade,phoneid,publishFlag,stepreward_jstoken,strPin,timestamp');
-    $.get(options, (err, resp, data) => {
+    $.get(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`\n${$.name}:  API查询请求失败 ‼️‼️`)
@@ -229,6 +229,14 @@ function openRedPack(strPin, grade) {
           } else {
             if (data.iRet === 2017) $.canOpenGrade = false;
             console.log(`拆红包失败:${data.sErrMsg}\n`);
+            if (data.sErrMsg && data.sErrMsg.includes('操作太快')) {
+              console.log(`等待20秒后 重新拆第${grade}个红包！`);
+              await $.wait(20 * 1000);
+              await openRedPack(strPin, grade)
+            } else if (data.sErrMsg && data.sErrMsg.includes('系统君失联')) {
+              $.grades.splice(grade - 1, 1)
+              console.log(`第 ${grade} 个红包不存在！当前最大可拆红包为：${$.grades.length}个`)
+            }
           }
         }
       } catch (e) {
