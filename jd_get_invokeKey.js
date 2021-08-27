@@ -71,8 +71,8 @@ async function writeFile() {
     const invokeKey = config['invokeKey'];//config.js里面的invokeKey
     if (invokeKey) {
       if (invokeKey !== $.invokeKey) {
-        $.msg('宠旺旺-invokeKey已发生变化', '', `新的invokeKey：${$.invokeKey} 请更新`);
-        await notify.sendNotify(`宠旺旺-invokeKey已发生变化`, `新的invokeKey：${$.invokeKey} 请更新`);
+        $.msg('宠旺旺-invokeKey已发生变化', '', `新的invokeKey：${$.invokeKey} 请前往utils/config.js更新，如是已最新invokeKey请忽略！`);
+        await notify.sendNotify(`宠旺旺-invokeKey已发生变化`, `新的invokeKey：${$.invokeKey} 请前往utils/config.js更新，如已是最新请invokeKey忽略！`);
         const info = `module.exports = { "invokeKey": "${$.invokeKey}" }`
         if (!fs.existsSync(`./utils`)) fs.mkdirSync(`./utils`);
         await fs.writeFileSync(`./utils/config.js`, info);
