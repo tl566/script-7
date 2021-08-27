@@ -96,8 +96,13 @@ async function showMsg() {
 
 async function signRun() {
   UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;10.0.2;14.3;network/wifi;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
+  $.hotAccount = false;
   for (let i in turnTableId) {
     signFlag = false
+    if ($.hotAccount) {
+      console.log(`京东账号${$.index}:  ${$.nickName || $.UserName} 签到火爆，退出！`)
+      break
+    }
     await Login(i)
     if (signFlag) {
       successNum++;
@@ -122,15 +127,16 @@ function Sign(i) {
               data = data.data
               if (Number(data.jdBeanQuantity) > 0) beanNum += Number(data.jdBeanQuantity)
               signFlag = true;
-              console.log(`${turnTableId[i].name} 签到成功:获得 ${Number(data.jdBeanQuantity)}京豆`)
+              console.log(`${turnTableId[i].name} 签到成功:获得 ${Number(data.jdBeanQuantity)}京豆\n`);
             } else {
               if (data.errorMessage) {
                 if (data.errorMessage.indexOf('已签到') > -1 || data.errorMessage.indexOf('今天已经签到') > -1) {
                   signFlag = true;
                 }
-                console.log(`${turnTableId[i].name} ${data.errorMessage}`)
+                console.log(`${turnTableId[i].name} 签到失败： ${data.errorMessage}\n`)
+                if (data.errorMessage && data.errorMessage.includes('火爆')) $.hotAccount = true;
               } else {
-                console.log(`${turnTableId[i].name} ${JSON.stringify(data)}`)
+                console.log(`${turnTableId[i].name} 签到异常： ${JSON.stringify(data)}\n`)
               }
             }
           } else {
@@ -159,6 +165,7 @@ function Login(i) {
             data = JSON.parse(data);
             if (data.success && data.data) {
               data = data.data
+              console.log(`${turnTableId[i].name}：${!data.hasSign ? '：未签到，开始签到\n' : '已签到'}`);
               if (!data.hasSign) {
                 let arr = await Faker.getBody(UA, turnTableId[i].url)
                 fp = arr.fp
@@ -176,16 +183,16 @@ function Login(i) {
                   }
                 }
                 signFlag = true;
-                console.log(`${turnTableId[i].name} 已签到`)
+                // console.log(`${turnTableId[i].name} 已签到`)
               }
             } else {
               if (data.errorMessage) {
                 if (data.errorMessage.indexOf('已签到') > -1 || data.errorMessage.indexOf('今天已经签到') > -1) {
                   signFlag = true;
                 }
-                console.log(`${turnTableId[i].name} ${data.errorMessage}`)
+                console.log(`${turnTableId[i].name}： ${data.errorMessage}\n`)
               } else {
-                console.log(`${turnTableId[i].name} ${JSON.stringify(data)}`)
+                console.log(`${turnTableId[i].name}： ${JSON.stringify(data)}\n`)
               }
             }
           } else {
