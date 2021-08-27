@@ -109,7 +109,8 @@ function skuApply(order) {
           console.log(`一键保价申请结果：`, data);
           data = JSON.parse(data);
           if (data && data.flag) {
-            console.log(`一键保价申请成功！`);
+            console.log(`一键保价申请成功，等待10秒后查询结果！`);
+            await $.wait(10 * 1000);
             await getApplyResult();
           } else {
             console.log(`🚫 一键保价 申请失败：${data && data.responseMessage}`);
@@ -142,7 +143,8 @@ function getApplyResult() {
         } else if (data) {
           data = JSON.parse(data);
           if (data && data.flag) {
-            $.refundtotalamount = data.succAmount
+            $.refundtotalamount = data.succAmount;
+            console.log(`保价获得金额：${data.succAmount}\n`);
           } else {
             console.log(`一键价格保护金额查询成功：${JSON.stringify(data)}`)
           }
