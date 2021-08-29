@@ -1,11 +1,11 @@
 /*
-Last Modified time: 2021-5-19 12:27:16
+Last Modified time: 2021-8-29 17:27:16
 活动入口：京东金融养猪猪
 一键开完所有的宝箱功能。耗时70秒
 大转盘抽奖
 喂食
 每日签到
-完成分享任务得猪粮
+做日常任务得猪粮
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
 ===============Quantumultx===============
@@ -165,7 +165,7 @@ function pigPetUserBag() {
                   }
                   for (let item of data.resultData.resultData.goods) {
                     if (item.count >= 20) {
-                      console.log(`10秒后开始喂食${item.goodsName}，当前数量为${item.count}g`)
+                      console.log(`\n10秒后开始喂食${item.goodsName}，当前数量为${item.count}g`)
                       await $.wait(10000);
                       await pigPetAddFood(item.sku);
                     }
@@ -435,19 +435,42 @@ function pigPetLotteryPlay() {
 async function missions() {
   for (let item of $.missions) {
     if (item.status === 4) {
-      console.log(`\n${item.missionName}任务已做完,开始领取奖励`)
+      console.log(`\n${item.missionName} 任务已做完,开始领取奖励`)
       await pigPetDoMission(item.mid);
+      await $.wait(5000)
     } else if (item.status === 5){
-      console.log(`\n${item.missionName}已领取`)
+      console.log(`${item.missionContent} 已领取`)
     } else if (item.status === 3){
       console.log(`\n${item.missionName}未完成`)
       if (item.mid === 'CPD01') {
+        //分享任务
         await pigPetDoMission(item.mid);
-      } else {
+      }
+      if (item.mid !== 'MC2452' && item.mid !== 'MC4639') {
+        console.log(`开始做任务：${item['missionContent']}\n`);
+        console.log('url', item['url'])
         //TODO
-        // await pigPetDoMission(item.mid);
-        // await queryMissionReceiveAfterStatus(item.mid);
-        // await finishReadMission(item.mid);
+        await pigPetDoMission(item.mid);
+        await $.wait(2000)
+        if (!item['url']) continue;
+        const readTime = getQueryString(item['url'], 'readTime');
+        const juid = getQueryString(item['url'], 'juid');
+        const missionId = getQueryString(item['url'], 'missionId');
+        if (readTime && missionId) {
+          await queryMissionReceiveAfterStatus(missionId);
+          console.log(`需等待 ${readTime} 秒`);
+          await $.wait(readTime * 1000)
+          await finishReadMission(missionId, readTime);
+          console.log(`\n${item.missionName} 任务已做完,开始领取奖励`)
+          await pigPetDoMission(item.mid);
+          await $.wait(5000)
+        }
+        if (juid) {
+          await getJumpInfo(juid);
+          console.log(`\n${item.missionName} 任务已做完,开始领取奖励`)
+          await pigPetDoMission(item.mid);
+          await $.wait(5000)
+        }
       }
     }
   }
@@ -531,11 +554,47 @@ function pigPetMissionList() {
     })
   })
 }
+function getJumpInfo(juid) {
+  return new Promise(async resolve => {
+    const options = {
+      "url": `${MISSION_BASE_API}/getJumpInfo?reqData=${encodeURIComponent($.toStr({ juid }))}`,
+      "headers": {
+        'Host': 'ms.jr.jd.com',
+        'Origin': 'https://active.jd.com',
+        'Connection': 'keep-alive',
+        'Accept': 'application/json',
+        "Cookie": cookie,
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/application=JDJR-App&deviceId=1423833363730383d273532393d243445364-d224341443d2938333530323445433033353&eufv=1&clientType=ios&iosType=iphone&clientVersion=6.1.70&HiClVersion=6.1.70&isUpdate=0&osVersion=13.7&osName=iOS&platform=iPhone 6s (A1633/A1688/A1691/A1700)&screen=667*375&src=App Store&netWork=1&netWorkType=1&CpayJS=UnionPay/1.0 JDJR&stockSDK=stocksdk-iphone_3.5.0&sPoint=&jdPay=(*#@jdPaySDK*#@jdPayChannel=jdfinance&jdPayChannelVersion=6.1.70&jdPaySdkVersion=3.00.52.00&jdPayClientName=iOS*#@jdPaySDK*#@)',
+        'Accept-Language': 'zh-cn',
+        'Referer': 'https://u1.jr.jd.com/uc-fe-wxgrowing/cloudpig/index/',
+        'Accept-Encoding': 'gzip, deflate, br'
+      }
+    }
+    $.get(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          if (data) {
+            console.log('getJumpInfo',data)
+          } else {
+            console.log(`京东服务器返回空数据`)
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 function queryMissionReceiveAfterStatus(missionId) {
   return new Promise(resolve => {
-    const body = {"missionId": missionId.toString()};
+    const body = {"missionId": missionId};
     const options = {
-      "url": `${MISSION_BASE_API}/queryMissionReceiveAfterStatus?reqData=%7B%2522missionId%2522:%2522${Number(missionId)}%2522%7D`,
+      "url": `${MISSION_BASE_API}/queryMissionReceiveAfterStatus?reqData=${escape(JSON.stringify(body))}`,
       "headers": {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
@@ -580,11 +639,11 @@ function queryMissionReceiveAfterStatus(missionId) {
   })
 }
 //做完浏览任务发送信息API
-function finishReadMission(missionId) {
+function finishReadMission(missionId, readTime) {
   return new Promise(async resolve => {
-    const body = {"missionId": missionId.toString(),"readTime":10};
+    const body = {"missionId": missionId, "readTime": Number(readTime)};
     const options = {
-      "url": `${MISSION_BASE_API}/finishReadMission?reqData=%7B%2522missionId%2522:%2522${Number(missionId)}%2522,%2522readTime%2522:10%7D`,
+      "url": `${MISSION_BASE_API}/finishReadMission?reqData=${encodeURIComponent($.toStr(body))}`,
       "headers": {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
@@ -690,6 +749,17 @@ function taskUrl(function_id, body) {
       'Accept-Language' : `zh-cn`
     }
   }
+}
+function getQueryString(qStr,name) {
+  var query = qStr.split('?')[1];
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split('=');
+    if (pair[0] == name) {
+      return pair[1];
+    }
+  }
+  return null;
 }
 function jsonParse(str) {
   if (typeof str == "string") {
