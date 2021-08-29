@@ -133,7 +133,7 @@ async function pickShells(ck = cookie, index = $.index) {
 //沙滩捡东西api
 function pickshell(body = '', type = 1, ck, index) {
   return new Promise(async (resolve) => {
-    const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 4 ? '扇贝' : '未知'
+    const strType = type === 1 ? '小珍珠' : type === 2 ? '小海螺' : type === 3 ? '大海螺' : type === 4 ? '海星' : type === 5 ? '小贝壳' : type === 6 ? '扇贝' : '未知'
     let options = taskUrl(`story/pickshell`, body, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', ck);
     if (!body) {
       options = taskUrl(`story/queryshell`, body, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', ck);
