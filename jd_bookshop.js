@@ -84,11 +84,14 @@ if ($.isNode()) {
 
 async function jdBeauty() {
   $.score = 0
+  $.token = ''
   await getIsvToken()
   await getIsvToken2()
   await getActCk()
   await getActInfo()
   await getToken()
+  if (!$.token) return
+  await accessLogWithAD()
   await getUserInfo()
   await getActContent(false, shareUuid)
   if ($.exit) return
@@ -117,7 +120,46 @@ async function helpFriends() {
     await $.wait(500)
   }
 }
-
+function accessLogWithAD() {
+  let config = {
+    url: `https://lzkjdz-isv.isvjcloud.com/common/accessLogWithAD`,
+    headers: {
+      'Host': 'lzdz-isv.isvjcloud.com',
+      'Accept': 'application/json',
+      'Accept-Language': 'zh-cn',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Origin': 'https://lzdz-isv.isvjcloud.com',
+      'User-Agent': 'JD4iPhone/167490 (iPhone; iOS 14.2; Scale/3.00)',
+      'Referer': `https://lzdz-isv.isvjcloud.com/dingzhi/book/develop/activity?activityId=${ACT_ID}`,
+      'Cookie': `${cookie} isvToken=${$.isvToken};`
+    },
+    body:`venderId=${$.shopId}&code=99&pin=${encodeURIComponent($.token)}&activityId=${ACT_ID}&pageUrl=https://lzdz-isv.isvjcloud.com/dingzhi/book/develop/activity?activityId=dz2010100034444201&lng=107.146945&lat=33.255267&sid=cad74d1c843bd47422ae20cadf6fe5aw&un_area=27_2442_2444_31912&subType=app&adSource=`
+  }
+  return new Promise(resolve => {
+    $.post(config, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          if ($.isNode())
+            for (let ck of resp['headers']['set-cookie']) {
+              cookie = `${cookie}${ck.split(";")[0]};`
+            }
+          else {
+            for (let ck of resp['headers']['Set-Cookie'].split(',')) {
+              cookie = `${cookie}${ck.split(";")[0]};`
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 // 获得IsvToken
 function getIsvToken() {
   return new Promise(resolve => {
@@ -227,6 +269,7 @@ function getToken() {
           if (safeGet(data)) {
             data = JSON.parse(data);
             $.token = data.data.secretPin
+            console.log('$.token', $.token)
           }
         }
       } catch (e) {
