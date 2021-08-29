@@ -49,6 +49,7 @@ if ($.isNode()) {
       continue
     }
     await main();
+    if ($.index % 5 === 0) await $.wait(10 * 1000);
   }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
 async function main() {
