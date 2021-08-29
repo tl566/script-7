@@ -49,9 +49,12 @@ if ($.isNode()) {
       continue
     }
     await main();
-    if ($.index % 5 === 0) {
-      console.log(`未避免出现 401 问题，需等待 20秒 后执行下一账号`)
+    if ($.index % 4 === 0) {
+      console.log(`\n未避免出现 401 问题，需等待 20秒 后执行下一账号`)
       await $.wait(20 * 1000);
+    } else {
+      console.log(`\n未避免出现 401 问题，需等待 10秒 后执行下一账号`)
+      await $.wait(10 * 1000)
     }
   }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
