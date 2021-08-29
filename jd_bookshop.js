@@ -133,7 +133,7 @@ function accessLogWithAD() {
       'Referer': `https://lzdz-isv.isvjcloud.com/dingzhi/book/develop/activity?activityId=${ACT_ID}`,
       'Cookie': `${cookie} isvToken=${$.isvToken};`
     },
-    body:`venderId=${$.shopId}&code=99&pin=${encodeURIComponent($.token)}&activityId=${ACT_ID}&pageUrl=https://lzdz-isv.isvjcloud.com/dingzhi/book/develop/activity?activityId=dz2010100034444201&lng=107.146945&lat=33.255267&sid=cad74d1c843bd47422ae20cadf6fe5aw&un_area=27_2442_2444_31912&subType=app&adSource=`
+    body:`venderId=${$.shopId}&code=99&pin=${encodeURIComponent($.token)}&activityId=${ACT_ID}&pageUrl=https://lzdz-isv.isvjcloud.com/dingzhi/book/develop/activity?activityId=${ACT_ID}&lng=&lat=&sid=&un_area=27_2442_2444_31912&subType=app&adSource=`
   }
   return new Promise(resolve => {
     $.post(config, (err, resp, data) => {
