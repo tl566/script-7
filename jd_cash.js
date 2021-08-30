@@ -87,7 +87,9 @@ let allMessage = '';
     })
 async function jdCash() {
   $.signMoney = 0;
+  $.hotAccount = false;
   await index()
+  if ($.hotAccount) return
   // await shareCodesFormat()
   // await helpFriends()
   await getReward()
@@ -178,6 +180,9 @@ function index(info=false) {
                   }
                 }
               }
+            } else {
+              console.log(`异常：${$.toStr(data)}\n`)
+              if (data.code === 0 && data['data']['bizCode'] === 188) $.hotAccount = true
             }
           }
         }
