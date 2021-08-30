@@ -149,6 +149,7 @@ function index(info=false) {
               // $.log(`shareDate: ${$.shareDate}`)
               // console.log(helpInfo)
               for(let task of data.data.result.taskInfos){
+                console.log(`小程序端任务：${task.name}，进度：${task.doTimes}/${task.times}`)
                 if (task.type === 4) {
                   for (let i = task.doTimes; i < task.times; ++i) {
                     console.log(`去做${task.name}任务 ${i+1}/${task.times}`)
@@ -167,6 +168,12 @@ function index(info=false) {
                   for (let i = task.doTimes; i < task.times; ++i) {
                     console.log(`去做${task.name}任务 ${i+1}/${task.times}`)
                     await doTask(task.type, task.jump.params.url)
+                    await $.wait(5000)
+                  }
+                } else if (task.type === 31) {
+                  for (let i = task.doTimes; i < task.times; ++i) {
+                    console.log(`去做${task.name}任务 ${i+1}/${task.times}`)
+                    await doTask(task.type, task.jump.params.path)
                     await $.wait(5000)
                   }
                 }
