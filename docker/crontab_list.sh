@@ -159,5 +159,5 @@
 50 7,8 * * * node /scripts/jd_productBrand.js >> /scripts/logs/jd_productBrand.log 2>&1
 #自动获取宠旺旺的invokeKey
 5 0-23/6 * * * node /scripts/jd_get_invokeKey.js >> /scripts/logs/jd_get_invokeKey.log 2>&1
-#京喜抢到
+#京喜签到
 15 0,12,21 * * * node /scripts/jx_sign.js >> /scripts/logs/jx_sign.log 2>&1
