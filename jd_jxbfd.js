@@ -193,6 +193,33 @@ function SpeedUp() {
     })
   });
 }
+function TreasureHunt(body) {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('user/TreasureHunt', body, '_cfd_t,bizCode,dwEnv,ptag,source,strIndex,strZone');
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} TreasureHunt API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              // dwAwardType 4:红包🧧，0:京币，1:财富值。其他状态：未知
+              console.log(`\n寻宝 成功🎉`, data);
+            } else {
+              console.log(`寻宝失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    })
+  });
+}
 function receiveBigReward() {
   return new Promise(async (resolve) => {
     const options = taskUrl('story/GetActTask', '', '_cfd_t,bizCode,dwEnv,ptag,source,strZone');
