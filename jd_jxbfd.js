@@ -146,6 +146,8 @@ function QueryUserInfo() {
                   await TreasureHunt(`strIndex=${item['strIndex']}`);
                   await $.wait(2000);
                 }
+              } else {
+                console.log(`strIndex=${item['strIndex']} 寻宝次数已达上限，明日再来哦~`);
               }
               //if (data['dwOfficeUnLock'] === 0) {
                 //console.log(`\n当前账号未开启 财富岛活动\n`);
