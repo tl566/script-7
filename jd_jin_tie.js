@@ -113,7 +113,7 @@ function queryMission(info = true) {
               if (info) {
                 console.log('互动任务获取成功')
                 $.taskData = data.resultData.data;
-                $.willTask = $.taskData.filter(t => t.status === -1) || [];
+                $.willTask = $.taskData.filter(t => t.status === 0) || [];
                 // $.willTask = $.taskData.filter(t => t.status === 0) || [];//已领取任务，但未完成
                 $.recevieTask = $.taskData.filter(t => t.status === 1) || [];
                 const doneTask = $.taskData.filter(t => t.status === 2);
@@ -180,7 +180,21 @@ function receiveMission(missionId) {
 //完成任务
 function finishReadMission(missionId, readTime) {
   const body = JSON.stringify({missionId, readTime});
-  const options = taskUrl('finishReadMission', body);
+  const options = {
+    url: `https://ms.jr.jd.com/gw/generic/mission/h5/m/finishReadMission?reqData={%22missionId%22:%22${missionId}%22,%22readTime%22:${readTime}}`,
+    headers: {
+      'Accept' : `*/*`,
+      'Origin' : `https://u.jr.jd.com`,
+      'Accept-Encoding' : `gzip, deflate, br`,
+      'Cookie' : cookie,
+      'Content-Type' : `application/x-www-form-urlencoded;charset=UTF-8`,
+      'Host' : `ms.jr.jd.com`,
+      'Connection' : `keep-alive`,
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      'Referer' : `https://u.jr.jd.com/`,
+      'Accept-Language' : `zh-cn`
+    }
+  };
   return new Promise((resolve) => {
     $.get(options, (err, resp, data) => {
       try {
@@ -245,26 +259,14 @@ function awardMission(missionId) {
 //获取签到状态
 function signInforOfJinTie() {
   const body = JSON.stringify({
-    channel: "sqcs",
-    "riskDeviceParam": JSON.stringify({
-      appId: "jdapp",
-      appType: "3",
-      clientVersion: "9.4.6",
-      deviceType: "iPhone11,8",
-      "eid": cookie,
-      "fp": getFp(),
-      idfa: "",
-      imei: "",
-      ip: "",
-      macAddress: "",
-      networkType: "WIFI",
-      os: "iOS",
-      osVersion: "14.2",
-      token: "",
-      uuid: ""
-    })
+    "source": "JD_APP",
+    "channel": "scljticon",
+    "channelLv": "scljticon",
+    "apiVersion": "4.0.0",
+    "riskDeviceParam": "{\"macAddress\":\"\",\"imei\":\"\",\"eid\":\"\",\"openUUID\":\"\",\"uuid\":\"\",\"traceIp\":\"\",\"os\":\"\",\"osVersion\":\"\",\"appId\":\"\",\"clientVersion\":\"\",\"resolution\":\"\",\"channelInfo\":\"\",\"networkType\":\"\",\"startNo\":42,\"openid\":\"\",\"token\":\"\",\"sid\":\"\",\"terminalType\":\"\",\"longtitude\":\"\",\"latitude\":\"\",\"securityData\":\"\",\"jscContent\":\"\",\"fnHttpHead\":\"\",\"receiveRequestTime\":\"\",\"port\":80,\"appType\":\"\",\"deviceType\":\"\",\"fp\":\"\",\"ip\":\"\",\"idfa\":\"\",\"sdkToken\":\"\"}",
+    "others": {"shareId": ""}
   })
-  const options = taskUrl('signInforOfJinTie', body, 'jrm');
+  const options = taskUrl('channelUserSignInfo', body, 'jrm');
   return new Promise((resolve) => {
     $.get(options, async (err, resp, data) => {
       try {
@@ -275,8 +277,8 @@ function signInforOfJinTie() {
           data = JSON.parse(data);
           if (data.resultCode === 0) {
             if (data.resultData.code === '000') {
-              let state = data.resultData.data.sign
-              console.log('获取签到状态成功', state ? '今日已签到' : '今日未签到', '连续签到', data.resultData.data.signContinuity, '天\n')
+              let state = data.resultData.data.hasResign
+              console.log('获取签到状态成功', state ? '今日已签到' : '今日未签到', '连续签到', data.resultData.data.dayId, '天\n')
               if (!state) await signOfJinTie()
             } else {
               console.log('获取签到状态失败', data.resultData.msg)
@@ -344,26 +346,14 @@ function signOfJinTie() {
 }
 function queryAvailableSubsidyAmount() {
   const body = JSON.stringify({
-    channel: "sqcs",
-    "riskDeviceParam": JSON.stringify({
-      appId: "jdapp",
-      appType: "3",
-      clientVersion: "9.4.6",
-      deviceType: "iPhone11,8",
-      "eid": cookie,
-      "fp": getFp(),
-      idfa: "",
-      imei: "",
-      ip: "",
-      macAddress: "",
-      networkType: "WIFI",
-      os: "iOS",
-      osVersion: "14.2",
-      token: "",
-      uuid: ""
-    })
+    "source": "JD_APP",
+    "channel": "default",
+    "channelLv": "",
+    "apiVersion": "4.0.0",
+    "riskDeviceParam": "{\"macAddress\":\"\",\"imei\":\"\",\"eid\":\"\",\"openUUID\":\"\",\"uuid\":\"\",\"traceIp\":\"\",\"os\":\"\",\"osVersion\":\"\",\"appId\":\"\",\"clientVersion\":\"\",\"resolution\":\"\",\"channelInfo\":\"\",\"networkType\":\"\",\"startNo\":42,\"openid\":\"\",\"token\":\"\",\"sid\":\"\",\"terminalType\":\"\",\"longtitude\":\"\",\"latitude\":\"\",\"securityData\":\"\",\"jscContent\":\"\",\"fnHttpHead\":\"\",\"receiveRequestTime\":\"\",\"port\":80,\"appType\":\"\",\"deviceType\":\"\",\"fp\":\"\",\"ip\":\"\",\"idfa\":\"\",\"sdkToken\":\"\"}",
+    "others": {"shareId": ""}
   })
-  const options = taskUrl('queryAvailableSubsidyAmount', body, 'jrm');
+  const options = taskUrl('channelUserSubsidyInfo', body, 'jrm');
   return new Promise((resolve) => {
     $.get(options, async (err, resp, data) => {
       try {
@@ -374,7 +364,7 @@ function queryAvailableSubsidyAmount() {
           data = JSON.parse(data);
           if (data.resultCode === 0) {
             if (data.resultData.code === '000') {
-              console.log(`获取当前总金贴成功\n\n京东账号${$.index} ${$.nickName || $.UserName} 当前总金贴：${data.resultData.data}元`)
+              console.log(`获取当前总金贴成功\n\n京东账号${$.index} ${$.nickName || $.UserName}\n当前总金贴：${data.resultData.data.availableAmount}元，${data.resultData.data.expiringcontext}`)
             } else {
               console.log('获取当前总金贴失败', data.resultData.msg)
             }
@@ -397,6 +387,7 @@ async function doTask() {
     await $.wait(100)
     if (task.doLink.indexOf('readTime=') !== -1) {
       const readTime = parseInt(task.doLink.substr(task.doLink.indexOf('readTime=') + 9));
+      console.log('readTime', readTime)
       await finishReadMission(task['missionId'], readTime);
       await $.wait(200);
     } else if (task.detail.indexOf('京东到家') !== -1) {
