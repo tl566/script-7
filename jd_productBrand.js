@@ -208,7 +208,7 @@ function dealReturn(type, data) {
         let reward = data.data.result.userAwardInfo
         if (reward && reward.beanNum) {
           console.log(`恭喜你 获得 ${reward.beanNum}京🐶\n`)
-        } else if (reward['awardType'] === 7) {
+        } else if (reward && reward['awardType'] === 7) {
           console.log(`获得 ${reward['quota']}元优惠券、${reward['useRange']}\n`)
         } else {
           console.log(`抽奖未知：${JSON.stringify(data)}\n`);
