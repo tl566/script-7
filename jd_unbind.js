@@ -1,27 +1,27 @@
 /*
-注销京东会员卡
-是注销京东已开的店铺会员,不是京东plus会员
+京东会员卡
+提供手动去注销京东已开的店铺会员注销链接,不是京东plus会员
 查看已开店铺会员入口:我的=>我的钱包=>卡包
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==========Quantumult X==========
 [task_local]
-#注销京东会员卡
-55 23 * * 6 jd_unbind.js, tag=注销京东会员卡, img-url= https://raw.githubusercontent.com/58xinian/icon/master/jd_unbind.png, enabled=true
+#京东会员卡
+55 20 * * 6 jd_unbind.js, tag=注销京东会员卡, img-url= https://raw.githubusercontent.com/58xinian/icon/master/jd_unbind.png, enabled=true
 =======Loon========
 [Script]
-cron "55 23 * * 6" script-path=jd_unbind.js,tag=注销京东会员卡
+cron "55 20 * * 6" script-path=jd_unbind.js,tag=京东会员卡
 ========Surge==========
-注销京东会员卡 = type=cron,cronexp="55 23 * * 6",wake-system=1,timeout=3600,script-path=jd_unbind.js
+京东会员卡 = type=cron,cronexp="55 20 * * 6",wake-system=1,timeout=3600,script-path=jd_unbind.js
 =======小火箭=====
-注销京东会员卡 = type=cron,script-path=jd_unbind.js, cronexpr="10 23 * * 6", timeout=3600, enable=true
+京东会员卡 = type=cron,script-path=jd_unbind.js, cronexpr="10 20 * * 6", timeout=3600, enable=true
  */
-const $ = new Env('注销京东会员卡');
+const $ = new Env('京东店铺会员卡');
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
-const notify = $.isNode() ? require('../sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
-let cookiesArr = [], cookie = '';
+let cookiesArr = [], cookie = '', message = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -36,32 +36,37 @@ let stopCards = `京东PLUS会员`;//遇到此会员卡跳过注销,多个使用
 const JD_API_HOST = 'https://api.m.jd.com/';
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg('【京东账号一】注销京东会员卡失败', '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+    $.msg('【京东账号一】京东会员卡失败', '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
   }
-  await requireConfig()
-  for (let i = 0; i < cookiesArr.length; i++) {
-    if (cookiesArr[i]) {
-      cookie = cookiesArr[i];
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-      $.index = i + 1;
-      $.isLogin = true;
-      $.nickName = '';
-      $.unsubscribeCount = 0
-      $.cardList = []
-      await TotalBean();
-      console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
-      if (!$.isLogin) {
-        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+  try {
+    await requireConfig()
+    for (let i = 0; i < cookiesArr.length; i++) {
+      if (cookiesArr[i]) {
+        cookie = cookiesArr[i];
+        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+        $.index = i + 1;
+        $.isLogin = true;
+        $.nickName = '';
+        $.unsubscribeCount = 0
+        $.cardList = []
+        await TotalBean();
+        console.log(`\n*************开始【京东账号${$.index}】${$.nickName || $.UserName}****************\n`);
+        if (!$.isLogin) {
+          $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
 
-        if ($.isNode()) {
-          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          if ($.isNode()) {
+            // await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          }
+          continue
         }
-        continue
+        await jdUnbind();
       }
-      await jdUnbind();
-      await showMsg();
     }
+  } catch (e) {
+    $.logErr(e)
   }
+  await showMsg();
+  if ($.isNode()) await notify.sendNotify($.name, message);
 })()
     .catch((e) => {
       $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -96,11 +101,7 @@ async function unsubscribeCards() {
   }
 }
 function showMsg() {
-  if (!jdNotify || jdNotify === 'false') {
-    $.msg($.name, ``, `【京东账号${$.index}】${$.nickName}\n【已注销会员卡】${$.unsubscribeCount}个\n【还剩会员卡】${$.cardsTotalNum-$.unsubscribeCount}个\n`);
-  } else {
-    $.log(`\n【京东账号${$.index}】${$.nickName}\n【已注销会员卡】${$.unsubscribeCount}个\n【还剩会员卡】${$.cardsTotalNum-$.unsubscribeCount}个\n`);
-  }
+  $.msg($.name, ``, message);
 }
 function getCards() {
   return new Promise((resolve) => {
@@ -112,7 +113,7 @@ function getCards() {
         "Accept": "*/*",
         "Connection": "keep-alive",
         "Cookie": cookie,
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('../USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
         "Accept-Language": "zh-cn",
         "Accept-Encoding": "gzip, deflate, br"
       },
@@ -128,11 +129,14 @@ function getCards() {
             data = JSON.parse(data);
             $.cardsTotalNum = data.result.cardList ? data.result.cardList.length : 0;
             $.cardList = data.result.cardList || []
+            message += `【京东账号${$.index}】${$.nickName}\n【店铺会员卡】${$.cardsTotalNum}个\n`;
+            console.log(`【京东账号${$.index}】${$.nickName}\n【店铺会员卡】${$.cardsTotalNum}个\n`)
             for (var i = 0; i < $.cardList.length; i++) {
               var id = $.cardList[i].brandId;
               var name = $.cardList[i].brandName;
-              var ulink = name + '\r\n' + 'https://shopmember.m.jd.com/member/memberCloseAccount?venderId=' + id;
-              console.log('手动注销链接：', ulink);
+              var ulink = '注销 ' + name + ' 店铺会员链接' + '\r\n' + 'https://shopmember.m.jd.com/member/memberCloseAccount?venderId=' + id;
+              // console.log(ulink);
+              message += ulink + `${i === $.cardList.length - 1 ? '\n\n' : '\n'}`;
             }
           }
         }
@@ -153,7 +157,7 @@ function unsubscribeCard(vendorId) {
         "Accept": "*/*",
         "Connection": "keep-alive",
         'origin': 'https://shopmember.m.jd.com',
-        'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('../USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+        'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
         'Referer': `https://shopmember.m.jd.com/member/memberCloseAccount?venderId=${vendorId}`,
         'Cookie': cookie,
         "Accept-Language": "zh-cn",
@@ -191,7 +195,7 @@ function TotalBean() {
         "Connection": "keep-alive",
         "Cookie": cookie,
         "Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('../USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
       }
     }
     $.post(options, (err, resp, data) => {
