@@ -36,7 +36,7 @@ let cookiesArr = [], cookie = '', message;
 let UA = '', UAInfo = {};
 $.shareCodes = [];
 $.blackInfo = {}
-$.appId = 10028;
+$.appId = 10038;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
