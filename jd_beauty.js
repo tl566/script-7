@@ -265,7 +265,7 @@ async function mr() {
           for (let i = $.taskState.meetingplace_view; i < $.taskState.mettingplace_count; ++i) {
             console.log(`去做第${i + 1}次浏览会场任务`)
             client.send(`{"msg":{"type":"action","args":{"source":1},"action":"meetingplace_view"}}`)
-            await $.wait(2000)
+            await $.wait(10 * 1000)
           }
           if ($.taskState.today_answered === 0) {
             console.log(`去做每日问答任务`)
