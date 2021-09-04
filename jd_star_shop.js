@@ -1,5 +1,6 @@
 /*
-    明星小店
+0 0,22 * * *
+明星小店
  */
 const $ = new Env('明星小店');
 const notify = $.isNode() ? require('./sendNotify') : '';

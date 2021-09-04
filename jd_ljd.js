@@ -1,6 +1,6 @@
 /*
 京东APP--领京豆--做任务
-cron 50 4 * * *
+50 4 * * *
 */
 const $ = new Env('领京豆');
 const notify = $.isNode() ? require('./sendNotify') : '';

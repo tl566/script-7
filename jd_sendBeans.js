@@ -1,7 +1,8 @@
 /*
-* 来客有礼小程序
-* cron 45 4 * * *
-* */
+来客有礼小程序 送豆得豆
+
+45 0,10,12 * * *
+*/
 const $ = new Env('送豆得豆');
 const invokeKey = $.isNode() ? require('./utils/config').invokeKey : 'ztmFUCxcPMNyUq0P';
 // md5

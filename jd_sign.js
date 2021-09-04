@@ -1,7 +1,7 @@
 /* 
 
 只支持nodejs环境
-14 10 * * *
+14 0-6/2 * * *
 */
 
 const validator = require('./utils/JDJRValidator_Pure.js');

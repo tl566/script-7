@@ -1,7 +1,7 @@
 /*
 新版京喜财富岛 收集海滩贝壳 每20分钟一次，可根据自己账号数量进行修改cron
 默认每10秒收集一次贝壳，可使用环境变量 SHELL_WAIT_TIME控制。
-cron 0-59/20 * * * * jd_jxbfd_collect
+0-59/20 * * * * jd_jxbfd_collect
 更新日期：2021-07-22
  */
 const $ = new Env("京喜财富岛-收集贝壳");
