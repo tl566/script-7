@@ -128,8 +128,10 @@ async function signInit() {
             if (data['code'] === 0 && data['subCode'] === 0) {
               console.log(`账号 ${$.index} ${$.UserName} 签到领现金余额：${data['data']['cashDrawAmount']}\n`);
               if (data['data']['cashDrawAmount'] > 8) {
-                $.msg($.name, `账号 ${$.index} ${$.UserName}\n签到领现金余额：${data['data']['cashDrawAmount']}元\n可兑换8元红包，活动将于9月7日下线，余额清零，请尽快兑换！\n兑换地址：https://bucuyf.com/100E1W-P4`)
-                if ($.isNode()) await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n签到领现金余额：${data['data']['cashDrawAmount']}元\n可兑换8元红包，活动将于9月7日下线，余额清零，请尽快兑换！\n兑换地址：https://bucuyf.com/100E1W-P4`)
+                for (let i = 0; i < data['data']['cashDrawAmount'] * 1 % 8; i ++) {
+                  await speedSignCashOut();
+                  await $.wait(2000);
+                }
               }
             }
           }
@@ -142,7 +144,35 @@ async function signInit() {
     })
   })
 }
-
+function speedSignCashOut() {
+  return new Promise(resolve => {
+    $.get(taskUrl('speedSignCashOut', {
+      "activityId": "8a8fabf3cccb417f8e691b6774938bc2",
+      "kernelPlatform": "RN"
+    }), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          console.log(data);
+          data = $.toObj(data);
+          if (data) {
+            if (data['code'] === 0 && data['subCode'] === 0) {
+              console.log(`账号 ${$.index} ${$.UserName} 提现成功：${data['data']['value']}元\n过期时间：${data['data']['expireDate']}`);
+              $.msg('京东技术版签到领现金', '', `账号 ${$.index} ${$.UserName}\n提现成功：${data['data']['value']}元\n过期时间：${data['data']['expireDate']}`)
+              if ($.isNode()) await notify.sendNotify('京东技术版签到领现金', `账号 ${$.index} ${$.UserName}\n提现成功：${data['data']['value']}元\n过期时间：${data['data']['expireDate']}`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
 async function sign() {
   return new Promise(resolve => {
     $.get(taskUrl('speedSign', {
