@@ -143,8 +143,13 @@ function QueryUserInfo() {
               $.dwIsXbRemain = data['XbStatus']['dwIsXbRemain'];
               for (const item of $.XBDetail) {
                 if (item['dwRemainCnt'] > 0) {
-                  await TreasureHunt(`strIndex=${item['strIndex']}`);
-                  await $.wait(2000);
+                  if(Date.now()/1000 > item['ddwColdEndTm']){
+                    await TreasureHunt(`strIndex=${item['strIndex']}`);
+                    await $.wait(2000);
+                  }else{
+                    let nextTime = new Date(parseInt(item['ddwColdEndTm']) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+                    console.log(`strIndex=${item['strIndex']} 未到寻宝时间，下次寻宝时间:${nextTime}`);
+                  }
                 } else {
                   console.log(`strIndex=${item['strIndex']} 寻宝次数已达上限，明日再来哦~`);
                 }
