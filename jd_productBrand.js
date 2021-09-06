@@ -1,13 +1,13 @@
 /*
 特务Z，做任务抽奖，不定期出现活动、
-cron 23 8,9 3 8 *
+23 22,23 * * *
 要跑2次
 */
 const $ = new Env('特务Z');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [];
-let UA = ``;
+let UA = ``, message = '';
 $.allInvite = [];
 let useInfo = {};
 $.helpEncryptAssignmentId = '';
@@ -49,6 +49,10 @@ if ($.isNode()) {
     }
     await $.wait(1000);
   }
+  if (message) {
+    $.msg($.name, '', message);
+    if ($.isNode()) await notify.sendNotify($.name, message);
+  }
   if ($.allInvite.length > 0) {
     console.log(`\n开始脚本内互助\n`);
   }
@@ -77,6 +81,7 @@ if ($.isNode()) {
 async function main() {
   $.runFlag = false;
   $.activityInfo = {};
+  $.beanNum = 0;
   await takeRequest('superBrandSecondFloorMainPage');
   if (JSON.stringify($.activityInfo) === '{}') {
     console.log(`获取活动详情失败`);
@@ -103,6 +108,9 @@ async function main() {
     console.log(`进行抽奖`);
     await takeRequest('superBrandTaskLottery');//抽奖
     await $.wait(2000);
+  }
+  if ($.beanNum) {
+    message += `账号 ${$.index} ${$.UserName}\n恭喜你 获得 ${$.beanNum}京豆🐶\n\n`;
   }
 }
 
@@ -208,6 +216,7 @@ function dealReturn(type, data) {
         let reward = data.data.result.userAwardInfo
         if (reward && reward.beanNum) {
           console.log(`恭喜你 获得 ${reward.beanNum}京🐶\n`)
+          $.beanNum += parseInt(reward.beanNum);
         } else if (reward && reward['awardType'] === 7) {
           console.log(`获得 ${reward['quota']}元优惠券、${reward['useRange']}\n`)
         } else {
