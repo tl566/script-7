@@ -116,17 +116,22 @@ async function signInit() {
   return new Promise(resolve => {
     $.get(taskUrl('speedSignInit', {
       "activityId": "8a8fabf3cccb417f8e691b6774938bc2",
-      "kernelPlatform": "RN",
-      "inviterId":"gCBrvPfINCZc+dotfvHPlA=="
+      "kernelPlatform": "RN"
     }), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
-            data = JSON.parse(data);
-            //console.log(data)
+          data = $.toObj(data);
+          if (data) {
+            if (data['code'] === 0 && data['subCode'] === 0) {
+              console.log(`账号 ${$.index} ${$.UserName} 签到领现金余额：${data['data']['cashDrawAmount']}\n`);
+              if (data['data']['cashDrawAmount'] > 8) {
+                $.msg($.name, `账号 ${$.index} ${$.UserName}\n签到领现金余额：${data['data']['cashDrawAmount']}元\n可兑换8元红包，活动将于9月7日下线，余额清零，请尽快兑换！\n兑换地址：https://bucuyf.com/100E1W-P4`)
+                if ($.isNode()) await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n签到领现金余额：${data['data']['cashDrawAmount']}元\n可兑换8元红包，活动将于9月7日下线，余额清零，请尽快兑换！\n兑换地址：https://bucuyf.com/100E1W-P4`)
+              }
+            }
           }
         }
       } catch (e) {
