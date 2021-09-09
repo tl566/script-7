@@ -120,6 +120,7 @@ async function jd_jsg() {
         }
       }
     }
+    await $.wait(6000);
     //逛发现看内容赢京豆
     taskList = [
       {'type': '9', 'assignmentId': 'XTXNrKoUP5QK1LSU8LbTJpFwtbj'}
@@ -139,6 +140,7 @@ async function jd_jsg() {
         await takePostRequest('interactive_reward');
       }
     }
+    await $.wait(10000);
     //看精选视频赢京豆
     taskList = [
       {'type': '1', 'assignmentId': 'Hys8nCmAaqKmv1G3Y3a5LJEk36Y'},
