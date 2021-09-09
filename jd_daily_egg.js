@@ -67,8 +67,6 @@ if ($.isNode()) {
     })
 async function jdDailyEgg() {
   await toDailyHome()
-  await toWithdraw()
-  await toGoldExchange();
 }
 function toGoldExchange() {
   return new Promise(async resolve => {
@@ -113,7 +111,7 @@ function toWithdraw() {
       "environment": "jrApp",
       "riskDeviceInfo": "{}"
     }
-    $.post(taskUrl('toWithdraw', body), (err, resp, data) => {
+    $.post(taskUrl('toWithdraw', body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -126,8 +124,11 @@ function toWithdraw() {
               if (data.resultData.code === '0000') {
                 console.log(`收取鹅蛋:${data.resultData.data.eggTotal}个成功`);
                 console.log(`当前总鹅蛋数量:${data.resultData.data.userLevelDto.userHaveEggNum}`);
+                await toGoldExchange();
               } else if (data.resultData.code !== '0000') {
                 console.log(`收取鹅蛋失败:${data.resultData.msg}`)
+              } else {
+                console.log(`收取鹅蛋异常：${$.toStr(data)}\n`)
               }
             }
           } else {
@@ -149,7 +150,7 @@ function toDailyHome() {
       "environment": "jrApp",
       "riskDeviceInfo": "{}"
     }
-    $.post(taskUrl('toDailyHome', body), (err, resp, data) => {
+    $.post(taskUrl('toDailyHome', body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -158,6 +159,15 @@ function toDailyHome() {
           if (data) {
             // console.log(data)
             data = JSON.parse(data);
+            if (data['resultCode'] === 0 && data['resultData']) {
+              if (data['resultData']['code'] === '0005') {
+                console.log(data['resultData']['msg']);
+              } else {
+                await toWithdraw()
+              }
+            } else {
+              console.log(`异常：${$.toStr(data)}\n`)
+            }
           } else {
             console.log(`京东服务器返回空数据`)
           }
