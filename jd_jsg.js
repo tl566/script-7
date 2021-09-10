@@ -28,6 +28,7 @@ if ($.isNode()) {
   }
   $.projectId = 'rfhKVBToUL4RGuaEo7NtSEUw2bA';
   $.helpCode = {'assignmentId': '3PX8SPeYoQMgo1aJBZYVkeC7QzD3', 'type': '2'};
+  await getActiveInfo();
   for (let i = 0; i < cookiesArr.length; i++) {
     $.ua = `jdapp;iPhone;10.1.0;14.6;${randomWord(false, 40, 40)};network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214222593;appBuild/164324;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E456;supportJDSHWK/1`;
     $.index = i + 1;
@@ -87,85 +88,92 @@ if ($.isNode()) {
 
 async function jd_jsg() {
   try {
-    let taskList = [
-      {'type': '5', 'assignmentId': '2PbAu1BAT79RxrM5V7c2VAPUQDSd'},
-      {'type': '1', 'assignmentId': 'Due4TEZ4JdDeeWi1tzs7wRbp5fr'},
-      {'type': '1', 'assignmentId': '2gWnJADG8JXMpp1WXiNHgSy4xUSv'},
-      {'type': '1', 'assignmentId': '3dw9N5yB18RaN9T1p5dKHLrWrsX'},
-      {'type': '2', 'assignmentId': '3PX8SPeYoQMgo1aJBZYVkeC7QzD3'},
-      {'type': '1', 'assignmentId': 'u4eyHS91t3fV6HRyBCg9k5NTUid'},
-    ];
-    for (let i = 0; i < taskList.length; i++) {
-      $.type = taskList[i].type;
-      $.assignmentId = taskList[i].assignmentId;
-      $.taskInfo = {};
-      await takePostRequest('interactive_info');
-      if (!$.taskInfo) break
-      if ($.type === '2') {
+    for (const item of $.codeFloors) {
+      if (!item['ofn']) continue
+      if (item['ofn'] === '3' || item['ofn'] === '10' || item['ofn'] === '23' || item['ofn'] === '18' || item['ofn'] === '16' || item['ofn'] === '14') {
+        //3：看内容签到
+        if (item['ofn'] === '3') {
+          $.type = '5';
+        } else {
+          $.type = '1';
+        }
+        $.assignmentId = item['boardParams']['taskCode'];
+        $.taskInfo = {};
+        await takePostRequest('interactive_info');
+        if (!$.taskInfo) continue
+        if ($.taskInfo.status === "2") {
+          console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || ''},已完成`);
+        } else if ($.taskInfo.status === "0") {
+          if (item['ofn'] === '3') {
+            console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || ''},可获得京豆：${$.taskInfo.current === 7 ? 5 : 2}，去执行`);
+          } else {
+            console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || ''},可获得京豆：${$.taskInfo.rewardValue}，去执行`);
+          }
+          await takePostRequest('interactive_done');
+          if (Number($.taskInfo.waitDuration) > 0) {
+            await $.wait(1000 * $.taskInfo.waitDuration);
+          } else {
+            await $.wait(2000);
+          }
+          console.log(`等待6秒钟，防止火爆！\n`)
+          await $.wait(1000 * 6);
+        }
+      } else if (item['ofn'] === '8') {
+        //逛发现看内容赢京豆
+        $.type = 9;
+        $.assignmentId = item['boardParams']['taskCode'];
+        $.taskInfo = {};
+        await takePostRequest('interactive_info');
+        if (!$.taskInfo) continue
+        if ($.taskInfo.status === "2") {
+          console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '逛发现看内容赢京豆'},已完成`);
+        } else if ($.taskInfo.status === "0" || $.taskInfo.status === "1") {
+          console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '逛发现看内容赢京豆'},可获得京豆：${$.taskInfo.rewardValue}，做任务`);
+          await takePostRequest('interactive_done');
+          await $.wait(1000 * 5);
+          console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '逛发现看内容赢京豆'},领取奖励`);
+          await takePostRequest('interactive_reward');
+          console.log(`等待6秒钟，防止火爆！\n`)
+          await $.wait(1000 * 6);
+        }
+      } else if (item['ofn'] === '12') {
+        //看精选视频赢京豆
+        $.type = '1';
+        $.assignmentId = item['boardParams']['taskCode'];
+        $.taskInfo = {};
+        await takePostRequest('interactive_info');
+        if (!$.taskInfo) continue
+        if ($.taskInfo.status === "2") {
+          console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '看精选视频赢京豆'},已完成`);
+        } else if ($.taskInfo.status === "0") {
+          console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '看精选视频赢京豆'},可获得京豆：${$.taskInfo.rewardValue}，领取任务`);
+          if (!getSignUrl) {
+            console.log(`\n【看精选视频赢京豆】任务需计算sign,如有计算sign服务器请设置环境变量 getSignUrl\n`);
+            continue
+          }
+          await takePostRequest('interactive_accept');
+          await $.wait(1000 * 11);
+          console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '看精选视频赢京豆'},领取奖励`);
+          await qryViewkitCallbackResult();
+          console.log(`等待6秒钟，防止火爆！\n`)
+          await $.wait(1000 * 6);
+        }
+      } else if (item['ofn'] === '4') {
+        $.type = '2';
+        $.assignmentId = '3PX8SPeYoQMgo1aJBZYVkeC7QzD3';
+        $.taskInfo = {};
+        await takePostRequest('interactive_info');
+        if (!$.taskInfo) continue
         console.log(`助力码：${$.taskInfo.itemId}`);
-        helpCodeList.push({
+        if ($.taskInfo.itemId) helpCodeList.push({
           'user': $.UserName,
           'code': $.taskInfo.itemId,
           'max': false
         });
-        continue;
-      }
-      if ($.taskInfo.status === "2") {
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || ''},已完成`);
-      } else if ($.taskInfo.status === "0") {
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || ''},可获得：${$.taskInfo.rewardValue}，去执行`);
-        await takePostRequest('interactive_done');
-        if (Number($.taskInfo.waitDuration) > 0) {
-          await $.wait(1000 * $.taskInfo.waitDuration);
-        } else {
-          await $.wait(2000);
-        }
-      }
-    }
-    await $.wait(6000);
-    //逛发现看内容赢京豆
-    taskList = [
-      {'type': '9', 'assignmentId': 'XTXNrKoUP5QK1LSU8LbTJpFwtbj'}
-    ];
-    for (let i = 0; i < taskList.length; i++) {
-      $.type = taskList[i].type;
-      $.assignmentId = taskList[i].assignmentId;
-      $.taskInfo = {};
-      await takePostRequest('interactive_info');
-      if ($.taskInfo.status === "2") {
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '逛发现看内容赢京豆'},已完成`);
-      } else if ($.taskInfo.status === "0" || $.taskInfo.status === "1") {
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '逛发现看内容赢京豆'},可获得：${$.taskInfo.rewardValue}，做任务`);
-        await takePostRequest('interactive_done');
-        await $.wait(1000 * 5);
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '逛发现看内容赢京豆'},领取奖励`);
-        await takePostRequest('interactive_reward');
-      }
-    }
-    await $.wait(10000);
-    //看精选视频赢京豆
-    taskList = [
-      {'type': '1', 'assignmentId': 'Hys8nCmAaqKmv1G3Y3a5LJEk36Y'},
-    ];
-    for (let i = 0; i < taskList.length; i++) {
-      $.type = taskList[i].type;
-      $.assignmentId = taskList[i].assignmentId;
-      $.taskInfo = {};
-      await takePostRequest('interactive_info');
-      if ($.taskInfo.status === "2") {
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '看精选视频赢京豆'},已完成`);
-      } else if ($.taskInfo.status === "0") {
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '看精选视频赢京豆'},可获得：${$.taskInfo.rewardValue}，领取任务`);
-        // await $.wait(1000 * 10);
-        await takePostRequest('interactive_accept');
-        await $.wait(1000 * 11);
-        console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '看精选视频赢京豆'},领取奖励`);
-        // await queryVkComponent();
-        if (!getSignUrl) {
-          console.log(`此任务需计算sign,如有计算sign服务器请设置环境变量 getSignUrl`);
-          break
-        }
-        await qryViewkitCallbackResult();
+      } else {
+        console.log('ofn', item['ofn'])
+        $.msg($.name, '新增任务', '未判断类型任务，请联系作者更新！');
+        if ($.isNode() && $.index === 1) await notify.sendNotify($.name, '发现有新增任务')
       }
     }
     await $.wait(1000);
@@ -174,33 +182,32 @@ async function jd_jsg() {
     $.logErr(e)
   }
 }
-function queryVkComponent() {
-  return new Promise(resolve => {
-    const options = {
-      "url": `https://api.m.jd.com/client.action?functionId=queryVkComponent`,
-      "body": `area=19_1601_50258_62858&body=%7B%22componentId%22%3A%22c849db7345a44ac29250fda2f89969d6%22%2C%22taskParam%22%3A%22%7B%5C%22encryptProjectId%5C%22%3A%5C%22rfhKVBToUL4RGuaEo7NtSEUw2bA%5C%22%2C%5C%22encryptAssignmentId%5C%22%3A%5C%22Hys8nCmAaqKmv1G3Y3a5LJEk36Y%5C%22%2C%5C%22itemId%5C%22%3A%5C%222601564945%5C%22%7D%22%2C%22cpUid%22%3A%22jdsp%22%2C%22taskSDKVersion%22%3A%221.0.3%22%2C%22businessId%22%3A%22jdsp%22%7D&build=167802&client=apple&clientVersion=10.1.2&d_brand=apple&d_model=iPhone11%2C8&eid=eidIf12a8121eas2urxgGc%2BzS5%2BUYGu1Nbed7bq8YY%2BgPd0Q0t%2BiviZdQsxnK/HTA7AxZzZBrtu1ulwEviYSV3QUuw2XHHC%2BPFHdNYx1A/3Zt8xYR%2Bd3&isBackground=N&joycious=128&lang=zh_CN&networkType=4g&networklibtype=JDNetworkBaseAF&openudid=88732f840b77821b345bf07fd71f609e6ff12f43&osVersion=14.7.1&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=6d711d8467366e1a3efeb116fe5e904e&st=1631178868793&sv=112&uemps=0-0&uts=0f31TVRjBSt6U6blB/IaCTHXfJdTG4zeT5AFeLJt4W1LbSXCGxwtw3XpTXsd/t3KngX2nmHBrngLC4ciOyuakvzC1Wrk5qWccX76%2BUw5Ui1U4K3Ns/rDaWPUvFMCZyQ9QvdOhXIgjIRXEol01w5sTmTud4k1%2BK9t8jGvpBKecutXft%2BwbvJEpKlVW1o3qF266CBiMpayHi1UcUdNUGbYzw%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=unknown`,
-      "headers":  {
-        "Cookie": $.cookie,
-        "Accept": `*/*`,
-        "Connection": `keep-alive`,
-        "Content-Type": `application/x-www-form-urlencoded`,
-        "Accept-Encoding": `gzip, deflate, br`,
-        "Host": `api.m.jd.com`,
-        "User-Agent": "jdapp;iPhone;9.3.4;14.3;88732f840b77821b345bf07fd71f609e6ff12f43;network/4g;ADID/1C141FDD-C62F-425B-8033-9AAB7E4AE6A3;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone11,8;addressid/2005183373;supportBestPay/0;appBuild/167502;jdSupportDarkMode/0;pv/414.19;apprpd/Babel_Native;ref/TTTChannelViewContoller;psq/5;ads/;psn/88732f840b77821b345bf07fd71f609e6ff12f43|1701;jdv/0|iosapp|t_335139774|appshare|CopyURL|1610885480412|1610885486;adk/;app_device/IOS;pap/JA2015_311210|9.3.4|IOS 14.3;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-        "Accept-Language": `zh-Hans-CN;q=1, en-CN;q=0.9`,
-      },
-      "timeout": 10000,
+async function getActiveInfo(url = 'https://prodev.m.jd.com/mall/active/2y1S9xVYdTud2VmFqhHbkcoAYhJT/index.html') {
+  let options = {
+    url,
+    headers: {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      "Accept-Language": "zh-cn",
+      "Accept-Encoding": "gzip, deflate, br",
     }
-    $.post(options, async (err, resp, data) => {
+  }
+  return new Promise(async resolve => {
+    $.get(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${$.name} getActiveInfo API请求失败，请检查网路重试`)
         } else {
-          console.log('queryVkComponent', data)
-          data = $.toObj(data);
-          if (data && data['code'] === '0') {
-
+          if (data) {
+            data = data && data.match(/window\.performance.mark\(e\)}}\((.*)\);<\/script>/)
+            if (data && data[1]) {
+              data = $.toObj(data[1]);
+              if (data) {
+                const { codeFloors = [] } = data;
+                $.codeFloors = codeFloors;
+              }
+            }
           }
         }
       } catch (e) {
