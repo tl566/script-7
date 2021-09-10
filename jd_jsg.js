@@ -9,6 +9,8 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 let helpCodeList = [];
+//计算京东sign的服务器URL
+const getSignUrl = $.isNode() ? (process.env.getSignUrl ? process.env.getSignUrl : '') : '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -158,7 +160,12 @@ async function jd_jsg() {
         await takePostRequest('interactive_accept');
         await $.wait(1000 * 11);
         console.log(`任务：${$.taskInfo.assignmentName || $.taskInfo.title || '看精选视频赢京豆'},领取奖励`);
-        await queryVkComponent();
+        // await queryVkComponent();
+        if (!getSignUrl) {
+          console.log(`此任务需计算sign,如有计算sign服务器请设置环境变量 getSignUrl`);
+          break
+        }
+        await qryViewkitCallbackResult();
       }
     }
     await $.wait(1000);
@@ -190,10 +197,10 @@ function queryVkComponent() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          // console.log('queryVkComponent', data)
+          console.log('queryVkComponent', data)
           data = $.toObj(data);
           if (data && data['code'] === '0') {
-            await qryViewkitCallbackResult();
+
           }
         }
       } catch (e) {
@@ -206,10 +213,16 @@ function queryVkComponent() {
 }
 
 function qryViewkitCallbackResult() {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
+    const body = {
+      "dataSource": "babelInteractive",
+      "method": "customDoInteractiveAssignmentForBabel",
+      "reqParams": `{\"itemId\":\"${$.taskInfo.itemId}\",\"encryptProjectId\":\"${$.projectId}\",\"encryptAssignmentId\":\"${$.assignmentId}\"}`
+    }
+    const signRes = await getSign('qryViewkitCallbackResult', body);
     const options = {
-      "url": `https://api.m.jd.com/client.action?functionId=qryViewkitCallbackResult`,
-      "body": `area=19_1601_50258_62858&body=%7B%22dataSource%22%3A%22babelInteractive%22%2C%22method%22%3A%22customDoInteractiveAssignmentForBabel%22%2C%22reqParams%22%3A%22%7B%5C%22itemId%5C%22%3A%5C%222601564945%5C%22%2C%5C%22encryptProjectId%5C%22%3A%5C%22rfhKVBToUL4RGuaEo7NtSEUw2bA%5C%22%2C%5C%22encryptAssignmentId%5C%22%3A%5C%22Hys8nCmAaqKmv1G3Y3a5LJEk36Y%5C%22%7D%22%7D&build=167802&client=apple&clientVersion=10.1.2&d_brand=apple&d_model=iPhone11%2C8&eid=eidIf12a8121eas2urxgGc%2BzS5%2BUYGu1Nbed7bq8YY%2BgPd0Q0t%2BiviZdQsxnK/HTA7AxZzZBrtu1ulwEviYSV3QUuw2XHHC%2BPFHdNYx1A/3Zt8xYR%2Bd3&isBackground=N&joycious=128&lang=zh_CN&networkType=4g&networklibtype=JDNetworkBaseAF&openudid=88732f840b77821b345bf07fd71f609e6ff12f43&osVersion=14.7.1&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=af496727c5478511ad8a3a250f6e6848&st=1631178879108&sv=100&uemps=0-0&uts=0f31TVRjBSt6U6blB/IaCTHXfJdTG4zeT5AFeLJt4W1LbSXCGxwtw3XpTXsd/t3KngX2nmHBrngLC4ciOyuakvzC1Wrk5qWccX76%2BUw5Ui1U4K3Ns/rDaWPUvFMCZyQ9QvdOhXIgjIRXEol01w5sTmTud4k1%2BK9t8jGvpBKecutXft%2BwbvJEpKlVW1o3qF266CBiMpayHi1UcUdNUGbYzw%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=unknown`,
+      "url": `https://api.m.jd.com/client.action?functionId=qryViewkitCallbackResult&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=10.1.2&${signRes}`,
+      "body": `body=${escape(JSON.stringify(body))}`,
       "headers":  {
         "Cookie": $.cookie,
         "Accept": `*/*`,
@@ -242,7 +255,33 @@ function qryViewkitCallbackResult() {
     })
   })
 }
-
+function getSign(function_id, body) {
+  return new Promise(async resolve => {
+    body = `functionId=${function_id}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=10.1.2`
+    const options = {
+      url: getSignUrl,
+      body: body,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      timeout: 10 * 1000
+    }
+    $.post(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} getSign API请求失败，请检查网路重试`)
+        } else {
+          console.log(`getSign结果：${data}`);
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
 async function takePostRequest(type) {
   let myRequest = ``;
   let url = '';
