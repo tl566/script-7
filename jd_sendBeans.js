@@ -185,6 +185,7 @@ async function getActivityList() {
       try {
         data = JSON.parse(data);
         if (data.success && data.data.items) {
+          $.redirectActiveCode = data.data['redirectActiveCode'];
           $.activityList = data.data.items || [];
         } else {
           console.log('getActivityList异常', JSON.stringify(data));
@@ -509,7 +510,7 @@ async function invite() {
 
 
 async function getActivityDetail() {
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityId=${$.activityId}&userOpenId=&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityCode=${$.redirectActiveCode}&activityId=${$.activityId}&userOpenId=&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
   const method = `GET`;
   const headers = {
     'cookie': $.cookie,
@@ -523,7 +524,7 @@ async function getActivityDetail() {
     'Accept-Encoding': `gzip,compress,br,deflate`,
     "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
     'Lottery-Access-Signature': ``,
-    'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
+    'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/755/page-frame.html`,
   };
   const myRequest = {url: url, method: method, headers: headers};
   return new Promise(async resolve => {
@@ -531,8 +532,10 @@ async function getActivityDetail() {
       try {
         // console.log(data);
         data = JSON.parse(data);
-        if (data.success) {
+        if (data.success && typeof (data.data) === 'object') {
           $.detail = data.data;
+        } else {
+          console.log(`获取活动详情失败：${$.toStr(data)}\n`);
         }
       } catch (e) {
         //console.log(data);
