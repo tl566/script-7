@@ -1,5 +1,6 @@
 /*
-    9.10-9.17 明星小店
+9.10-9.17 明星小店
+0 1,22 10-17 9 *
  */
 const $ = new Env('明星小店');
 const notify = $.isNode() ? require('./sendNotify') : '';
