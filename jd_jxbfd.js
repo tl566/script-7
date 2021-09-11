@@ -1,7 +1,7 @@
 /*
 新版京喜财富岛，已完成
 5 1,3-8/1,12,13,18,19 * * *
-更新日期：2021-09-10
+更新日期：2021-09-3
  */
 const $ = new Env("京喜财富岛");
 !function(n){"use strict";function t(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}function r(n,t){return n<<t|n>>>32-t}function e(n,e,o,u,c,f){return t(r(t(t(e,n),t(u,f)),c),o)}function o(n,t,r,o,u,c,f){return e(t&r|~t&o,n,t,u,c,f)}function u(n,t,r,o,u,c,f){return e(t&o|r&~o,n,t,u,c,f)}function c(n,t,r,o,u,c,f){return e(t^r^o,n,t,u,c,f)}function f(n,t,r,o,u,c,f){return e(r^(t|~o),n,t,u,c,f)}function i(n,r){n[r>>5]|=128<<r%32,n[14+(r+64>>>9<<4)]=r;var e,i,a,d,h,l=1732584193,g=-271733879,v=-1732584194,m=271733878;for(e=0;e<n.length;e+=16)i=l,a=g,d=v,h=m,g=f(g=f(g=f(g=f(g=c(g=c(g=c(g=c(g=u(g=u(g=u(g=u(g=o(g=o(g=o(g=o(g,v=o(v,m=o(m,l=o(l,g,v,m,n[e],7,-680876936),g,v,n[e+1],12,-389564586),l,g,n[e+2],17,606105819),m,l,n[e+3],22,-1044525330),v=o(v,m=o(m,l=o(l,g,v,m,n[e+4],7,-176418897),g,v,n[e+5],12,1200080426),l,g,n[e+6],17,-1473231341),m,l,n[e+7],22,-45705983),v=o(v,m=o(m,l=o(l,g,v,m,n[e+8],7,1770035416),g,v,n[e+9],12,-1958414417),l,g,n[e+10],17,-42063),m,l,n[e+11],22,-1990404162),v=o(v,m=o(m,l=o(l,g,v,m,n[e+12],7,1804603682),g,v,n[e+13],12,-40341101),l,g,n[e+14],17,-1502002290),m,l,n[e+15],22,1236535329),v=u(v,m=u(m,l=u(l,g,v,m,n[e+1],5,-165796510),g,v,n[e+6],9,-1069501632),l,g,n[e+11],14,643717713),m,l,n[e],20,-373897302),v=u(v,m=u(m,l=u(l,g,v,m,n[e+5],5,-701558691),g,v,n[e+10],9,38016083),l,g,n[e+15],14,-660478335),m,l,n[e+4],20,-405537848),v=u(v,m=u(m,l=u(l,g,v,m,n[e+9],5,568446438),g,v,n[e+14],9,-1019803690),l,g,n[e+3],14,-187363961),m,l,n[e+8],20,1163531501),v=u(v,m=u(m,l=u(l,g,v,m,n[e+13],5,-1444681467),g,v,n[e+2],9,-51403784),l,g,n[e+7],14,1735328473),m,l,n[e+12],20,-1926607734),v=c(v,m=c(m,l=c(l,g,v,m,n[e+5],4,-378558),g,v,n[e+8],11,-2022574463),l,g,n[e+11],16,1839030562),m,l,n[e+14],23,-35309556),v=c(v,m=c(m,l=c(l,g,v,m,n[e+1],4,-1530992060),g,v,n[e+4],11,1272893353),l,g,n[e+7],16,-155497632),m,l,n[e+10],23,-1094730640),v=c(v,m=c(m,l=c(l,g,v,m,n[e+13],4,681279174),g,v,n[e],11,-358537222),l,g,n[e+3],16,-722521979),m,l,n[e+6],23,76029189),v=c(v,m=c(m,l=c(l,g,v,m,n[e+9],4,-640364487),g,v,n[e+12],11,-421815835),l,g,n[e+15],16,530742520),m,l,n[e+2],23,-995338651),v=f(v,m=f(m,l=f(l,g,v,m,n[e],6,-198630844),g,v,n[e+7],10,1126891415),l,g,n[e+14],15,-1416354905),m,l,n[e+5],21,-57434055),v=f(v,m=f(m,l=f(l,g,v,m,n[e+12],6,1700485571),g,v,n[e+3],10,-1894986606),l,g,n[e+10],15,-1051523),m,l,n[e+1],21,-2054922799),v=f(v,m=f(m,l=f(l,g,v,m,n[e+8],6,1873313359),g,v,n[e+15],10,-30611744),l,g,n[e+6],15,-1560198380),m,l,n[e+13],21,1309151649),v=f(v,m=f(m,l=f(l,g,v,m,n[e+4],6,-145523070),g,v,n[e+11],10,-1120210379),l,g,n[e+2],15,718787259),m,l,n[e+9],21,-343485551),l=t(l,i),g=t(g,a),v=t(v,d),m=t(m,h);return[l,g,v,m]}function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}function d(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}function h(n){return a(i(d(n),8*n.length))}function l(n,t){var r,e,o=d(n),u=[],c=[];for(u[15]=c[15]=void 0,o.length>16&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(d(t)),512+8*t.length),a(i(c.concat(e),640))}function g(n){var t,r,e="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),e+="0123456789abcdef".charAt(t>>>4&15)+"0123456789abcdef".charAt(15&t);return e}function v(n){return unescape(encodeURIComponent(n))}function m(n){return h(v(n))}function p(n){return g(m(n))}function s(n,t){return l(v(n),v(t))}function C(n,t){return g(s(n,t))}function A(n,t,r){return t?r?s(t,n):C(t,n):r?m(n):p(n)}$.md5=A}(this);
@@ -95,7 +95,7 @@ async function main() {
     await QueryMedalList();//使用勋章
     await Rubbishs();//垃圾功能
     await storyOper();//特殊岛民朋友
-    await pearGame();//去玩合成金珍珠游戏
+    await doComposeGame();//去玩合成金珍珠游戏
     await pickShells();//海滩捡贝壳海螺等
     await doTasks();//任务赚京币&成就赚财富
     await rewardSign();//连续营业赢红包&打工赢红包
@@ -327,48 +327,10 @@ function GetActTask() {
     })
   });
 }
-async function pearGame() {
-  let data = await doComposeGame();
-  if (data) {
-    if (data['iRet'] === 0) {
-      let maxCount = 0, temp = [];
-      var { dwCurProgress = 0, ddwSeasonStartTm = 0, strMyShareId, strDT, oPT = [], ddwCurTime = Date.now(), ddwVirHb = 0, dayDrawInfo = {} } = data;
-      $.gameAddTimes = dwCurProgress;//记录已完成游戏次数
-      maxCount = 8;
-      console.log(`\n获取 合成珍珠游戏详情 成功，游戏进度：${dwCurProgress}/${maxCount}`);
-      console.log(`当前有${dwCurProgress}个月饼，${ddwVirHb / 100}红包\n`);
-      if (dayDrawInfo['dwIsDraw'] === 0) {
-        console.log(`月饼游戏，今日一次免费抽奖机会喂使用！现在抽奖`)
-        await GetPearlDailyReward(ddwSeasonStartTm);
-      } else {
-        console.log(`月饼游戏，今日一次免费抽奖机会已使用！`)
-      }
-      if (dwCurProgress < maxCount) {
-        for (let i = dwCurProgress; i < maxCount; i++) {
-          const time = randomNum(30000, 50000);
-          const ss = Math.floor(time / 1000)
-          console.log(`开始第 ${i + 1} 合成次月饼游戏，为防止黑号模拟真实情况 需等待${ss}秒，在此期间请勿手动进入游戏页面`);
-          for (let k = 0; k < ss; k+=5) {
-            await $.wait(5000);
-            await RealTmReport(strMyShareId);
-            await ComposePearlAward(`type=4&size=1&strBT=${strDT}`);
-          }
-          await $.wait(1000);
-          const strLT = oPT[ddwCurTime % oPT.length];
-          await ComposeGameAddProcess(`strBT=${strDT}&strLT=${strLT}`);
-          data = await doComposeGame();
-          var { dwCurProgress = 0, ddwSeasonStartTm = 0, strMyShareId, strDT, oPT = [], ddwCurTime = Date.now(), ddwVirHb = 0, dayDrawInfo = {} } = data;
-        }
-      }
-    } else {
-      console.log(`获取 合成珍珠游戏详情 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-    }
-  }
-}
 function doComposeGame() {
   return new Promise(async (resolve) => {
     const options = {
-      url: `https://m.jingxi.com/jxbfd/user/ComposePearlState?__t=${Date.now()}&strZone=jxbfd&dwGetType=1&_=${Date.now() + 5}&sceneval=2&g_login_type=1&g_ty=ls`,
+      url: `https://m.jingxi.com/jxbfd/user/ComposeGameState?__t=${Date.now()}&strZone=jxbfd&dwFirst=1&_=${Date.now() + 5}&sceneval=2&g_login_type=1&g_ty=ls`,
       timeout: 10000,
       headers: {
         "Cookie": cookie,
@@ -388,11 +350,62 @@ function doComposeGame() {
           console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
         } else {
           data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              let maxCount = 0, temp = [];
+              const { stagelist = [], dwCurProgress = 0, strMyShareId, strDT } = data;
+              $.gameAddTimes = dwCurProgress;//记录已完成游戏次数
+              if (stagelist.length) stagelist.map(vo => temp.push(vo['dwCurStageEndCnt']));
+              maxCount = Math.max(...temp);
+              console.log(`\n获取 合成珍珠游戏详情 成功，游戏进度：${dwCurProgress}/${maxCount}`);
+              if (dwCurProgress < maxCount) {
+                for (let i = dwCurProgress; i < maxCount; i++) {
+                  const time = randomNum(30000, 50000);
+                  const ss = Math.floor(time / 1000)
+                  console.log(`开始第 ${i + 1} 次合成珍珠游戏，为防止黑号模拟真实情况 需等待${ss}秒，在此期间请勿手动进入合成珍珠游戏页面`);
+                  for (let k = 0; k < ss; k+=5) {
+                    await $.wait(5000);
+                    await RealTmReport(strMyShareId);
+                  }
+                  await $.wait(1000);
+                  await ComposeGameAddProcess(`strBT=${strDT}`);
+                }
+                for (let j = 0; j < stagelist.length; j++) {
+                  $.oneStage = stagelist[j];
+                  if ($.oneStage.dwIsAward === 1) {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，已领取`);
+                  } else if ($.oneStage.dwIsAward === 0 && $.gameAddTimes >= $.oneStage.dwCurStageEndCnt) {
+                    console.log(`第${j + 1}颗珍珠奖励：可获得：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，现在开始领取`);
+                    await ComposeGameAward(`dwCurStageEndCnt=${$.oneStage['dwCurStageEndCnt']}`);
+                    await $.wait(1000);
+                  } else {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，不可领取`);
+                  }
+                }
+              } else {
+                console.log(`合成珍珠游戏 已完成`);
+                for (let j = 0; j < stagelist.length; j++) {
+                  $.oneStage = stagelist[j];
+                  if ($.oneStage.dwIsAward === 1) {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，已领取`);
+                  } else if ($.oneStage.dwIsAward === 0 && $.gameAddTimes >= $.oneStage.dwCurStageEndCnt) {
+                    console.log(`第${j + 1}颗珍珠奖励：可获得：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，现在开始领取`);
+                    await ComposeGameAward(`dwCurStageEndCnt=${$.oneStage['dwCurStageEndCnt']}`);
+                    await $.wait(1000);
+                  } else {
+                    console.log(`第${j + 1}颗珍珠奖励：${$.oneStage.ddwCoin}京币，${$.oneStage.ddwMoney}财富值，不可领取`);
+                  }
+                }
+              }
+            } else {
+              console.log(`获取 合成珍珠游戏详情 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
+            }
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
       } finally {
-        resolve(data)
+        resolve()
       }
     })
   });
@@ -401,7 +414,7 @@ function doComposeGame() {
 function RealTmReport(strMyShareId) {
   return new Promise(async (resolve) => {
     let options = {
-      url: `${JD_API_HOST}/jxbfd/user/RealTmReport?__t=${Date.now()}&dwIdentityType=0&strBussKey=composegame&strMyShareId=${strMyShareId}&ddwCount=10&_=${Date.now() + 2}&sceneval=2&g_login_type=1&g_ty=ls`,
+      url: `${JD_API_HOST}/jxbfd/user/RealTmReport?__t=${Date.now()}&dwIdentityType=0&strBussKey=composegame&strMyShareId=${strMyShareId}&ddwCount=5&_=${Date.now() + 2}&sceneval=2&g_login_type=1&g_ty=ls`,
       headers: {
         "Cookie": cookie,
         "Accept": "*/*",
@@ -440,7 +453,7 @@ function RealTmReport(strMyShareId) {
 //记录游戏成功
 function ComposeGameAddProcess(body = '') {
   return new Promise(async (resolve) => {
-    const options = taskUrl('user/ComposePearlAddProcess', body, '__t,strBT,strLT,strZone');
+    const options = taskUrl('user/ComposeGameAddProcess', body, '__t,strBT,strZone');
     $.get(options, async (err, resp, data) => {
       try {
         if (err) {
@@ -450,39 +463,12 @@ function ComposeGameAddProcess(body = '') {
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
-              console.log(`合成月饼 成功，获得：${data['dwCurProgress']}个月饼，${data['ddwAwardHb'] / 100}红包，当前有：${data['ddwVirHb'] / 100}红包\n`);
+              console.log(`合成珍珠 成功，获得：${data['dwCurProgress']}颗珍珠\n`);
               $.gameAddTimes ++;
             } else {
               console.log(`合成珍珠 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
             }
           }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve()
-      }
-    })
-  });
-}
-function ComposePearlAward(body = '') {
-  return new Promise(async (resolve) => {
-    const options = taskUrl('user/ComposePearlAward', body, '__t,size,strBT,strZone,type');
-    $.get(options, async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} ComposePearlAward API请求失败，请检查网路重试`)
-        } else {
-          console.log('上报结果', data);
-          // data = $.toObj(data);
-          // if (data) {
-          //   if (data['iRet'] === 0) {
-          //     console.log(`上报 成功，获得：${data['ddwAwardHb']/ 100}红包，当前有：${data['ddwVirHb'] / 100}红包\n`);
-          //   } else {
-          //     console.log(`上报 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-          //   }
-          // }
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -508,61 +494,6 @@ function ComposeGameAward(body) {
               console.log(`珍珠奖励领取 成功，获得：${data['ddwCoin']}京币，${data['ddwMoney']}财富值\n`);
             } else {
               console.log(`珍珠奖励领取 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-            }
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve()
-      }
-    })
-  });
-}
-function GetPearlDailyReward(ddwSeasonStartTm) {
-  return new Promise(async (resolve) => {
-    const options = taskUrl('user/GetPearlDailyReward', '', '__t,strZone');
-    $.get(options, async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
-        } else {
-          // console.log('GetPearlDailyReward', data)
-          data = $.toObj(data);
-          if (data) {
-            if (data['iRet'] === 0) {
-              const body = `ddwSeaonStart=${ddwSeasonStartTm}&strToken=${data.strToken}`;
-              await PearlDailyDraw(body);
-            } else {
-              console.log(`GetPearlDailyReward 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-            }
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve()
-      }
-    })
-  });
-}
-function PearlDailyDraw(body) {
-  return new Promise(async (resolve) => {
-    const options = taskUrl('user/PearlDailyDraw', body, '__t,ddwSeaonStart,strToken,strZone');
-    $.get(options, async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} PearlDailyDraw API请求失败，请检查网路重试`)
-        } else {
-          // console.log('抽奖', data);
-          data = $.toObj(data);
-          if (data) {
-            if (data['iRet'] === 0) {
-              console.log(`每日抽大奖 成功，奖品详情：`, data);
-            } else {
-              console.log(`每日抽大奖 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
             }
           }
         }
