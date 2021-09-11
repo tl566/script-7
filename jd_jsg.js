@@ -88,7 +88,6 @@ if ($.isNode()) {
 
 async function jd_jsg() {
   try {
-    $.codeFloors.push({"boardParams": {"taskCode": "bWE8RTJm5XnooFr4wwdDM5EYcKP"}, "ofn": "10"})
     for (const item of $.codeFloors) {
       if (!item['ofn']) continue
       if (item['ofn'] !== '4') console.log('\ntaskCode', item['boardParams']['taskCode'])
@@ -208,6 +207,7 @@ async function getActiveInfo(url = 'https://prodev.m.jd.com/mall/active/2y1S9xVY
               if (data) {
                 const { codeFloors = [] } = data;
                 $.codeFloors = codeFloors;
+          $.codeFloors.push({"boardParams": {"taskCode": "bWE8RTJm5XnooFr4wwdDM5EYcKP"}, "ofn": "10"})
               }
             }
           }
