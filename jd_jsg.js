@@ -207,7 +207,7 @@ async function getActiveInfo(url = 'https://prodev.m.jd.com/mall/active/2y1S9xVY
               if (data) {
                 const { codeFloors = [] } = data;
                 $.codeFloors = codeFloors;
-          $.codeFloors.push({"boardParams": {"taskCode": "bWE8RTJm5XnooFr4wwdDM5EYcKP"}, "ofn": "10"})
+                $.codeFloors.push({"boardParams": {"taskCode": "bWE8RTJm5XnooFr4wwdDM5EYcKP"}, "ofn": "10"})
               }
             }
           }
