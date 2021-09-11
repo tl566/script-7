@@ -88,8 +88,10 @@ if ($.isNode()) {
 
 async function jd_jsg() {
   try {
+    $.codeFloors.push({"boardParams": {"taskCode": "bWE8RTJm5XnooFr4wwdDM5EYcKP"}, "ofn": "10"})
     for (const item of $.codeFloors) {
       if (!item['ofn']) continue
+      if (item['ofn'] !== '4') console.log('\ntaskCode', item['boardParams']['taskCode'])
       if (item['ofn'] === '3' || item['ofn'] === '10' || item['ofn'] === '23' || item['ofn'] === '18' || item['ofn'] === '16' || item['ofn'] === '14') {
         //3：看内容签到
         if (item['ofn'] === '3') {
@@ -116,7 +118,7 @@ async function jd_jsg() {
             await $.wait(2000);
           }
           console.log(`等待6秒钟，防止火爆！\n`)
-          await $.wait(1000 * 6);
+          await $.wait(1000 * 10);
         }
       } else if (item['ofn'] === '8') {
         //逛发现看内容赢京豆
