@@ -1,7 +1,7 @@
 /* 
 
 只支持nodejs环境
-14 0-6/2 * * *
+0 0-6/1 * * * jd_sign.js
 */
 
 const validator = require('./utils/JDJRValidator_Pure.js');
@@ -40,6 +40,7 @@ const turnTableId = [
   {"name": "京东商城-母婴", "id": 458, "url": "https://prodev.m.jd.com/mall/active/3BbAVGQPDd6vTyHYjmAutXrKAos6/index.html"},
   {"name": "京东商城-数码", "id": 347, "url": "https://prodev.m.jd.com/mall/active/4SWjnZSCTHPYjE5T7j35rxxuMTb6/index.html"},
   {"name": "京东超市", "id": 1204, "url": "https://pro.m.jd.com/mall/active/QPwDgLSops2bcsYqQ57hENGrjgj/index.html"},
+  {"name": "天天领京豆(PLUS会员专属)", "id": 1265, "url": "https://prodev.m.jd.com/mall/active/3bhgbFe5HZcFCjEZf2jzp3umx4ZR/index.html"},
 ]
 $.get = validator.injectToRequest($.get.bind($), 'channelSign')
 $.post = validator.injectToRequest($.post.bind($), 'channelSign')
@@ -165,7 +166,7 @@ function Login(i) {
             data = JSON.parse(data);
             if (data.success && data.data) {
               data = data.data
-              console.log(`${turnTableId[i].name}：${!data.hasSign ? '：未签到，开始签到\n' : '已签到'}`);
+              console.log(`${turnTableId[i].name}：${!data.hasSign ? '未签到，开始签到\n' : '已签到'}`);
               if (!data.hasSign) {
                 let arr = await Faker.getBody(UA, turnTableId[i].url)
                 fp = arr.fp
