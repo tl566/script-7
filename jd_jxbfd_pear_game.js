@@ -246,15 +246,15 @@ function ComposePearlAward(body = '') {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} ComposePearlAward API请求失败，请检查网路重试`)
         } else {
-          console.log('上报结果', data);
-          // data = $.toObj(data);
-          // if (data) {
-          //   if (data['iRet'] === 0) {
-          //     console.log(`上报 成功，获得：${data['ddwAwardHb']/ 100}红包，当前有：${data['ddwVirHb'] / 100}红包\n`);
-          //   } else {
-          //     console.log(`上报 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
-          //   }
-          // }
+          // console.log('上报结果', data);
+          data = $.toObj(data);
+          if (data) {
+            if (data['iRet'] === 0) {
+              console.log(`上报 成功，获得：${data['ddwAwardHb']/ 100}元红包，当前共有：${data['ddwVirHb'] / 100}红包\n`);
+            } else {
+              console.log(`上报 未中奖: ${data['sErrMsg']}, iRet: ${data['iRet']}\n`);
+            }
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
