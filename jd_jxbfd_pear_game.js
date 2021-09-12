@@ -217,11 +217,11 @@ function ComposeGameAddProcess(body = '') {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} activeScene API请求失败，请检查网路重试`)
         } else {
-          console.log(`月饼合成成功！`, data);
+          console.log(`月饼🥮合成成功🎉`, data);
           data = $.toObj(data);
           if (data) {
             if (data['iRet'] === 0) {
-              console.log(`合成月饼 成功，获得：${data['dwCurProgress']}个月饼，${data['ddwAwardHb'] / 100}红包，当前有：${data['ddwVirHb'] / 100}红包\n`);
+              console.log(`合成月饼 成功，当前共有：${data['dwCurProgress']}个月饼🥮，${data['ddwAwardHb'] / 100}红包🧧${data['ddwVirHb'] ? "，当前红包共：" + data['ddwVirHb'] / 100 : ""}\n`);
               $.gameAddTimes ++;
             } else {
               console.log(`合成珍珠 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`)
