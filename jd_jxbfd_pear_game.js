@@ -124,6 +124,7 @@ async function pearGame() {
       for (let k = 0; k < ss; k+=5) {
         await $.wait(5000);
         await RealTmReport(strMyShareId);
+        await ComposePearlAward(`type=4&size=1&strBT=${strDT}`);
       }
       await $.wait(1000);
       const strLT = oPT[ddwCurTime % oPT.length];
