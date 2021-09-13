@@ -1,8 +1,8 @@
 /*
 寻找内容鉴赏官
 完成任务领京豆
-1 1,22 * * *
-https://u.jd.com/gIpl3Ov
+活动地址：https://prodev.m.jd.com/mall/active/2y1S9xVYdTud2VmFqhHbkcoAYhJT/index.html
+1 1,22 * * * jd_jsg.js
 * */
 const $ = new Env('内容鉴赏官');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
