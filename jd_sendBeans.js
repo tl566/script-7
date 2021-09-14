@@ -54,9 +54,10 @@ if ($.isNode()) {
     return;
   }
   let openCount = Math.floor((Number(cookiesArr.length) - 1) / Number($.completeNumbers));
+  if (openCount === Infinity) openCount = 0;
   console.log(`\n共有${cookiesArr.length}个账号，前${openCount}个账号可以开团\n`);
   $.openTuanList = [];
-  console.log(`前${openCount}个账号开始开团\n`);
+  console.log(`===============================前${openCount}个账号开始开团=====================\n`);
   for (let i = 0; i < cookiesArr.length && i < openCount; i++) {
     $.cookie = cookiesArr[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
@@ -81,7 +82,7 @@ if ($.isNode()) {
     await openTuan();
   }
   console.log('\n开团信息\n' + JSON.stringify($.openTuanList));
-  console.log(`\n开始互助\n`);
+  console.log(`\n===================开始互助===================\n`);
   let ckList = getRandomArrayElements(cookiesArr, cookiesArr.length);
   for (let i = 0; i < ckList.length && $.openTuanList.length > 0; i++) {
     $.cookie = ckList[i];
@@ -102,7 +103,7 @@ if ($.isNode()) {
     $.lkt = Date.now().toString();
     await helpMain();
   }
-  console.log(`\n开始领取奖励\n`);
+  console.log(`\n===================开始领取奖励===================\n`);
   for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookiesArr[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1])
@@ -429,7 +430,7 @@ function getRandomArrayElements(arr, count) {
 async function help() {
   await new Promise((resolve) => {
     let options = {
-      "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?activityId=${$.activityId}&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&invokeKey=${invokeKey}&timestap=${Date.now()}`,
+      "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?activityCode=${$.redirectActiveCode}&activityId=${$.activityId}&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&invokeKey=${invokeKey}&timestap=${Date.now()}`,
       "headers": {
         'content-type': `application/json`,
         'Connection': `keep-alive`,
@@ -466,7 +467,7 @@ async function help() {
 }
 
 async function invite() {
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?openId=&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?activityCode=${$.redirectActiveCode}&openId=&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=${invokeKey}`;
   const method = `POST`;
   const headers = {
     'content-type': `application/json`,
