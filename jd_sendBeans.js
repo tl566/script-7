@@ -442,7 +442,7 @@ async function help() {
         'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
         'cookie': $.cookie,
         'lkt': $.lkt,
-        'lks': $.md5(invokeKey + $.lkt),
+        'lks': $.md5(invokeKey + $.lkt + $.redirectActiveCode),
       }
     };
     $.post(options, (err, resp, res) => {
@@ -480,7 +480,7 @@ async function invite() {
     'Referer': `https://servicewechat.com/wxccb5c536b0ecd1bf/733/page-frame.html`,
     'cookie': $.cookie,
     'lkt': $.lkt,
-    'lks': $.md5(invokeKey + $.lkt),
+    'lks': $.md5(invokeKey + $.lkt + $.redirectActiveCode),
   };
   const body = `{}`;
   const myRequest = {
@@ -515,7 +515,7 @@ async function getActivityDetail() {
   const headers = {
     'cookie': $.cookie,
     'lkt': $.lkt,
-    'lks': $.md5(invokeKey + $.lkt),
+    'lks': $.md5(invokeKey + $.lkt + $.redirectActiveCode),
     'openId': ``,
     'Connection': `keep-alive`,
     'App-Id': ``,
