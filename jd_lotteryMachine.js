@@ -3,6 +3,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
+  {'appId': '1ElBTx6o', 'endTime': 1633017600000,'name':'企有此礼'},//京东APP--》玩一玩---》企有此礼
   {'appId': '1E1NXxq0', 'endTime': 1641002400000,'name':'众筹许愿池'},//京东APP--》京东众筹---》众筹许愿池
   {'appId': '1EFRQwA', 'endTime': 1704038400000,'name':'疯狂砸金蛋'},//京东APP--》每日特价---》疯狂砸金蛋
   {'appId': '1EFRRxA', 'endTime': 1704038400000,'name':'没找到活动在哪'},
@@ -163,7 +164,7 @@ async function doTask(){
         if($.oneTask.waitDuration && Number($.oneTask.waitDuration) > 0){
           waitTime = $.oneTask.waitDuration;
         }
-        console.log(`浏览：${$.oneInfo.skuName || $.oneInfo.title || $.oneInfo.shopName},等待${waitTime}秒`);
+        console.log(`任务：${taskName},${$.oneInfo.skuName || $.oneInfo.title || $.oneInfo.shopName},等待${waitTime}秒`);
         $.actionType = 1;
         await takePostRequest('harmony_collectScore');
         await $.wait(waitTime*1000);
@@ -171,7 +172,7 @@ async function doTask(){
         await takePostRequest('harmony_collectScore');
         await $.wait(1000);
       }
-    } else if($.oneTask.taskType === 1 || $.oneTask.taskType === 2  || $.oneTask.taskType === 3 ||$.oneTask.taskType === 26){
+    } else if($.oneTask.taskType === 1 || $.oneTask.taskType === 2  || $.oneTask.taskType === 3 || $.oneTask.taskType === 15 ||$.oneTask.taskType === 26){
       console.log(`任务：${taskName},需要完成${$.oneTask.maxTimes}次，已完成${$.oneTask.times}次`);
       let needTime = Number($.oneTask.maxTimes) - Number($.oneTask.times);
       for (let j = 0; j < infoList.length && j < needTime; j++) {
@@ -183,7 +184,7 @@ async function doTask(){
         if($.oneTask.waitDuration && Number($.oneTask.waitDuration) > 0){
           waitTime = $.oneTask.waitDuration;
         }
-        console.log(`浏览：${$.oneInfo.skuName || $.oneInfo.title || $.oneInfo.shopName},等待${waitTime}秒`);
+        console.log(`任务：${taskName},${$.oneInfo.skuName || $.oneInfo.title || $.oneInfo.shopName},等待${waitTime}秒`);
         $.actionType = 1;
         await takePostRequest('harmony_collectScore');
         await $.wait(waitTime*1000);
