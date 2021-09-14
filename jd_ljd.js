@@ -1,6 +1,6 @@
 /*
 京东APP--领京豆--做任务
-50 4 * * *
+50 4,21 * * * jd_ljd.js
 */
 const $ = new Env('领京豆');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -12,7 +12,6 @@ if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
   })
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
   cookiesArr = [
     $.getdata("CookieJD"),
@@ -49,17 +48,17 @@ if ($.isNode()) {
   }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();})
 
-async function main(){
-  uuid = randomWord(false,40,40);
+async function main() {
+  uuid = randomWord(false, 40, 40);
   ua = `jdapp;iPhone;10.0.8;14.6;${uuid};network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214222493;appBuild/168841;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/23E148;supportJDSHWK/1`
   $.taskInfo = {};
   await takeGetRequest('beanTaskList')
-  if(JSON.stringify($.taskInfo) === '{}'){
+  if (JSON.stringify($.taskInfo) === '{}') {
     console.log(`获取任务列表失败`);
-    return ;
+    return;
   }
   console.log(`获取任务列表成功`);
-  if(!$.taskInfo.viewAppHome.doneTask){
+  if (!$.taskInfo.viewAppHome.doneTask) {
     console.log(`任务：${$.taskInfo.viewAppHome.mainTitle}  ${$.taskInfo.viewAppHome.subTitle} ,执行任务`);
     $.flag = 0;
     await takeGetRequest('beanHomeIconDoTask');
@@ -71,8 +70,8 @@ async function main(){
 
   let runTime = 0;
   $.runFlag = false;
-  do{
-    if($.runFlag){
+  do {
+    if ($.runFlag) {
       await takeGetRequest('beanTaskList');
       await $.wait(3000);
     }
@@ -80,21 +79,29 @@ async function main(){
     $.taskList = $.taskInfo.taskInfos;
     for (let i = 0; i < $.taskList.length; i++) {
       $.oneTask = $.taskList[i];
-      if($.oneTask.status === 2 || $.oneTask.times === $.oneTask.maxTimes){
+      console.log(`任务：【${$.oneTask['taskName']}】，进度：${$.oneTask.times}/${$.oneTask.maxTimes}`);
+      if ($.oneTask.status === 2 || $.oneTask.times === $.oneTask.maxTimes) {
         //console.log(`任务：${$.oneTask.taskName},已完成`);
-      }else if($.oneTask.status === 1){
+      } else if ($.oneTask.status === 1) {
         $.taskDetaillist = $.oneTask.subTaskVOS;
         let needRunTime = Number($.oneTask.maxTimes) - Number($.oneTask.times);
         for (let j = 0; j < $.taskDetaillist.length && needRunTime > 0; j++) {
-          if($.taskDetaillist[j].status !== 1){
+          if ($.taskDetaillist[j].status !== 1) {
             continue;
           }
           console.log(`任务：${$.taskDetaillist[j].title || ''}  ${$.taskDetaillist[j].subtitle || ''},执行任务`);
           $.taskToken = $.taskDetaillist[j].taskToken
-          if($.oneTask.taskType === 9){
+          if ($.oneTask.taskType === 9) {
             $.actionType = 1;
             await takeGetRequest('beanDoTask');
-            await $.wait(4000);
+            await $.wait(5000);
+            $.actionType = 0;
+            await takeGetRequest('beanDoTask');
+            await $.wait(3000);
+          } else if ($.oneTask.taskType === 8) {
+            $.actionType = 1;
+            await takeGetRequest('beanDoTask');
+            await $.wait(1000 * $.oneTask['waitDuration']);
             $.actionType = 0;
             await takeGetRequest('beanDoTask');
             await $.wait(3000);
@@ -103,21 +110,21 @@ async function main(){
             await takeGetRequest('beanDoTask');
             await $.wait(3000);
           }
-          needRunTime --;
+          needRunTime--;
         }
-      }else {
+      } else {
         //console.log(`任务：${$.oneTask.taskName},不执行`);
       }
     }
-    runTime ++;
-  }while(runTime <5 && $.runFlag);
+    runTime++;
+  } while (runTime < 5 && $.runFlag);
 
 }
 
 async function takeGetRequest(type) {
   let url = ``;
   let myRequest = ``;
-  let random = Math.floor(1000 +  90000* Math.random());
+  let random = Math.floor(1000 + 90000 * Math.random());
   switch (type) {
     case 'beanTaskList':
       url = `https://api.m.jd.com/client.action?functionId=beanTaskList&body=%7B%22viewChannel%22%3A%22AppHome%22%7D&appid=ld&client=m&clientVersion=10.0.8&networkType=wifi&osVersion=14.6&uuid=${uuid}&openudid=${uuid}&jsonp=jsonp_${Date.now()}_${random}`;
@@ -150,40 +157,40 @@ function dealReturn(type, data) {
   try {
     data = data.match(new RegExp(/jsonp.*\((.*)\);/))[1]
     data = JSON.parse(data);
-  }catch (e) {
-    console.log(`解析异常`+type);
+  } catch (e) {
+    console.log(`解析异常` + type);
     console.log(data);
   }
   switch (type) {
     case 'beanTaskList':
-      if(data.code === '0'){
-        console.log(`获取任务列表`);
+      if (data.code === '0') {
+        console.log(`\n获取任务列表`);
         if (data['data']) {
           $.taskInfo = data.data;
         } else {
           $.log(data['errorMessage'])
         }
-      }else{
-        console.log(`返回数据异常`+type);
+      } else {
+        console.log(`返回数据异常` + type);
       }
       break;
     case 'beanDoTask':
-      if(data.code === '0'){
-        if(data.data.bizMsg){
+      if (data.code === '0') {
+        if (data.data && data.data.bizMsg) {
           console.log(data.data.bizMsg || ' ');
           $.runFlag = true;
-        }else{
+        } else {
           console.log(`等待任务完成`);
         }
-      }else{
-        console.log(`返回数据异常`+type);
+      } else {
+        console.log(`返回数据异常` + type);
       }
       break;
     case 'beanHomeIconDoTask':
-      if(data.code === '0'){
+      if (data.code === '0') {
         console.log(data.data.remindMsg || ' ');
-      }else{
-        console.log(`返回数据异常`+type);
+      } else {
+        console.log(`返回数据异常` + type);
       }
       break;
     default:
@@ -198,7 +205,7 @@ function getGetRequest(url) {
     'Cookie': $.cookie,
     'Accept': `*/*`,
     'Accept-Encoding': `gzip, deflate, br`,
-    'User-Agent':ua,
+    'User-Agent': ua,
     'Accept-Language': `zh-cn`,
     'Referer': `https://h5.m.jd.com/rn/42yjy8na6pFsq1cx9MJQ5aTgu3kX/index.html`,
     'Host': `api.m.jd.com`,
@@ -206,17 +213,17 @@ function getGetRequest(url) {
   return {url: url, method: method, headers: headers};
 }
 
-function randomWord(randomFlag, min, max){
+function randomWord(randomFlag, min, max) {
   var str = "",
-    range = min,
-    arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+      range = min,
+      arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
   // 随机产生
-  if(randomFlag){
-    range = Math.round(Math.random() * (max-min)) + min;
+  if (randomFlag) {
+    range = Math.round(Math.random() * (max - min)) + min;
   }
-  for(var i=0; i<range; i++){
-    pos = Math.round(Math.random() * (arr.length-1));
+  for (var i = 0; i < range; i++) {
+    pos = Math.round(Math.random() * (arr.length - 1));
     str += arr[pos];
   }
   return str;
