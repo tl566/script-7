@@ -10,7 +10,7 @@ const invokeKey = $.isNode() ? require('./utils/config').invokeKey : 'ztmFUCxcPM
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
-let cookiesArr = [];
+let cookiesArr = [], message = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -122,7 +122,13 @@ if ($.isNode()) {
     }
     console.log(`\n*****开始【京东账号${$.index}】${$.UserName}*****\n`);
     $.lkt = Date.now().toString();
+    $.beans = 0;
     await rewardMain();
+    if ($.beans > 0) message += `京东账号 ${$.index} ${$.UserName}\n获得：${$.beans}京豆\n\n`;
+  }
+  if (message) {
+    $.msg($.name, '', message);
+    if ($.isNode()) await notify.sendNotify($.name, message);
   }
 })().catch((e) => {
   $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -333,11 +339,12 @@ async function rewardMain() {
   for (let i = 0; i < $.myRewardList.length; i++) {
     if ($.myRewardList[i].status === 3) {
       $.rewardRecordId = $.myRewardList[i].id;
-      console.log(`领取${$.myRewardList[i].beanQuantity}个京豆`);
+      console.log(`${$.time('yyyy-MM-dd HH:mm:ss.S', $.myRewardList[i]['createdDate'])} ${$.myRewardList[i].beanQuantity}京豆未领取，开始领取！`);
+      if ($.myRewardList[i].beanQuantity) $.beans += parseInt($.myRewardList[i].beanQuantity);
       rewardBean();
       await $.wait(3000);
     } else if ($.myRewardList[i].status === 4) {
-      console.log(`已领取${$.myRewardList[i].beanQuantity}个京豆`);
+      console.log(`${$.time('yyyy-MM-dd HH:mm:ss.S', $.myRewardList[i]['createdDate'])} 已领取${$.myRewardList[i].beanQuantity}个京豆`);
     }
   }
 }
