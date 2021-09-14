@@ -7,7 +7,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [];
 let uuid = ``;
-let ua = ``;
+let ua = ``, allMessage = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -46,9 +46,12 @@ if ($.isNode()) {
     }
     await $.wait(500);
   }
+  if (allMessage) $.msg($.name, '', allMessage);
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();})
 
 async function main() {
+  $.score = 0;
+  $.nextLevelBeanNum = 0;
   uuid = randomWord(false, 40, 40);
   ua = `jdapp;iPhone;10.0.8;14.6;${uuid};network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214222493;appBuild/168841;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/23E148;supportJDSHWK/1`
   $.taskInfo = {};
@@ -118,9 +121,52 @@ async function main() {
     }
     runTime++;
   } while (runTime < 5 && $.runFlag);
-
+  await findBeanScene();
 }
-
+function findBeanScene() {
+  return new Promise(resolve => {
+    const options = {
+      "url": "https://api.m.jd.com/client.action?functionId=findBeanScene",
+      "body": "area=18_1501_1504_57336&body=%7B%22rnClient%22%3A%222%22%2C%22viewChannel%22%3A%22AppHome%22%2C%22source%22%3A%22AppHome%22%2C%22rnVersion%22%3A%224.7%22%7D&build=167802&client=apple&clientVersion=10.1.2&d_brand=apple&d_model=iPhone11%2C8&eid=eidIf12a8121eas2urxgGc%2BzS5%2BUYGu1Nbed7bq8YY%2BgPd0Q0t%2BiviZdQsxnK/HTA7AxZzZBrtu1ulwEviYSV3QUuw2XHHC%2BPFHdNYx1A/3Zt8xYR%2Bd3&isBackground=N&joycious=126&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=88732f840b77821b345bf07fd71f609e6ff12f43&osVersion=14.7.1&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=942e05c96e7fbd944b695fdf27f3d69a&st=1631583596623&sv=120&uemps=0-0&uts=0f31TVRjBSt6U6blB/IaCTHXfJdTG4zeMVQa4V9LFDmEFuBkph78Snx8BQ1FcmitzeQIQWwBlVj%2BTL6J6WAuFLHZ4jXYF%2BT2yba4qJ/kVXp93djRgcdyVnXv8OCnEOON4CZwYXIqz5fvr2PGIKV5nSsKhQ7qeL8lJtRbEIaRnOEi839%2BjQFzUqqCnXa0GqLzaPekWwPRnbm4IBfZ27o4lA%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=f7754c40c09909dc5fccf03e8d7e39d4",
+      "headers": {
+        "Cookie": $.cookie,
+        "Host": "api.m.jd.com",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "User-Agent": ua,
+        "Accept-Language": "zh-Hans-CN;q=1,en-CN;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }
+    $.post(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data['code'] === '0') {
+              if (data['data'] && data.data.curScene) {
+                $.curScene = data.data.curScene;
+                const {growth, level, sceneLevelConfig} = $.curScene;
+                $.msg($.name, '', `京东账号 ${$.index} ${$.nickName || $.UserName}\n当前等级：${level}，成长值：${growth}，升级还需：${sceneLevelConfig.growthEnd - growth}\n再升一级可额外得：${$.nextLevelBeanNum}京豆`)
+                if ($.score) allMessage += `京东账号 ${$.index} ${$.nickName || $.UserName}\n当前等级：${level}，成长值：${growth}，升级还需：${sceneLevelConfig.growthEnd - growth}\n再升一级可额外得：${$.nextLevelBeanNum}京豆\n本次运行获得${$.score}成长值${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+              }
+            } else {
+              console.log(`findBeanScene异常：${$.toStr(data)}\n`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 async function takeGetRequest(type) {
   let url = ``;
   let myRequest = ``;
@@ -167,6 +213,7 @@ function dealReturn(type, data) {
         console.log(`\n获取任务列表`);
         if (data['data']) {
           $.taskInfo = data.data;
+          $.nextLevelBeanNum = $.taskInfo['nextLevelBeanNum']
         } else {
           $.log(data['errorMessage'])
         }
@@ -178,6 +225,10 @@ function dealReturn(type, data) {
       if (data.code === '0') {
         if (data.data && data.data.bizMsg) {
           console.log(data.data.bizMsg || ' ');
+          if ($.actionType === 0) {
+            $.log(`任务完成进度:${data.data.times}/${data.data.maxTimes}`)
+            $.score += parseInt(data.data.score)
+          }
           $.runFlag = true;
         } else {
           console.log(`等待任务完成`);
