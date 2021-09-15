@@ -1,5 +1,5 @@
 /*
- Last Modified time: 2021-9-15 12:00:54
+ Last Modified time: 2021-9-15 17:42:54
  */
 /**
  * sendNotify 推送通知功能
@@ -175,7 +175,6 @@ async function sendNotify(text, desp, params = {}, author = '') {
   let despArr = desp.split('\n\n');
   let str = '', arr = [];
   for (let i = 0; i < despArr.length; i++) {
-    if (!despArr[i]) continue
     str += despArr[i] + '\n\n';
     if (str.length >= 3000) {
       arr.push(str);
@@ -187,11 +186,11 @@ async function sendNotify(text, desp, params = {}, author = '') {
       str = '';
     }
   }
-  let promiseArr = arr.map(des => tgBotNotify(text, des));
+  if (arr.length > 1) console.log(`tg bot 机器人拆分${arr.length}次发送\n`)
+  let promiseArr = arr.filter(item => !!item).map(des => tgBotNotify(text, des));
   await Promise.all(promiseArr);
   str = '', arr = [];
   for (let i = 0; i < despArr.length; i++) {
-    if (!despArr[i]) continue
     str += despArr[i] + '\n\n';
     if (str.length >= 500) {
       arr.push(str);
@@ -203,7 +202,8 @@ async function sendNotify(text, desp, params = {}, author = '') {
       str = '';
     }
   }
-  promiseArr = arr.map(des => BarkNotify(text, des, params));
+  if (arr.length > 1) console.log(`BARK APP 将拆分${arr.length}次发送\n`)
+  promiseArr = arr.filter(item => !!item).map(des => BarkNotify(text, des, params));
   await Promise.all(promiseArr);
 }
 
