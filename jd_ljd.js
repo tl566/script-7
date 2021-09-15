@@ -226,7 +226,7 @@ function dealReturn(type, data) {
         if (data.data && data.data.bizMsg) {
           console.log(data.data.bizMsg || ' ');
           if ($.actionType === 0) {
-            $.log(`任务完成进度:${data.data.times}/${data.data.maxTimes}`)
+            $.log(`任务完成进度:${data.data.times}/${data.data.maxTimes}\n`)
             $.score += parseInt(data.data.score)
           }
           $.runFlag = true;
@@ -238,10 +238,13 @@ function dealReturn(type, data) {
       }
       break;
     case 'beanHomeIconDoTask':
-      if (data.code === '0') {
+      if (data.code === '0' && data['data']) {
         console.log(data.data.remindMsg || ' ');
+        if ($.flag === 1) {
+          $.score += parseInt(data.data.growthResult.addedGrowth);
+        }
       } else {
-        console.log(`返回数据异常` + type);
+        console.log(`返回数据异常` + type, $.toStr(data));
       }
       break;
     default:
