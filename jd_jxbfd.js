@@ -71,11 +71,21 @@ if ($.isNode()) {
             console.log(`助力 失败: ${data['sErrMsg']}, iRet: ${data['iRet']}`);
             //助力机会耗尽：2235，
             //2229：助力人账号火爆，2230：接收助力的人账号火爆
-            if (data['iRet'] === 2235 || data['iRet'] === 2229) break;
-            //好友已不需要助力
+            if (data['iRet'] === 2229) {
+              console.log(`账号 ${$.index} ${$.UserName} 账号火爆(已进小黑屋)\n`);
+              break;
+            }
+            if (data['iRet'] === 2235) {
+              console.log(`账号 ${$.index} ${$.UserName} 今日助力次数达到上限\n`);
+              break;
+            }
+            //好友已不需要助力(已满助力)
             if (data['iRet'] === 2190) $.inviteCodeList[index]['max'] = true;
             //接收助力者账号火爆
-            if (data['iRet'] === 2230) $.inviteCodeList[index]['canReceiveHelp'] = false;
+            if (data['iRet'] === 2230) {
+              console.log(`账号 ${$.userInviteInfo['user']} 账号火爆(已进小黑屋)，不能接收助力！\n`)
+              $.inviteCodeList[index]['canReceiveHelp'] = false;
+            }
           }
         }
         await $.wait(2000);
