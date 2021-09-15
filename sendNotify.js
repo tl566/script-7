@@ -175,6 +175,7 @@ async function sendNotify(text, desp, params = {}, author = '') {
   let despArr = desp.split('\n\n');
   let str = '', arr = [];
   for (let i = 0; i < despArr.length; i++) {
+    if (!despArr[i]) continue
     str += despArr[i] + '\n\n';
     if (str.length >= 3000) {
       arr.push(str);
@@ -190,6 +191,7 @@ async function sendNotify(text, desp, params = {}, author = '') {
   await Promise.all(promiseArr);
   str = '', arr = [];
   for (let i = 0; i < despArr.length; i++) {
+    if (!despArr[i]) continue
     str += despArr[i] + '\n\n';
     if (str.length >= 500) {
       arr.push(str);
