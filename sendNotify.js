@@ -1,5 +1,5 @@
 /*
- Last Modified time: 2021-6-27 16:00:54
+ Last Modified time: 2021-9-15 12:00:54
  */
 /**
  * sendNotify 推送通知功能
@@ -164,14 +164,45 @@ async function sendNotify(text, desp, params = {}, author = '') {
   //由于上述两种微信通知需点击进去才能查看到详情，故text(标题内容)携带了账号序号以及昵称信息，方便不点击也可知道是哪个京东哪个活动
   text = text.match(/.*?(?=\s?-)/g) ? text.match(/.*?(?=\s?-)/g)[0] : text;
   await Promise.all([
-    BarkNotify(text, desp, params),//iOS Bark APP
-    tgBotNotify(text, desp),//telegram 机器人
+    // BarkNotify(text, desp, params),//iOS Bark APP
+    // tgBotNotify(text, desp),//telegram 机器人
     ddBotNotify(text, desp),//钉钉机器人
     qywxBotNotify(text, desp), //企业微信机器人
     qywxamNotify(text, desp), //企业微信应用消息推送
     iGotNotify(text, desp, params),//iGot
     //CoolPush(text, desp)//QQ酷推
   ])
+  let despArr = desp.split('\n\n');
+  let str = '', arr = [];
+  for (let i = 0; i < despArr.length; i++) {
+    str += despArr[i] + '\n\n';
+    if (str.length >= 3000) {
+      arr.push(str);
+      str = '';
+      continue
+    }
+    if (i + 1 === despArr.length) {
+      arr.push(str);
+      str = '';
+    }
+  }
+  let promiseArr = arr.map(des => tgBotNotify(text, des));
+  await Promise.all(promiseArr);
+  str = '', arr = [];
+  for (let i = 0; i < despArr.length; i++) {
+    str += despArr[i] + '\n\n';
+    if (str.length >= 500) {
+      arr.push(str);
+      str = '';
+      continue
+    }
+    if (i + 1 === despArr.length) {
+      arr.push(str);
+      str = '';
+    }
+  }
+  promiseArr = arr.map(des => BarkNotify(text, des, params));
+  await Promise.all(promiseArr);
 }
 
 function serverNotify(text, desp, time = 2100) {
