@@ -1,7 +1,9 @@
 /*
 京喜购物返红包
 已知：每个正常账号账号每天能成功助力3位好友(火爆账号除外)
+
 0 0-23/6 * * * jx_rebate.js
+
  */
 const $ = new Env('京喜购物返红包');
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -34,7 +36,6 @@ $.groupidArr = [];
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i]
-      originCookie = cookiesArr[i]
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
       $.index = i + 1;
       $.isLogin = true;
