@@ -184,7 +184,7 @@ function QueryGroupDetail(orderId = '') {
               if (groupinfo) {
                 const { end_time, totalhongbaosum, openhongbaosum, groupid, zhulicount } = groupinfo;
                 console.log(`此单 ${orderId}（orderId） ${$.name}结束时间：${$.time('yyyy-MM-dd HH:mm:ss', end_time * 1000)}，返现进度：${openhongbaosum}/${totalhongbaosum}，已助力人数：${zhulicount}，预计需：${Math.floor(totalhongbaosum / 0.05 / 2)}人助力\n`);
-                if ((Date.now < end_time * 1000) && (openhongbaosum !== totalhongbaosum) && groupid) {
+                if ((Date.now() < end_time * 1000) && (openhongbaosum !== totalhongbaosum) && groupid) {
                   console.log(`京东账号 ${$.index} ${$.UserName} 此 groupId 【${groupid}】可参与 ${$.name} 活动`);
                   $.groupidArr.push({
                     user: $.UserName,
