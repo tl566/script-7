@@ -162,8 +162,8 @@
 #自动获取宠旺旺的invokeKey
 5 0-23/6 * * * node /scripts/jd_get_invokeKey.js >> /scripts/logs/jd_get_invokeKey.log 2>&1
 #京喜签到
-15 0,12,21 * * * node /scripts/jx_sign.js >> /scripts/logs/jx_sign.log 2>&1
+15 0,12,21 * * * node /scripts/jd_jxsign.js >> /scripts/logs/jd_jxsign.log 2>&1
 #京东店铺会员卡（提供手动注销店铺会员卡链接，脚本不能自动注销）
 55 20 * * 6 node /scripts/jd_unbind.js >> /scripts/logs/jd_unbind.log 2>&1
 # 京喜购物返红包
-20 0-23/6 * * * node /scripts/jx_rebate.js >> /scripts/logs/jx_rebate.log 2>&1
+20 0-23/6 * * * node /scripts/jd_jxrebate.js >> /scripts/logs/jd_jxrebate.log 2>&1
