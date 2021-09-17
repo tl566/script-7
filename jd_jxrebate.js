@@ -53,7 +53,8 @@ $.groupidArr = [];
     }
   }
   console.log('\n=========================== 开始助力 ===========================\n');
-  console.log('可助力队伍：', $.groupidArr)
+  console.log('需助力队伍数量：', $.groupidArr.length)
+  console.log('需助力队伍详情：', $.groupidArr)
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -183,19 +184,29 @@ function QueryGroupDetail(orderId = '') {
               const { groupinfo, bjinfo = {}, totalhelplist = [] } = data['data'];
               if (groupinfo) {
                 const { end_time, totalhongbaosum, openhongbaosum, groupid, zhulicount } = groupinfo;
-                console.log(`此单 ${orderId}（orderId） ${$.name}结束时间：${$.time('yyyy-MM-dd HH:mm:ss', end_time * 1000)}，返现进度：${openhongbaosum}/${totalhongbaosum}，已助力人数：${zhulicount}，预计需：${Math.floor(totalhongbaosum / 0.05 / 2)}人助力\n`);
-                if ((Date.now() < end_time * 1000) && (openhongbaosum !== totalhongbaosum) && groupid) {
-                  console.log(`京东账号 ${$.index} ${$.UserName} 此 groupId 【${groupid}】可参与 ${$.name} 活动`);
-                  $.groupidArr.push({
-                    user: $.UserName,
-                    groupid,
-                    max: false
-                  })
+                if (groupid) {
+                  if (openhongbaosum === totalhongbaosum) {
+                    console.log(`此单 ${orderId}（orderId） 返现红包 已完成🎉，返现进度：${openhongbaosum}/${totalhongbaosum}，已助力人数：${zhulicount}`);
+                  } else if (Date.now() >= end_time * 1000) {
+                    console.log(`此单 ${orderId}（orderId） 返现红包 已超时，结束时间：${$.time('yyyy-MM-dd HH:mm:ss', end_time * 1000)}，返现进度：${openhongbaosum}/${totalhongbaosum}`);
+                  } else if ((Date.now() < end_time * 1000) && (openhongbaosum !== totalhongbaosum) && groupid) {
+                    console.log(`\n京东账号 ${$.index} ${$.UserName} 此 groupId 【${groupid}】可参与 ${$.name} 活动🎉`);
+                    console.log(`此单 ${orderId}（orderId） ${$.name}结束时间：${$.time('yyyy-MM-dd HH:mm:ss', end_time * 1000)}，返现进度：${openhongbaosum}/${totalhongbaosum}，已助力人数：${zhulicount}，预计需：${Math.floor(totalhongbaosum / 0.05 / 2)}人助力\n`);
+                    $.groupidArr.push({
+                      user: $.UserName,
+                      groupid,
+                      max: false
+                    })
+                  }
                 }
               }
             } else {
               //未知情况
-              // console.log(`此单 无返现红包 msg：${data.msg}，errcode：${data['errcode']}`);
+              if (data['errcode'] === 1002) {
+                console.log(`此单 ${orderId}（orderId） 无${$.name}🚫`);
+              } else {
+                console.log(`未知情况 msg：${data.msg}，errcode：${data['errcode']}`)
+              }
             }
           }
         }
