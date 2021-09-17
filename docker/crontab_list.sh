@@ -167,3 +167,5 @@
 55 20 * * 6 node /scripts/jd_unbind.js >> /scripts/logs/jd_unbind.log 2>&1
 # 京喜购物返红包
 20 0-23/6 * * * node /scripts/jd_jxrebate.js >> /scripts/logs/jd_jxrebate.log 2>&1
+# 东东世界
+3 0 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
