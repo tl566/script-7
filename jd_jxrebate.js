@@ -53,6 +53,10 @@ $.groupidArr = [];
     }
   }
   console.log('\n=========================== 开始助力 ===========================\n');
+  $.groupidArr.push({
+    groupid: 'f2b615092b6587c4b8d8a1ff34f6148d',
+    max: false
+  })
   console.log('需助力队伍数量：', $.groupidArr.length)
   console.log('需助力队伍详情：', $.groupidArr)
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -64,7 +68,7 @@ $.groupidArr = [];
         $.userInviteInfo = $.groupidArr[index];
         if ($.userInviteInfo['user'] === $.UserName) continue;
         if ($.userInviteInfo['max']) continue;
-        console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${$.userInviteInfo['user']}，groupid 为：【${$.userInviteInfo['groupid']}】`);
+        console.log(`\n京东账号 ${$.index} ${$.UserName} 开始助力好友 ${$.userInviteInfo['user'] || ''}，groupid 为：【${$.userInviteInfo['groupid']}】`);
         const data = await zhuli($.userInviteInfo['groupid']);
         if (data) {
           if (data['errcode'] === 0) {
