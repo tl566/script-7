@@ -1,7 +1,7 @@
 /*
 来客有礼小程序 送豆得豆
 
-45 0,10,12 * * *
+45 0,10,12 * * * jd_sendBeans.js
 */
 const $ = new Env('送豆得豆');
 const invokeKey = $.isNode() ? require('./utils/config').invokeKey : 'ztmFUCxcPMNyUq0P';
@@ -56,6 +56,7 @@ if ($.isNode()) {
   let openCount = Math.floor((Number(cookiesArr.length) - 1) / Number($.completeNumbers));
   if (openCount === Infinity) openCount = 0;
   console.log(`\n共有${cookiesArr.length}个账号，前${openCount}个账号可以开团\n`);
+  if (!openCount) return
   $.openTuanList = [];
   console.log(`===============================前${openCount}个账号开始开团=====================\n`);
   for (let i = 0; i < cookiesArr.length && i < openCount; i++) {
@@ -151,11 +152,13 @@ async function getActivityInfo() {
   for (let i = 0; i < $.activityList.length; i++) {
     if ($.activityList[i].status !== 'NOT_BEGIN' && $.activityList[i].status !== 'COMPLETE') {
       $.activityId = $.activityList[i].activeId;
+      $.redirectActiveCode = $.activityList[i].activityCode;
       console.log(`活动ID获取成功：${$.activityId}`)
+      console.log(`活动 activityCode 获取成功：${$.redirectActiveCode}`)
       break;
     }
   }
-  if (!$.activityId) return
+  if (!$.activityId || !$.redirectActiveCode) return
   await $.wait(3000);
   $.detail = {};
   await getActivityDetail();
@@ -297,7 +300,7 @@ async function helpMain() {
     if ($.oneTuanInfo['completed']) {
       continue;
     }
-    console.log(`${$.UserName}去助力${$.oneTuanInfo['user']}`);
+    console.log(`\n${$.UserName}去助力${$.oneTuanInfo['user']}`);
     $.detail = {};
     $.rewardRecordId = '';
     await getActivityDetail();
@@ -344,7 +347,7 @@ async function rewardMain() {
       rewardBean();
       await $.wait(3000);
     } else if ($.myRewardList[i].status === 4) {
-      console.log(`${$.time('yyyy-MM-dd HH:mm:ss.S', $.myRewardList[i]['createdDate'])} 已领取${$.myRewardList[i].beanQuantity}个京豆`);
+      console.log(`${$.myRewardList[i]['subtitle']} 已领取${$.myRewardList[i].beanQuantity}个京豆`);
     }
   }
 }
@@ -437,7 +440,8 @@ function getRandomArrayElements(arr, count) {
 async function help() {
   await new Promise((resolve) => {
     let options = {
-      "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?activityCode=${$.redirectActiveCode}&activityId=${$.activityId}&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&invokeKey=${invokeKey}&timestap=${Date.now()}`,
+      // "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?activityCode=${$.redirectActiveCode}&activityId=${$.activityId}&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&invokeKey=${invokeKey}&timestap=${Date.now()}`,
+      "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?userOpenId=&activityCode=${$.redirectActiveCode}&activityId=${$.activityId}&jdChannelId=&userSource=mp&inviteOpenId=&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&fp=&eid=&appId=&invokeKey=${invokeKey}`,
       "headers": {
         'content-type': `application/json`,
         'Connection': `keep-alive`,
@@ -457,12 +461,16 @@ async function help() {
       try {
         if (res) {
           res = JSON.parse(res);
-          if (res.data.result === 5) {
-            $.oneTuanInfo['completed'] = true;
-          } else if (res.data.result === 0 || res.data.result === 1) {
-            $.canHelp = false;
+          if (res['success']) {
+            if (res['data']) {
+              if (res.data.result === 5) {
+                $.oneTuanInfo['completed'] = true;
+              } else if (res.data.result === 0 || res.data.result === 1) {
+                $.canHelp = false;
+              }
+            }
           }
-          console.log(JSON.stringify(res));
+          console.log('助力结果：', JSON.stringify(res));
         }
       } catch (e) {
         console.log(e);
