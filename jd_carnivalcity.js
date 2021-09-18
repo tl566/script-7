@@ -138,9 +138,9 @@ async function JD818() {
     // await supportList();//助力情况
     // await getHelp();//获取邀请码
     // await Promise.all([
-      supportList(),
-      getHelp()
-    ])
+    //  supportList(),
+    //  getHelp()
+    // ])
     if ($.blockAccount) return
     await indexInfo(true);//获取任务
     await doHotProductTask();//做热销产品任务
