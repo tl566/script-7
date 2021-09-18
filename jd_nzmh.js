@@ -79,9 +79,19 @@ if ($.isNode()) {
           await jdMh('https://anmp.jd.com/babelDiy/Zeus/2z9yVc6pg2Rixp4zdMEGi7GBBUqP/index.html')  //end9-30
         }else{
           if($.index === 1){
-            await notify.sendNotify('女装盲盒','失效请维护');
+            //await notify.sendNotify('女装盲盒','失效请维护');
           }
         }
+      if(nowTime < 1633574470000){
+          await jdMh('https://anmp.jd.com/babelDiy/Zeus/31Dkpu7MQK5A8atHNNyQLNqDW237/index.html')  //end10-07
+      }else{
+          if($.index === 1){
+              //await notify.sendNotify('女装盲盒','失效请维护');
+          }
+      }
+
+
+
       } catch (e) {
         $.logErr(e)
       }
