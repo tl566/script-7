@@ -119,8 +119,6 @@
 0-59/20 * * * * node /scripts/jd_jxbfd_collect.js >> /scripts/logs/jd_jxbfd_collect.log 2>&1
 #财富岛-热气球接待游客和雇佣导游
 10 * * * * node /scripts/jd_jxbfd_balloon.js >> /scripts/logs/jd_jxbfd_balloon.log 2>&1
-# 删除优惠券(默认注释，如需要自己开启，如有误删，已删除的券可以在回收站中还原，慎用)
-#20 9 * * 6 node /scripts/jd_delCoupon.js >> /scripts/logs/jd_delCoupon.log 2>&1
 #京东直播（又回来了）
 30-50/5 12,23 * * * node /scripts/jd_live.js >> /scripts/logs/jd_live.log 2>&1
 #京东健康社区
