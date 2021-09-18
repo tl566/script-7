@@ -32,6 +32,10 @@
 20 * * * * node /scripts/jd_jxbfd_pear_game.js >> /scripts/logs/jd_jxbfd_pear_game.log 2>&1
 #京东小家电签到（2021年9月3日-2021年9月30日）
 0 0,1 * * * node /scripts/jd_xjdSign.js >> /scripts/logs/jd_xjdSign.log 2>&1
+
+#818手机狂欢城（9.16-10.1）
+0 0-18/6,22 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
+
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
