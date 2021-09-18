@@ -1,15 +1,15 @@
 /*
-京东小家电签到
-活动地址：https://pro.m.jd.com/mall/active/c46tGzwvXueH7uKSjpXmPQP9Nod/index.html
+京东小家福利社签到
+活动地址：https://pro.m.jd.com/mall/active/3X4HMWmUigG689ZUZAg3Yo8Wtqf5/index.html
 1.每日签到：每个用户限每日签到一次；
 2.连续签到奖励：第一天签到可领取5个京豆，连续签到第四天可领取10个京豆， 其他连续签到日（连续签到第2、3、5、6日）均可获得5个京豆；连续七日签到可领取京豆超级大礼包；
 3.先抢先得：签到活动每日每小时限量发放京豆，先抢先得，每小时发完，可等下一小时开始再来；
-5.活动时间：本轮签到活动时间为 例：2021年9月3日-2021年9月30日；
+5.活动时间：本轮签到活动时间为 例：2021年9月16日-2021年9月30日；
 
-0 0,1 * * * jd_xjdSign.js
+0 0,1 * * * jd_flsSign.js
 
  */
-const $ = new Env('京东小家电签到');
+const $ = new Env('京东小家福利社签到');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
