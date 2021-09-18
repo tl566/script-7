@@ -61,7 +61,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
   //   if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n咱江湖再见`);
   //   return
   // }
-  await updateShareCodesCDN();
+  // await updateShareCodesCDN();
   await requireConfig();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
@@ -88,10 +88,18 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
         }
         continue
       }
-      await shareCodesFormat();
+      // await shareCodesFormat();
       await JD818();
     }
   }
+  if (allMessage) {
+    //NODE端,默认每月一日运行进行推送通知一次
+    if ($.isNode()) {
+      await notify.sendNotify($.name, allMessage, { url: 'https://carnivalcity.m.jd.com/' });
+      $.msg($.name, '', allMessage);
+    }
+  }
+  return;
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -116,13 +124,6 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     }
   }
   // console.log(JSON.stringify($.temp))
-  if (allMessage) {
-    //NODE端,默认每月一日运行进行推送通知一次
-    if ($.isNode()) {
-      await notify.sendNotify($.name, allMessage, { url: 'https://carnivalcity.m.jd.com/' });
-      $.msg($.name, '', allMessage);
-    }
-  }
 })()
     .catch((e) => {
       $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -136,7 +137,7 @@ async function JD818() {
     await indexInfo();//获取任务
     // await supportList();//助力情况
     // await getHelp();//获取邀请码
-    await Promise.all([
+    // await Promise.all([
       supportList(),
       getHelp()
     ])
