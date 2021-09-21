@@ -174,7 +174,7 @@ async function jd_jsg() {
       } else {
         console.log('ofn', item['ofn'])
         $.msg($.name, '新增任务', '未判断类型任务，请联系作者更新！');
-        if ($.isNode() && $.index === 1) await notify.sendNotify($.name, '发现有新增任务')
+        // if ($.isNode() && $.index === 1) await notify.sendNotify($.name, '发现有新增任务')
       }
     }
     await $.wait(1000);
