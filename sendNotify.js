@@ -175,7 +175,11 @@ async function sendNotify(text, desp, params = {}, author = '') {
   let despArr = desp.split('\n\n');
   let str = '', arr = [];
   for (let i = 0; i < despArr.length; i++) {
-    if (i + 1 !== despArr.length) str += despArr[i] + '\n\n';
+    if (i + 1 === despArr.length) {
+      str += despArr[i]
+    } else {
+      str += despArr[i] + '\n\n'
+    }
     if (str.length >= 3000) {
       if (str.lastIndexOf('\n\n') > -1) str = str.substring(0, str.length - 2);
       arr.push(str);
@@ -192,7 +196,11 @@ async function sendNotify(text, desp, params = {}, author = '') {
   await Promise.all(promiseArr);
   str = '', arr = [];
   for (let i = 0; i < despArr.length; i++) {
-    if (i + 1 !== despArr.length) str += despArr[i] + '\n\n';
+    if (i + 1 === despArr.length) {
+      str += despArr[i]
+    } else {
+      str += despArr[i] + '\n\n'
+    }
     if (str.length >= 500) {
       if (str.lastIndexOf('\n\n') > -1) str = str.substring(0, str.length - 2);
       arr.push(str);
