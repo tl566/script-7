@@ -127,9 +127,6 @@ async function main() {
       const args = process.argv.splice(2);
       if (args.length == 1) {
         $.LKYLToken = args[0];
-      } else {
-        console.log("参数个数不对，请重新发送正确的执行指令");
-        return;
       }
     }
   }
