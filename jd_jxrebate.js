@@ -33,6 +33,9 @@ $.groupidArr = [];
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
   await requestAlgo();
   await $.wait(2000)
+  let res = await getAuthorShareCode('https://raw.githubusercontent.com/gitupdate/updateTeam/master/shareCodes/jx_rebate.json'), res2 = [];
+  if (!res) res = await getAuthorShareCode();
+  $.authorMyShareIds = [...(res || []), ...(res2 || [])];
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i]
@@ -53,10 +56,6 @@ $.groupidArr = [];
     }
   }
   console.log('\n=========================== 开始助力 ===========================\n');
-  $.groupidArr.push({
-    groupid: 'f2b615092b6587c4b8d8a1ff34f6148d',
-    max: false
-  })
   console.log('需助力队伍数量：', $.groupidArr.length)
   console.log('需助力队伍详情：', $.groupidArr)
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -87,11 +86,20 @@ $.groupidArr = [];
             //助力机会已耗尽
             console.log('助力失败：助力机会已耗尽', data['msg']);
             break
+          } else if (data.errcode === 1011) {
+            //一天只能助力同一好友一个订单
+            console.log('助力失败：今日已助力过该好友其他订单红包', data['msg']);
           } else {
             //未知情况
             console.log(`助力失败 未知情况：errcode ${data['errcode']}，${data['msg']}\n`)
           }
         }
+      }
+      console.log(`\n\n有剩余助力机会则给作者进行助力`);
+      for (let item of ($.authorMyShareIds || [])) {
+        if (!item) continue;
+        console.log(`账号 ${$.index} ${$.UserName} 开始给作者 ${item} 进行助力`)
+        await zhuli(item);
         await $.wait(2000);
       }
     } catch (e) {
@@ -302,7 +310,39 @@ function TotalBean() {
     })
   })
 }
-
+function getAuthorShareCode(url = "https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/jx_rebate.json") {
+  return new Promise(resolve => {
+    const options = {
+      url: `${url}?${new Date()}`, "timeout": 10000, headers: {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    };
+    if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
+      const tunnel = require("tunnel");
+      const agent = {
+        https: tunnel.httpsOverHttp({
+          proxy: {
+            host: process.env.TG_PROXY_HOST,
+            port: process.env.TG_PROXY_PORT * 1
+          }
+        })
+      }
+      Object.assign(options, { agent })
+    }
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          data = $.toObj(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
 /*
 修改时间戳转换函数，京喜工厂原版修改
  */
