@@ -28,9 +28,9 @@
 0 0,22 * * * node /scripts/jd_jsg.js >> /scripts/logs/jd_jsg.log 2>&1
 #明星小店 2021-09-10到2021-9-17
 0 1,22 10-17 9 * node /scripts/jd_star_shop.js >> /scripts/logs/jd_star_shop.log 2>&1
-#京喜财富岛——合成月饼 2021-09-10到2021-9-22
+#京喜财富岛——合成珍珠 2021-09-23到2021-9-30
 20 * * * * node /scripts/jd_jxbfd_pear_game.js >> /scripts/logs/jd_jxbfd_pear_game.log 2>&1
-#京东小家电签到（2021年9月3日-2021年9月30日）
+#京东小家电签到（2021年9月3日-2021年10月30日）
 0 0,1 * * * node /scripts/jd_xjdSign.js >> /scripts/logs/jd_xjdSign.log 2>&1
 #京东小家福利社签到（2021年9月16日-2021年9月30日）
 5 0,1 * * * node /scripts/jd_flsSign.js >> /scripts/logs/jd_flsSign.log 2>&1
