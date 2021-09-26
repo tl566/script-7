@@ -101,7 +101,7 @@ function getTaskList() {
                 if (vo.groupId) {
                   //浏览商品组多个商品(会场)
                   console.log(`\n去完成 【${vo.taskName}】 任务`)
-                  await doTask(vo.taskId, vo.groupId, 100012927643)
+                  await doTask(vo.taskId, vo.groupId, 100024975558)
                 }
                 if (vo.taskGroupList && vo.taskGroupList.length) {
                   for (let bo of vo.taskGroupList) {
