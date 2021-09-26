@@ -70,12 +70,12 @@ inputs:
           cronExpression: "0 30 7 * * * *"
           enable: true
           argument: jd_bean_change&jd_rankingList&jd_bean_home&jd_jddj_dailyTask&jd_unbind&jd_price
-    - timer: #金融养猪 #京东快递 #京东赚赚 #京东极速版红包 #领金贴 #京小鸽吾悦寄 #送豆得豆 #汪汪乐园 #领京豆 #京喜签到 #东东世界 #京东小家福利社签到 #金像奖助力
+    - timer: #金融养猪 #京东快递 #京东赚赚 #京东极速版红包 #领金贴 #京小鸽吾悦寄 #送豆得豆 #汪汪乐园 #领京豆 #京喜签到 #东东世界 #京东小家福利社签到 #金像奖助力 #小魔方
         parameters:
-          name: pigPet_kd_jdzz_speedredpocke_jintie_jxg_sendBeans_joypark_ljd_jxsign_ddworld_flsSign_goldenStaue
+          name: pigPet_kd_jdzz_speedredpocke_jintie_jxg_sendBeans_joypark_ljd_jxsign_ddworld_flsSign_goldenStaue_desire
           cronExpression: "0 3 1 * * * *"
           enable: true
-          argument: jd_pigPet&jd_kd&jd_jdzz&jd_speed_redpocke&jd_jin_tie&jd_jxg&jd_sendBeans&jd_joy_park&jd_ljd&jx_sign&jd_ddworld&jd_flsSign&jd_goldenStaue
+          argument: jd_pigPet&jd_kd&jd_jdzz&jd_speed_redpocke&jd_jin_tie&jd_jxg&jd_sendBeans&jd_joy_park&jd_ljd&jx_sign&jd_ddworld&jd_flsSign&jd_goldenStaue&jd_desire
 
     #- timer: #签到图形验证 #宠汪汪喂食 #宠汪汪 #宠汪汪积分兑换京豆 #东东健康社区收集能量 #东东健康社区
         #parameters:
