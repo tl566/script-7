@@ -210,6 +210,8 @@ async function getActiveInfo(url = 'https://prodev.m.jd.com/mall/active/2y1S9xVY
                 $.codeFloors.push({"boardParams": {"taskCode": "bWE8RTJm5XnooFr4wwdDM5EYcKP"}, "ofn": "10"})
                 $.codeFloors.push({"boardParams": {"taskCode": "26KhtkXmoaj6f37bE43W5kF8a9EL"}, "ofn": "10"})
                 $.codeFloors.push({"boardParams": {"taskCode": "2gWnJADG8JXMpp1WXiNHgSy4xUSv"}, "ofn": "10"})
+                $.codeFloors.push({"boardParams": {"taskCode": "2bpKT3LMaEjaGyVQRr2dR8zzc9UU"}, "ofn": "8"})
+                $.codeFloors.push({"boardParams": {"taskCode": "XTXNrKoUP5QK1LSU8LbTJpFwtbj"}, "ofn": "8"})
               }
             }
           }
