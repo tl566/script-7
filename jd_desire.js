@@ -180,7 +180,7 @@ function getNewMyLotteryInfo() {
           data = $.toObj(data);
           if (data) {
             if (data['result'] && data['result']['code'] === 0) {
-              $.peasSum = data['result']?.venueResult?.peasResult?.peasSum;
+              $.peasSum = data['result']?.venueResult?.peasResult?.peasSum || 0;
               console.log('当前已获得京豆：', $.peasSum)
             }
           }
