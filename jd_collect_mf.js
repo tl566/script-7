@@ -147,7 +147,7 @@ async function main() {
   }
 }
 
-function doInteractiveAssignment(projectId, encryptAssignmentId, itemId, actionType) {
+function doInteractiveAssignment(projectId, encryptAssignmentId, itemId, actionType, ext = {}) {
   let body = {
     "encryptProjectId": projectId,
     "encryptAssignmentId": encryptAssignmentId,
@@ -155,7 +155,7 @@ function doInteractiveAssignment(projectId, encryptAssignmentId, itemId, actionT
     "itemId": itemId,
     "actionType": actionType,
     "completionFlag": "",
-    "ext": {}
+    "ext": ext
   }
   return new Promise(resolve => {
     $.post(taskPostUrl("doInteractiveAssignment", body), async (err, resp, data) => {
@@ -187,7 +187,7 @@ function doInteractiveAssignment(projectId, encryptAssignmentId, itemId, actionT
 
 function queryInteractiveInfo(projectId, reward = false) {
   let body = {"encryptProjectId": projectId, "sourceCode": "acexinpin0823", "ext": {}};
-  if (reward) body = {"encryptProjectId": "3pp3mvzmgcFm7mvU3S1wZihNKi1H","sourceCode":"acexinpin0823","ext":{"couponUsableGetSwitch":"1"}}
+  if (reward) body = {"encryptProjectId": $.giftProjectId,"sourceCode":"acexinpin0823","ext":{"couponUsableGetSwitch":"1"}}
   return new Promise(resolve => {
     $.post(taskPostUrl("queryInteractiveInfo", body), async (err, resp, data) => {
       try {
@@ -203,8 +203,10 @@ function queryInteractiveInfo(projectId, reward = false) {
                 const item = $.taskList.filter(vo => vo['assignmentName'] === '魔方');
                 const item2 = $.taskList.filter(vo => vo['assignmentName'] !== '魔方');
                 if (item && item[0]) {
-                  const { completionCnt = 0 } = item[0];
-                  $.msg($.name, `账号 ${$.index} ${$.UserName}\n当前已有魔方：${completionCnt}个`)
+                  const { completionCnt = 0, encryptAssignmentId } = item[0];
+                  $.msg($.name, `账号 ${$.index} ${$.UserName}\n当前已有魔方：${completionCnt}个`);
+                  console.log(`\n开始兑换成魔方`)
+                  await doInteractiveAssignment($.giftProjectId, encryptAssignmentId, "", "", {"exchangeNum":1})
                 }
                 if (item2) {
                   for (const vo of item2) {
@@ -242,7 +244,8 @@ function getInteractionHomeInfo() {
           data = $.toObj(data);
           if (data) {
             if (data.result.giftConfig) {
-              $.projectId = data.result.taskConfig.projectId
+              $.projectId = data.result.taskConfig.projectId;
+              $.giftProjectId = data.result.giftConfig.projectId;
             } else {
               console.log("获取projectId失败", $.toStr(data));
             }
