@@ -31,7 +31,7 @@ let likeCode = '';
     let shareInfo = getRandomArrayElements(res,1)[0];
     shareId = shareInfo.shareId;
     likeCode = shareInfo.likeCode;
-    for (let i = 1; i < cookiesArr.length; i++) {
+    for (let i = 0; i < cookiesArr.length; i++) {
         let index = i + 1;
         cookie = cookiesArr[i];
         userName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
