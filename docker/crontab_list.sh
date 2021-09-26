@@ -28,9 +28,9 @@
 0 0,22 * * * node /scripts/jd_jsg.js >> /scripts/logs/jd_jsg.log 2>&1
 #明星小店 2021-09-10到2021-9-17
 0 1,22 10-17 9 * node /scripts/jd_star_shop.js >> /scripts/logs/jd_star_shop.log 2>&1
-#京喜财富岛——合成月饼 2021-09-10到2021-9-22
+#京喜财富岛——合成珍珠 2021-09-23到2021-9-30
 20 * * * * node /scripts/jd_jxbfd_pear_game.js >> /scripts/logs/jd_jxbfd_pear_game.log 2>&1
-#京东小家电签到（2021年9月3日-2021年9月30日）
+#京东小家电签到（2021年9月3日-2021年10月30日）
 0 0,1 * * * node /scripts/jd_xjdSign.js >> /scripts/logs/jd_xjdSign.log 2>&1
 #京东小家福利社签到（2021年9月16日-2021年9月30日）
 5 0,1 * * * node /scripts/jd_flsSign.js >> /scripts/logs/jd_flsSign.log 2>&1
@@ -135,7 +135,7 @@
 # 跳跳乐瓜分京豆
 15 0,12,22 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
 #京喜牧场
-25 6-21/3 * * * node /scripts/jd_jxmc.js >> /scripts/logs/jd_jxmc.log 2>&1
+25 * * * * node /scripts/jd_jxmc.js >> /scripts/logs/jd_jxmc.log 2>&1
 #京小鸽
 30 2,20 * * * node /scripts/jd_jxg.js >> /scripts/logs/jd_jxg.log 2>&1
 #天天加速
@@ -172,3 +172,5 @@
 20 0-23/6 * * * node /scripts/jd_jxrebate.js >> /scripts/logs/jd_jxrebate.log 2>&1
 # 东东世界
 3 0 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
+# 金像奖助力
+3 5 * * * node /scripts/jd_goldenStaue.js >> /scripts/logs/jd_goldenStaue.log 2>&1
