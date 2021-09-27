@@ -1,7 +1,9 @@
 /*
 京东到家 CK转换
-* cron 10 8,11,17 * * *
-* */
+[task_local]
+#京东到家 CK转换
+5 6-18/6 * * * jd_jddj_getCk.js, tag=京东到家 CK转换, enabled=true
+*/
 const $ = new Env('京东到家CK转换');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -20,42 +22,47 @@ if ($.isNode()) {
 }
 let newJddjCKList = {}
 !(async () => {
+  console.log(`\n获取京东到家系列脚本的cookie，一次性获取5个账号ck，保留10天，定时任务根据自己的账号数量调整即可(默认4小时运行一次)！\n`);
+  try {
     jddjCklist =  $.getdata('jddjCklist') || {};
     let day = 10;
     for(let key in jddjCklist){
-        if(jddjCklist[key].time - Date.now() > 86400000*day){
-            console.log(`${key},京东到家CK已使用${day}天，删除！`);
-            continue;
-        }
-        console.log(`${key},京东到家CK使用未超过${day}天`);
-        newJddjCKList[key] = jddjCklist[key];
+      if(jddjCklist[key].time - Date.now() > 86400000*day){
+        console.log(`${key},京东到家CK已使用${day}天，删除！`);
+        continue;
+      }
+      console.log(`${key},京东到家CK使用未超过${day}天`);
+      newJddjCKList[key] = jddjCklist[key];
     }
     $.runTime = 0;
     for (let i = 0; i < cookiesArr.length && $.runTime < 5; i++) {
-        $.index = i + 1;
-        $.cookie = cookiesArr[i];
-        $.isLogin = true;
-        $.nickName = '';
-        $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-        if(newJddjCKList[$.UserName]){
-           continue;
+      $.index = i + 1;
+      $.cookie = cookiesArr[i];
+      $.isLogin = true;
+      $.nickName = '';
+      $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+      if(newJddjCKList[$.UserName]){
+        continue;
+      }
+      await TotalBean();
+      console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
+      if (!$.isLogin) {
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         }
-        await TotalBean();
-        console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
-        if (!$.isLogin) {
-            $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
-            if ($.isNode()) {
-                await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-            }
-            continue;
-        }
-        if(!newJddjCKList[$.UserName]){
-            await main();
-            console.log(`等待10S`);
-            await $.wait(10000);
-            $.runTime++;
-        }
+        continue;
+      }
+      if(!newJddjCKList[$.UserName]){
+        await main();
+        console.log(`等待10S`);
+        await $.wait(10000);
+        $.runTime++;
+      }
     }
+  } catch (e) {
+    $.logErr(e)
+  }
 
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
 

@@ -147,6 +147,8 @@
 30 3,12,22 * * * node /scripts/jd_esManager.js >> /scripts/logs/jd_esManager.log 2>&1
 #送豆得豆
 24 0 * * * node /scripts/jd_sendBeans.js >> /scripts/logs/jd_sendBeans.log 2>&1
+#获取京东系列脚本的cookie
+10 0-23/4 * * * node /scripts/jd_jddj_getCk.js >> /scripts/logs/jd_jddj_getCk.log 2>&1
 #京东到家鲜豆任务
 10 10 * * * node /scripts/jd_jddj_dailyTask.js >> /scripts/logs/jd_jddj_dailyTask.log 2>&1
 #京东到家农场
