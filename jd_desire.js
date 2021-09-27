@@ -100,8 +100,16 @@ function getTaskList() {
                 $.hasDone = false
                 if (vo.groupId) {
                   //浏览商品组多个商品(会场)
-                  console.log(`\n去完成 【${vo.taskName}】 任务`)
-                  await doTask(vo.taskId, vo.groupId, 100024975558)
+                  const skuIds = [100024975558, 100012927643, 100013608673, 100026806864, 100026483136, 100026286084, 100012821223, 100026330682];
+                  for (const skuId of skuIds) {
+                    console.log(`\n去完成 【${vo.taskName}】 任务`);
+                    await doTask(vo.taskId, vo.groupId, skuId);
+                    if ($.hasDone) {
+                      $.hasDone = false;
+                      break;
+                    }
+                    await $.wait(1000)
+                  }
                 }
                 if (vo.taskGroupList && vo.taskGroupList.length) {
                   for (let bo of vo.taskGroupList) {
@@ -148,7 +156,7 @@ function doTask(taskType, advertId, sku = null) {
             data = JSON.parse(data)
             if (data?.result?.lotteryInfoList && data?.result?.lotteryInfoList.length) {
               $.bean += data?.result?.lotteryInfoList[0]?.halfQuantity ?? 0
-              console.log(`任务完成成功，获得 ${data?.result?.lotteryInfoList[0].halfQuantity} 京豆`)
+              console.log(`任务完成成功，获得 ${data?.result?.lotteryInfoList[0].halfQuantity ?? 0} 京豆`)
               $.hasDone = true;
               return
             }
