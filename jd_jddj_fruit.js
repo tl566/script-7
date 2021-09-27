@@ -35,7 +35,7 @@ if ($.isNode()) {
     $.jddjFruitHelpList = saveRunFlag ? $.getdata('jddjFruitHelpList') || {} : {};
     $.jddjFruitHelpList =  $.getdata('jddjFruitHelpList') || {} ;
     jddjCookie = $.getdata('jddjCklist') || {};
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < cookiesArr.length; i++) {
         $.index = i + 1;
         $.cookie = cookiesArr[i];
         $.isLogin = true;
