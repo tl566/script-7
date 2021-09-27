@@ -152,7 +152,7 @@
 #京东到家鲜豆任务
 30 10 * * * node /scripts/jd_jddj_dailyTask.js >> /scripts/logs/jd_jddj_dailyTask.log 2>&1
 #京东到家农场
-300 8,11,17 * * * node /scripts/jd_jddj_fruit.js >> /scripts/logs/jd_jddj_fruit.log 2>&1
+30 8,11,17 * * * node /scripts/jd_jddj_fruit.js >> /scripts/logs/jd_jddj_fruit.log 2>&1
 #京东到家农场收集水车水滴
 30 * * * * node /scripts/jd_jddj_fruit_collect.js >> /scripts/logs/jd_jddj_fruit_collect.log 2>&1
 #京东到家鲜豆庄园
