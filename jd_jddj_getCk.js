@@ -27,7 +27,7 @@ let newJddjCKList = {}
     jddjCklist =  $.getdata('jddjCklist') || {};
     let day = 10;
     for(let key in jddjCklist){
-      if(jddjCklist[key].time - Date.now() > 86400000*day){
+      if(Date.now() - jddjCklist[key].time > 86400000*day){
         console.log(`${key},京东到家CK已使用${day}天，删除！`);
         continue;
       }
