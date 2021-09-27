@@ -1,7 +1,7 @@
 /*
-* 京东到家农场
-* 需要先手动进系统种一棵果树
-* cron 10 8,11,17 * * *
+京东到家农场
+需要先手动进系统种一棵果树
+cron 10 8,11,17 * * * jd_jddj_fruit.js
 * */
 const $ = new Env('京东到家农场');
 const notify = $.isNode() ? require('./sendNotify') : '';

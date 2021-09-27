@@ -1,6 +1,8 @@
 /*
-* 京东到家鲜豆庄园
-* cron 10 7,10,16 * * *
+京东到家鲜豆庄园
+
+cron 30 7,10,16 * * * jd_jddj_plantBeans.js
+
 * */
 const $ = new Env('京东到家鲜豆庄园');
 const notify = $.isNode() ? require('./sendNotify') : '';

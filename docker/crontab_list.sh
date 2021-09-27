@@ -148,17 +148,17 @@
 #送豆得豆
 24 0 * * * node /scripts/jd_sendBeans.js >> /scripts/logs/jd_sendBeans.log 2>&1
 #获取京东系列脚本的cookie
-10 0-23/4 * * * node /scripts/jd_jddj_getCk.js >> /scripts/logs/jd_jddj_getCk.log 2>&1
+0 0-23/4 * * * node /scripts/jd_jddj_getCk.js >> /scripts/logs/jd_jddj_getCk.log 2>&1
 #京东到家鲜豆任务
-10 10 * * * node /scripts/jd_jddj_dailyTask.js >> /scripts/logs/jd_jddj_dailyTask.log 2>&1
+30 10 * * * node /scripts/jd_jddj_dailyTask.js >> /scripts/logs/jd_jddj_dailyTask.log 2>&1
 #京东到家农场
-10 8,11,17 * * * node /scripts/jd_jddj_fruit.js >> /scripts/logs/jd_jddj_fruit.log 2>&1
+300 8,11,17 * * * node /scripts/jd_jddj_fruit.js >> /scripts/logs/jd_jddj_fruit.log 2>&1
 #京东到家农场收集水车水滴
-10 * * * * node /scripts/jd_jddj_fruit_collect.js >> /scripts/logs/jd_jddj_fruit_collect.log 2>&1
+30 * * * * node /scripts/jd_jddj_fruit_collect.js >> /scripts/logs/jd_jddj_fruit_collect.log 2>&1
 #京东到家鲜豆庄园
-10 7,10,16 * * * node /scripts/jd_jddj_plantBeans.js >> /scripts/logs/jd_jddj_plantBeans.log 2>&1
+30 7,10,16 * * * node /scripts/jd_jddj_plantBeans.js >> /scripts/logs/jd_jddj_plantBeans.log 2>&1
 #京东到家鲜豆庄园收水车水滴
-20 * * * * node /scripts/jd_jddj_plantBeans_collect.js >> /scripts/logs/jd_jddj_plantBeans_collect.log 2>&1
+30 * * * * node /scripts/jd_jddj_plantBeans_collect.js >> /scripts/logs/jd_jddj_plantBeans_collect.log 2>&1
 #汪汪乐园（京东极速版APP）
 44 3,22 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
 #汪汪乐园合并汪汪

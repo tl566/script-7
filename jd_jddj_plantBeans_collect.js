@@ -1,7 +1,9 @@
 /*
-* 京东到家鲜豆庄园收水车水滴
-* cron 20 0-23/1 * * *
-* 水车水滴收满1500之后会非常慢
+京东到家鲜豆庄园收水车水滴
+
+cron 20 0-23/1 * * * jd_jddj_plantBeans_collect.js
+
+水车水滴收满1500之后会非常慢
 * */
 const $ = new Env('京东到家鲜豆庄园收水车水滴');
 const notify = $.isNode() ? require('./sendNotify') : '';

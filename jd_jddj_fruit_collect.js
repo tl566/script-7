@@ -1,6 +1,8 @@
 /*
-* 京东到家农场收水车水滴
-* cron 10 * * * *
+京东到家农场收水车水滴
+
+cron 30 * * * * jd_jddj_fruit_collect.js
+
 * */
 const $ = new Env('京东到家农场收水车水滴');
 const notify = $.isNode() ? require('./sendNotify') : '';
