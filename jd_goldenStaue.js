@@ -1,5 +1,6 @@
 /*
-作者助力脚本，只会给作者助力
+金像奖助力
+cron 20 16 * * * jd_goldenStaue.js
 * */
 const $ = new Env('金像奖助力');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
