@@ -2,7 +2,7 @@
 京东到家 CK转换
 [task_local]
 #京东到家 CK转换
-5 6-18/6 * * * jd_jddj_getCk.js, tag=京东到家 CK转换, enabled=true
+5 0-23/4 * * * jd_jddj_getCk.js, tag=京东到家 CK转换, enabled=true
 */
 const $ = new Env('京东到家CK转换');
 const notify = $.isNode() ? require('./sendNotify') : '';
