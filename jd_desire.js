@@ -50,6 +50,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       }
       try {
         await superBox()
+        await getNewFinalLotteryInfo()
         await getNewMyLotteryInfo()
         await showMsg();
       } catch (e) {
@@ -192,6 +193,25 @@ function getNewMyLotteryInfo() {
               console.log('当前已获得京豆：', $.peasSum)
             }
           }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+function getNewFinalLotteryInfo() {
+  let body = {"sign":3,"interactionId":316}
+  return new Promise(resolve => {
+    $.post(taskPostUrl('getNewFinalLotteryInfo', body), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          console.log(`\n九个魔方开大奖结果：${data}\n`);
         }
       } catch (e) {
         $.logErr(e, resp)
