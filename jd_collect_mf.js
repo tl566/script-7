@@ -2,7 +2,6 @@
 集魔方
 活动地址：https://h5.m.jd.com/babelDiy/Zeus/2bf3XEEyWG11pQzPGkKpKX2GxJz2/index.html#/
 活动时间：2021-09-22 00:00:00 - 2022-09-21 00:00:00
-#京东到家 CK转换
 20 3,10,21 * * * jd_collect_mf.js, tag=集魔方, enabled=true
  */
 const $ = new Env('集魔方');
