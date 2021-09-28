@@ -83,7 +83,7 @@ $.shareuuid = "d08a9f75670b488f91da192ae3a4f673"
                         if (task.taskid == "interact") {
                             for (l = 0; l < 20 - task.curNum; l++) {
                                 await dotask(task.taskid, task.params)
-                                await $.wait(10000)
+                                await $.wait(18000)
                             }
                         } else if (task.taskid == "scansku") {
                             await getproduct()
@@ -91,7 +91,7 @@ $.shareuuid = "d08a9f75670b488f91da192ae3a4f673"
                             await dotask(task.taskid, $.pparam)
                         } else {
                             await dotask(task.taskid, task.params)
-                            await $.wait(10000)
+                            await $.wait(18000)
                         }
                     }
                     await getinfo()
