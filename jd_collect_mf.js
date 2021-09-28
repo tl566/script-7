@@ -145,6 +145,7 @@ async function main() {
                 console.log(`任务：${vo.assignmentName}，进度：${vo.completionCnt}/${vo.assignmentTimesLimit}，已完成`);
             }
         }
+        if ($.blockAccount) return
         await queryInteractiveInfo($.projectId, true);
     } catch (e) {
         $.logErr(e)
