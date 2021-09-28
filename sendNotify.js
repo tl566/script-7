@@ -1,5 +1,5 @@
 /*
- Last Modified time: 2021-9-15 17:42:54
+ Last Modified time: 2021-9-28 17:42:54
  */
 /**
  * sendNotify 推送通知功能
@@ -59,6 +59,10 @@ let QYWX_KEY = '';
 - 文本卡片消息: 0 (数字零)
 - 文本消息: 1 (数字一)
 - 图文消息（mpnews）: 素材库图片id, 可查看此教程(http://note.youdao.com/s/HMiudGkb)或者(https://note.youdao.com/ynoteshare1/index.html?id=1a0c8aff284ad28cbd011b29b3ad0191&type=note)
+企业微信应用消息通知已实现一对一推送：(第一个微信ID可为@all，也可为具体某个人的微信ID，例3情况则发送到第一个微信ID，如果有不想发送通知的账号，可设置为@N)
+1、@ll|账号1|账号2|@N|账号4（配置说明：例3情况发送给@all，账号1发送给配置的微信ID1，账号2发送给配置的微信ID2，@N则表示不给账号3推送，账号4发送给配置的微信ID4）
+2、如果只配置了一个微信ID，则把全部消息发送给这个已配置的微信ID
+3、如果账号数量比已配置的微信ID数量要多，则超出的账号消息合并到一块，再一次性发送给第一个配置的微信ID
 */
 let QYWX_AM = '';
 
@@ -533,30 +537,59 @@ function qywxBotNotify(text, desp) {
   });
 }
 
-function ChangeUserId(desp) {
-  const QYWX_AM_AY = QYWX_AM.split(',');
-  if (QYWX_AM_AY[2]) {
-    const userIdTmp = QYWX_AM_AY[2].split("|");
-    let userId = "";
-    for (let i = 0; i < userIdTmp.length; i++) {
-      const count = "账号" + (i + 1);
-      const count2 = "签到号 " + (i + 1);
-      if (desp.match(count2)) {
-        userId = userIdTmp[i];
+function isBlank(str) {
+  str = str.replace(/\ +/g, "");
+  str = str.replace(/[ ]/g, "");
+  str = str.replace(/[\r\n]/g, "");
+  return !Boolean(str);
+}
+async function qywxamNotify(text, desp) {
+  if (!QYWX_AM) return;
+  const [corpid, corpsecret, userIds, agentid, thumb_media_id] = QYWX_AM.split(",");
+  const despTmp = desp.split("\n\n").filter(item => !!item);
+  const userIdsTmp = userIds.split("|");
+  const accIdxRE = /\d+/;
+  let accIdx, userId, remainDes = [];
+  for (let i = 0; i < despTmp.length; i++) {
+    if (despTmp[i].match(accIdxRE) && despTmp[i].indexOf('账号') > -1) {
+      accIdx = parseInt(despTmp[i].match(accIdxRE)[0]);
+      if (userIdsTmp.length === 1) {
+        //如果只配置了一个微信ID，则把已经拆分的消息合并起来再一次性发送给这个已配置的微信ID
+        accIdx = 0;
+        remainDes.push(despTmp[i]);
+        continue;
+      }
+      userId = userIdsTmp[accIdx];
+      if (typeof userId == "undefined") {
+        //如果账号数量比配置的微信ID数量要多，则超出的账号消息合并到一块，再一次性发送给第一个配置的微信ID
+        remainDes.push(despTmp[i]);
+      } else if (userId === "@N") {
+        console.log("账户" + despTmp[i].match(accIdxRE)[0] + " 企业微信应用通知配置ID为@N，跳过通知\n");
+      } else if (!!userId) {
+        //账号与对应微信userId存在
+        await qywxamSplitNotify(text, despTmp[i], userIdsTmp[accIdx]);
+      }
+    } else if (!isBlank(despTmp[i])) {
+      await qywxamSplitNotify(text, despTmp[i], userIdsTmp[0]);
+    }
+  }
+  if (remainDes && remainDes.length) {
+    let str = '';
+    for (let i = 0; i < remainDes.length; i++) {
+      if (i + 1 === remainDes.length) {
+        str += remainDes[i]
+      } else {
+        str += remainDes[i] + '\n\n'
       }
     }
-    if (!userId) userId = QYWX_AM_AY[2];
-    return userId;
-  } else {
-    return "@all";
+    await qywxamSplitNotify(text, str, userIdsTmp[0]);
   }
 }
-
-function qywxamNotify(text, desp) {
+function qywxamSplitNotify(text, desp, userId = '@all') {
   return new Promise(resolve => {
     if (QYWX_AM) {
       // const QYWX_AM_AY = QYWX_AM.split(',');
-      const [corpid, corpsecret, userId, agentid, thumb_media_id] = QYWX_AM.split(',');
+      const [corpid, corpsecret, userIds, agentid, thumb_media_id] = QYWX_AM.split(',');
       const options_accesstoken = {
         url: `https://qyapi.weixin.qq.com/cgi-bin/gettoken`,
         json: {
@@ -625,7 +658,7 @@ function qywxamNotify(text, desp) {
         options = {
           url: `https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=${accesstoken}`,
           json: {
-            touser: `${ChangeUserId(desp)}`,
+            touser: `${userId}`,
             agentid: agentid,
             safe: '0',
             ...options
@@ -638,12 +671,12 @@ function qywxamNotify(text, desp) {
         $.post(options, (err, resp, data) => {
           try {
             if (err) {
-              console.log('成员ID:' + ChangeUserId(desp) + '企业微信应用消息发送通知消息失败！！\n');
+              console.log('\n成员ID:' + userId + '企业微信应用消息发送通知消息失败！！\n');
               console.log(err);
             } else {
               data = JSON.parse(data);
               if (data.errcode === 0) {
-                console.log('成员ID:' + ChangeUserId(desp) + '企业微信应用消息发送通知消息成功🎉。\n');
+                console.log('\n成员ID:' + userId + '企业微信应用消息发送通知消息成功🎉。\n');
               } else {
                 console.log(`${data.errmsg}\n`);
               }
