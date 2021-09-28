@@ -564,7 +564,7 @@ async function qywxamNotify(text, desp) {
         //如果账号数量比配置的微信ID数量要多，则超出的账号消息合并到一块，再一次性发送给第一个配置的微信ID
         remainDes.push(despTmp[i]);
       } else if (userId === "@N") {
-        console.log("账户" + despTmp[i].match(accIdxRE)[0] + " 企业微信应用通知配置ID为@N，跳过通知\n");
+        console.log("\n账户" + despTmp[i].match(accIdxRE)[0] + " 企业微信应用通知配置ID为@N，跳过通知\n");
       } else if (!!userId) {
         //账号与对应微信userId存在
         await qywxamSplitNotify(text, despTmp[i], userIdsTmp[accIdx]);
@@ -671,12 +671,12 @@ function qywxamSplitNotify(text, desp, userId = '@all') {
         $.post(options, (err, resp, data) => {
           try {
             if (err) {
-              console.log('\n成员ID:' + userId + '企业微信应用消息发送通知消息失败！！\n');
+              console.log('\n成员ID:' + userId + ' 企业微信应用消息发送通知消息失败！！\n');
               console.log(err);
             } else {
               data = JSON.parse(data);
               if (data.errcode === 0) {
-                console.log('\n成员ID:' + userId + '企业微信应用消息发送通知消息成功🎉。\n');
+                console.log('\n成员ID:' + userId + ' 企业微信应用消息发送通知消息成功🎉。\n');
               } else {
                 console.log(`${data.errmsg}\n`);
               }
