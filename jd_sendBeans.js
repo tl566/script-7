@@ -140,7 +140,7 @@ if ($.isNode()) {
 async function getActivityInfo() {
   $.activityList = [];
   await getActivityList();
-  // await getWXActivityList();
+  await getWXActivityList();
   if ($.activityList.length === 0) {
     return;
   }
