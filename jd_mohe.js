@@ -407,7 +407,7 @@ async function getAward() {
           break;
         }
       }
-      if (message) allMessage += `京东账号${$.index} ${$.nickName}\n${message}抽奖详情查看 https://blindbox5g.jd.com/#/myPrize${$.index !== cookiesArr.length ? '\n\n' : ''}`
+      if (message) allMessage += `京东账号 ${$.index} ${$.nickName || $.UserName}\n${message}抽奖详情查看 https://blindbox5g.jd.com/#/myPrize${$.index !== cookiesArr.length ? '\n\n' : ''}`
     } else {
       console.log(`目前热力值${total},不够抽奖`)
     }
