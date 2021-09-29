@@ -31,7 +31,6 @@ if ($.isNode()) {
 	Object.keys(jdCookieNode).forEach((item) => {
 		cookiesArr.push(jdCookieNode[item]);
 	});
-	if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
 	cookiesArr = [
 		$.getdata("CookieJD"),
@@ -74,23 +73,24 @@ function collectScore() {
 	return new Promise((resolve) => {
 		$.get(taskUrl("jdhealth_collectProduceScore", {}), (err, resp, data) => {
 			try {
-				if (safeGet(data)) {
-					data = $.toObj(data);
-					if (data?.data?.bizCode === 0) {
-						if (data?.data?.result?.produceScore)
-							console.log(
-								`任务完成成功，获得：${
-									data?.data?.result?.produceScore ?? "未知"
-								}能量`
-							);
-						else
-							console.log(
-								`任务领取结果：${data?.data?.bizMsg ?? JSON.stringify(data)}`
-							);
-					} else {
-						console.log(`任务完成失败：${data?.data?.bizMsg ?? JSON.stringify(data)}`);
-					}
-				}
+			  data = $.toObj(data);
+			  if (data) {
+          if (data['code'] === 0 && data.data && data.data.bizCode === 0) {
+            if (data.data.result && data.data.result.produceScore) {
+              console.log(
+                  `任务完成成功，获得：${
+                      data.data.result.produceScore || "未知"
+                  }能量`
+              );
+            } else {
+              console.log(
+                  `任务领取结果：${JSON.stringify(data)}`
+              );
+            }
+          } else {
+            console.log(`能量收集失败：${JSON.stringify(data)}\n`);
+          }
+        }
 			} catch (e) {
 				console.log(e);
 			} finally {
@@ -119,18 +119,6 @@ function taskUrl(function_id, body = {}) {
 				: "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
 		},
 	};
-}
-
-function safeGet(data) {
-	try {
-		if (typeof JSON.parse(data) == "object") {
-			return true;
-		}
-	} catch (e) {
-		console.log(e);
-		console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-		return false;
-	}
 }
 
 // prettier-ignore
