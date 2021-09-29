@@ -168,7 +168,7 @@
 #领京豆
 50 4 * * * node /scripts/jd_ljd.js >> /scripts/logs/jd_ljd.log 2>&1
 #特务Z，做任务抽奖，不定期出现活动
-50 7,8 * * * node /scripts/jd_productBrand.js >> /scripts/logs/jd_productBrand.log 2>&1
+50 19,22 * * * node /scripts/jd_productBrand.js >> /scripts/logs/jd_productBrand.log 2>&1
 #自动获取宠旺旺的invokeKey
 5 0-23/6 * * * node /scripts/jd_get_invokeKey.js >> /scripts/logs/jd_get_invokeKey.log 2>&1
 #京喜签到

@@ -1,6 +1,6 @@
 /*
 特务Z，做任务抽奖，不定期出现活动、
-23 22,23 * * *
+23 19,23 * * * jd_productBrand.js, tag=特务Z, enabled=true
 要跑2次
 */
 const $ = new Env('特务Z');
@@ -140,11 +140,20 @@ async function doTask() {
         'max': true
       });
       $.helpEncryptAssignmentId = $.oneTask.encryptAssignmentId;
+    } else if ($.oneTask.assignmentType === 5) {
+      if ($.oneTask.ext && $.oneTask.ext.sign2 && $.oneTask.ext.sign2[0]) {
+        console.log(`任务：${$.oneTask.assignmentName}，去执行`);
+        $.runInfo = {'itemId': $.oneTask.ext.sign2[0]['itemId']}
+        await takeRequest('superBrandDoTask', 1);
+        await $.wait(2000);
+      }
+    } else if ($.oneTask.assignmentType === 7) {
+      console.log(`任务：${$.oneTask.assignmentDesc}，跳过！`);
     }
   }
 }
 
-async function takeRequest(type) {
+async function takeRequest(type, dropDownChannel = 0) {
   let url = ``;
   let myRequest = ``;
   switch (type) {
@@ -157,6 +166,8 @@ async function takeRequest(type) {
     case 'superBrandDoTask':
       if ($.runInfo.itemId === null) {
         url = `https://api.m.jd.com/api?functionId=superBrandDoTask&appid=ProductZ4Brand&client=wh5&t=${Date.now()}&body=%7B%22source%22:%22secondfloor%22,%22activityId%22:${$.activityId},%22encryptProjectId%22:%22${$.encryptProjectId}%22,%22encryptAssignmentId%22:%22${$.oneTask.encryptAssignmentId}%22,%22assignmentType%22:${$.oneTask.assignmentType},%22completionFlag%22:1,%22itemId%22:%22${$.runInfo.itemId}%22,%22actionType%22:0%7D`;
+      } else if (dropDownChannel === 1) {
+        url = `https://api.m.jd.com/api?functionId=superBrandDoTask&appid=ProductZ4Brand&client=wh5&t=${Date.now()}&body=%7B%22source%22:%22secondfloor%22,%22activityId%22:${$.activityId},%22encryptProjectId%22:%22${$.encryptProjectId}%22,%22encryptAssignmentId%22:%22${$.oneTask.encryptAssignmentId}%22,%22assignmentType%22:${$.oneTask.assignmentType},%22itemId%22:%22${$.runInfo.itemId}%22,%22actionType%22:0,%22dropDownChannel%22:1%7D`
       } else {
         url = `https://api.m.jd.com/api?functionId=superBrandDoTask&appid=ProductZ4Brand&client=wh5&t=${Date.now()}&body=%7B%22source%22:%22secondfloor%22,%22activityId%22:${$.activityId},%22encryptProjectId%22:%22${$.encryptProjectId}%22,%22encryptAssignmentId%22:%22${$.oneTask.encryptAssignmentId}%22,%22assignmentType%22:${$.oneTask.assignmentType},%22itemId%22:%22${$.runInfo.itemId}%22,%22actionType%22:0%7D`;
       }
