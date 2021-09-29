@@ -11,6 +11,8 @@
 
 #京东极速版红包(活动时间：2021-5-5至2021-5-31)
 45 0,23 * * * node /scripts/jd_speed_redpocke.js >> /scripts/logs/jd_speed_redpocke.log 2>&1
+#芥么小程序签到领现金 活动时间：2021-09-16 - 2022-12-31
+20 1,12,21 * * * node /scripts/jd_jm_sign.js >> /scripts/logs/jd_jm_sign.log 2>&1
 #京喜领88元红包 活动时间：4.22-8.31
 45 0,12,22 * * * node /scripts/jd_jxlhb.js >> /scripts/logs/jd_jxlhb.log 2>&1
 #超级直播间红包雨(活动时间不定期，出现异常提示请忽略。红包雨期间会正常)
