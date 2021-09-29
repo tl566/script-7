@@ -148,7 +148,7 @@ function getTaskDetail(taskId = '') {
                   await doTask(data.data.result.taskVos[0].shoppingActivityVos[0].taskToken, 22, 1)//领取任务
                   await $.wait(1000 * (data.data.result.taskVos[0].waitDuration || 3));
                   await doTask(data.data.result.taskVos[0].shoppingActivityVos[0].taskToken, 22, 0);//完成任务
-                } else for (let vo of data.data.result.taskVos.filter(vo => vo.taskType !== 19) ?? []) {
+                } else for (let vo of data.data.result.taskVos.filter(vo => vo.taskType !== 19) || []) {
                   console.log(`\n${vo.taskName}任务，完成次数：${vo.times}/${vo.maxTimes}`)
                   if (vo.times < vo.maxTimes) console.log(`去完成${vo.taskName}任务`)
                   for (let i = vo.times; i < vo.maxTimes; ++i) {
