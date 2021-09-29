@@ -46,18 +46,18 @@ inputs:
           cronExpression: "0 0 0-16/8,20 * * * *"
           enable: true
           argument: jd_cash&jd_small_home&jd_jxbfd&jd_live&jd_daily_lottery&jd_nzmh&jd_esManager&jd_jddj_fruit&jd_jddj_plantBeans&jd_carnivalcity
-    - timer: #京东全民开红包 #进店领豆 #取关京东店铺商品 #京东抽奖机 #京东汽车 #京东秒秒币
+    - timer: #京东全民开红包 #进店领豆 #取关京东店铺商品 #京东抽奖机 #京东汽车 #京东秒秒币 #东东健康社区
         parameters:
-          name: redPacket_shop_unsubscribe_lotteryMachine_car_ms
+          name: redPacket_shop_unsubscribe_lotteryMachine_car_ms_health
           cronExpression: "0 10 0 * * * *"
           enable: true
-          argument: jd_redPacket&jd_shop&jd_unsubscribe&jd_lotteryMachine&jd_car&jd_ms
-    - timer: #天天提鹅 #京喜牧场 #汪汪乐园合成 #财富岛捡贝壳 #5G超级盲盒 #京喜购物返红包
+          argument: jd_redPacket&jd_shop&jd_unsubscribe&jd_lotteryMachine&jd_car&jd_ms&jd_health
+    - timer: #天天提鹅 #京喜牧场 #汪汪乐园合成 #财富岛捡贝壳 #5G超级盲盒 #京喜购物返红包 #东东健康社区收集能量
         parameters:
-          name: dailyegg_jxmc_joyparkmerge_jxbfdcollect_mohe_rebate
+          name: dailyegg_jxmc_joyparkmerge_jxbfdcollect_mohe_rebate_healthcollect
           cronExpression: "0 8 */3 * * * *"
           enable: true
-          argument: jd_daily_egg&jd_jxmc&jd_joy_park_merge&jd_jxbfd_collect&jd_mohe&jx_rebate
+          argument: jd_daily_egg&jd_jxmc&jd_joy_park_merge&jd_jxbfd_collect&jd_mohe&jx_rebate&jd_health_collect
     - timer: #东东超市 #十元街 #省钱大赢家之翻翻乐 #财富岛热气球 #京喜财富岛合月饼
         parameters:
           name: superMarket_syj_bigwinner_jxbfdballoon_jxbfdpeargame
@@ -77,12 +77,12 @@ inputs:
           enable: true
           argument: jd_pigPet&jd_kd&jd_jdzz&jd_speed_redpocke&jd_jin_tie&jd_jxg&jd_sendBeans&jd_joy_park&jd_ljd&jx_sign&jd_ddworld&jd_flsSign&jd_goldenStaue&jd_collect_mf
 
-    #- timer: #签到图形验证 #宠汪汪喂食 #宠汪汪 #宠汪汪积分兑换京豆 #东东健康社区收集能量 #东东健康社区 #小魔方
+    #- timer: #签到图形验证 #宠汪汪喂食 #宠汪汪 #宠汪汪积分兑换京豆 #小魔方
         #parameters:
-          #name: sign_feedPets_joy_joyreward_healthcollect_health_desire
+          #name: sign_feedPets_joy_joyreward_desire
           #cronExpression: "0 3 1 * * * *"
           #enable: true
-          #argument: jd_sign&jd_joy_feedPets&jd_joy&jd_joy_reward&jd_health_collect&jd_health&jd_desire
+          #argument: jd_sign&jd_joy_feedPets&jd_joy&jd_joy_reward&jd_desire
   environment: #  环境变量
     variables: #  环境变量对象
       AAA: BBB # 不要删除，用来格式化对齐追加的变量的
