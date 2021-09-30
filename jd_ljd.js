@@ -61,7 +61,7 @@ async function main() {
     return;
   }
   console.log(`获取任务列表成功`);
-  if (!$.taskInfo.viewAppHome.doneTask) {
+  if ($.taskInfo.viewAppHome && !$.taskInfo.viewAppHome.doneTask) {
     console.log(`任务：${$.taskInfo.viewAppHome.mainTitle}  ${$.taskInfo.viewAppHome.subTitle} ,执行任务`);
     $.flag = 0;
     await takeGetRequest('beanHomeIconDoTask');
