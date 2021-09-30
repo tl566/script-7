@@ -38,8 +38,6 @@
 5 0,1 * * * node /scripts/jd_flsSign.js >> /scripts/logs/jd_flsSign.log 2>&1
 #818手机狂欢城（9.16-10.1）
 0 0-18/6,22 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
-# 小魔方（2021年9月24日0:00 – 9月29日24:00）
-10 0,22 * * * node /scripts/jd_desire.js >> /scripts/logs/jd_desire.log 2>&1
 # 集魔方 活动时间：2021-09-22 00:00:00 - 2022-09-21 00:00:00
 20 3,10,21 * * * node /scripts/jd_collect_mf.js >> /scripts/logs/jd_collect_mf.log 2>&1
 ##############长期活动##############
