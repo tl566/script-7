@@ -33,9 +33,10 @@ $.groupidArr = [];
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
   await requestAlgo();
   await $.wait(2000)
-  let res = await getAuthorShareCode('https://raw.githubusercontent.com/gitupdate/updateTeam/master/shareCodes/jx_rebate.json'), res2 = [];
-  if (!res) res = await getAuthorShareCode();
-  $.authorMyShareIds = [...(res || []), ...(res2 || [])];
+  // let res = await getAuthorShareCode('https://raw.githubusercontent.com/gitupdate/updateTeam/master/shareCodes/jx_rebate.json'), res2 = [];
+  // if (!res) res = await getAuthorShareCode();
+  let res = null
+  $.authorMyShareIds = [...(res || ["8b0bbaced28962caa7d1996d8cb1249d","2cb458649c0c00464bd3ac1c1d78b808"])];
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i]
