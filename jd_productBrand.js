@@ -27,7 +27,7 @@ let cookie = '',UA = '';
     for (let i = 0; i < cookiesArr.length; i++) {
         UA = `jdapp;iPhone;10.0.8;14.6;${randomWord(false,40,40)};network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2212322493;appBuild/168331;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/143158;supportJDSHWK/1`;
         let index = i + 1;
-        cookie = cookiesArr[i];
+        $.cookie = cookiesArr[i];
         userName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
         $.isLogin = true;
         await TotalBean();
@@ -35,7 +35,7 @@ let cookie = '',UA = '';
         if (!$.isLogin) {
             $.msg($.name, `【提示】cookie已失效`, `京东账号${index} ${userName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
             if ($.isNode()) {
-                await notify.sendNotify(`cookie已失效 - ${userName}`, `京东账号${index} ${userName}\n请重新登录获取cookie`);
+                //await notify.sendNotify(`cookie已失效 - ${userName}`, `京东账号${index} ${userName}\n请重新登录获取cookie`);
             }
             continue
         }
