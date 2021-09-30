@@ -40,8 +40,6 @@
 0 0-18/6,22 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 # 集魔方 活动时间：2021-09-22 00:00:00 - 2022-09-21 00:00:00
 20 3,10,21 * * * node /scripts/jd_collect_mf.js >> /scripts/logs/jd_collect_mf.log 2>&1
-#荣耀新品传送挑战（9.26-10.15）
-5 10 26-30,1-15 9,10 * node /scripts/jd_honour.js >> /scripts/logs/jd_honour.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
