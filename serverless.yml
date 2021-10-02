@@ -77,12 +77,12 @@ inputs:
           enable: true
           argument: jd_pigPet&jd_kd&jd_jdzz&jd_speed_redpocke&jd_jin_tie&jd_jxg&jd_sendBeans&jd_joy_park&jd_ljd&jx_sign&jd_ddworld&jd_flsSign&jd_goldenStaue&jd_collect_mf
 
-    #- timer: #签到图形验证 #宠汪汪喂食 #宠汪汪 #宠汪汪积分兑换京豆
+    #- timer: #签到图形验证 #宠汪汪喂食 #宠汪汪 #宠汪汪积分兑换京豆 #宠汪汪偷好友积分与喂食
         #parameters:
-          #name: sign_feedPets_joy_joyreward
+          #name: sign_joyfeedPets_joy_joyreward_joysteal
           #cronExpression: "0 3 1 * * * *"
           #enable: true
-          #argument: jd_sign&jd_joy_feedPets&jd_joy&jd_joy_reward
+          #argument: jd_sign&jd_joy_feedPets&jd_joy&jd_joy_reward&jd_joy_steal
   environment: #  环境变量
     variables: #  环境变量对象
       AAA: BBB # 不要删除，用来格式化对齐追加的变量的
