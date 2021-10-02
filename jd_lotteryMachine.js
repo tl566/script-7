@@ -3,8 +3,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
-  {'appId': '1ElJYxqY', 'endTime': 1632585600000,'name':'芯意制造盒'},//京东APP--》玩一玩---》芯意制造盒
-  {'appId': '1ElBTx6o', 'endTime': 1633017600000,'name':'企有此礼'},//京东APP--》玩一玩---》企有此礼
+  {'appId': '1ElBTx6o', 'endTime': 1638268649000,'name':'企有此礼'},//不知道入口了
   {'appId': '1E1NXxq0', 'endTime': 1641002400000,'name':'众筹许愿池'},//京东APP--》京东众筹---》众筹许愿池
   {'appId': '1EFRQwA', 'endTime': 1704038400000,'name':'疯狂砸金蛋'},//京东APP--》每日特价---》疯狂砸金蛋
   {'appId': '1EFRRxA', 'endTime': 1704038400000,'name':'没找到活动在哪'},
