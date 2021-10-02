@@ -36,7 +36,7 @@ $.groupidArr = [];
   // let res = await getAuthorShareCode('https://raw.githubusercontent.com/gitupdate/updateTeam/master/shareCodes/jx_rebate.json'), res2 = [];
   // if (!res) res = await getAuthorShareCode();
   let res = null
-  $.authorMyShareIds = [...(res || ["8b0bbaced28962caa7d1996d8cb1249d","2cb458649c0c00464bd3ac1c1d78b808"])];
+  $.authorMyShareIds = [...(res || ["8876e69b8c22e07a7c358f4d2d02459b"])];
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i]
