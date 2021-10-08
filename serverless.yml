@@ -46,12 +46,12 @@ inputs:
           cronExpression: "0 0 0-16/8,20 * * * *"
           enable: true
           argument: jd_cash&jd_small_home&jd_jxbfd&jd_live&jd_daily_lottery&jd_nzmh&jd_esManager&jd_jddj_fruit&jd_jddj_plantBeans
-    - timer: #京东全民开红包 #进店领豆 #取关京东店铺商品 #京东抽奖机 #京东汽车 #京东秒秒币 #东东健康社区 #幸运大转盘
+    - timer: #京东全民开红包 #进店领豆 #取关京东店铺商品 #京东抽奖机 #京东汽车 #京东秒秒币 #东东健康社区 #幸运大转盘 #京东美妆12周年庆 #美丽研究院种植园
         parameters:
-          name: redPacket_shop_unsubscribe_lotteryMachine_car_ms_health_marketlottery
+          name: redPacket_shop_unsubscribe_lotteryMachine_car_ms_health_marketlottery_beautytwelfth_beautyplantation
           cronExpression: "0 10 0 * * * *"
           enable: true
-          argument: jd_redPacket&jd_shop&jd_unsubscribe&jd_lotteryMachine&jd_car&jd_ms&jd_health&jd_market_lottery
+          argument: jd_redPacket&jd_shop&jd_unsubscribe&jd_lotteryMachine&jd_car&jd_ms&jd_health&jd_market_lottery&jd_beauty_twelfth&jd_beauty_plantation
     - timer: #天天提鹅 #京喜牧场 #汪汪乐园合成 #财富岛捡贝壳 #5G超级盲盒 #京喜购物返红包 #东东健康社区收集能量
         parameters:
           name: dailyegg_jxmc_joyparkmerge_jxbfdcollect_mohe_rebate_healthcollect
