@@ -1,6 +1,6 @@
-/*
+﻿/*
  领金贴(只做签到以及互助任务里面的部分任务) Fixed By X1a0He
- Last Modified time: 2021-09-04 22:25:00
+ Last Modified time: 2021-10-07
  Last Modified By X1a0He
  活动入口：京东APP首页-领金贴，[活动地址](https://active.jd.com/forever/cashback/index/)
  */
@@ -26,6 +26,10 @@ if($.isNode()){
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
         return;
     }
+  console.log('领金贴\n' +
+      '活动说明：只做了签到+浏览任务\n' +
+      '活动地址：https://active.jd.com/forever/cashback/index\n' +
+      '活动入口：京东APP首页-领金贴');
     for(let i = 0; i < cookiesArr.length; i++){
         if(cookiesArr[i]){
             cookie = cookiesArr[i];
@@ -39,7 +43,7 @@ if($.isNode()){
             if(!$.isLogin){
                 $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
                 if($.isNode()){
-                    await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+                    await notify.sendNotify(`${$.name}cookie已失效 - ${$.nickName || $.UserName}`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取cookie`);
                 }
                 continue
             }

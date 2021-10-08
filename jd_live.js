@@ -1,4 +1,4 @@
-/*
+﻿/*
 京东直播
 活动结束时间未知
 活动入口：京东APP首页-京东直播
@@ -8,23 +8,23 @@
 ============Quantumultx===============
 [task_local]
 #京东直播
-50 12-14 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js, tag=京东直播, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+10-20/5 12 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js, tag=京东直播, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "50 12-14 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js,tag=京东直播
+cron "10-20/5 12 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js,tag=京东直播
 
 ===============Surge=================
-京东直播 = type=cron,cronexp="50 12-14 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js
+京东直播 = type=cron,cronexp="10-20/5 12 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js
 
 ============小火箭=========
-京东直播 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js, cronexpr="50 12-14 * * *", timeout=3600, enable=true
+京东直播 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_live.js, cronexpr="10-20/5 12 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京东直播');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
+let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let uuid
@@ -42,6 +42,10 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+  console.log('京东直播\n' +
+      '活动时间：-\n' +
+      '活动地址：https://h5.m.jd.com/babelDiy/Zeus/2zwQnu4WHRNfqMSdv69UPgpZMnE2/index.html\n' +
+      '活动入口：京东app首页-京东直播');
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -56,7 +60,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
 
         if ($.isNode()) {
-          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.nickName || $.UserName}`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取cookie`);
         }
         continue
       }
@@ -300,7 +304,7 @@ function getSign(functionid, body, uuid) {
         Host,
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
       },
-      timeout: 30 * 1000
+      timeout: 15000
     }
     $.post(options, (err, resp, data) => {
       try {
