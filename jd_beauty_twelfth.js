@@ -4,7 +4,7 @@
 * 说明：
 * 1、脚本加密，低概率抽到豆子，纯看脸，愿意跑的跑
 * 2、没有内置助力，没有开卡，有加购
-cron 5 10 * * * jd_beauty_twelfth
+cron 5 10 * * * jd_beauty_twelfth.js
 * * */
 const $ = new Env('美妆周年庆');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

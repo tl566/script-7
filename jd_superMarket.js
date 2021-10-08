@@ -80,7 +80,7 @@ async function jdSuperMarket() {
   try {
     await smtg_newHome(0)
     await smtg_newHome(1)
-    await receiveGoldCoin();//收金币
+    // await receiveGoldCoin();//收金币
     // await businessCircleActivity();//商圈活动
     // await receiveBlueCoin();//收蓝币（小费）
     // await receiveLimitProductBlueCoin();//收限时商品的蓝币
@@ -211,7 +211,11 @@ var _0xod8='jsjiami.com.v6',_0x435a=[_0xod8,'C8OsSsKcRA==','AsOISg==','wq7Dkjx7'
 function smtg_newHome(shopType = 0, timeout = 0) {
   return new Promise((resolve) => {
     setTimeout( ()=>{
-      const body = {"shopType": shopType,"channel":"18", "shareId": "XezeBXzhJGnyfjuDxUByXHNZrJLAW4DycDvakCZuIWHTpW-BmnabeRphKRsXU6J22AiHYHaRP46nVw7FCnvqRRx72KbtqoYbNGV-8YpSLodief6QbcvhtAZp6gjsnkYVO5UdEjKphyYZ5LxyeUMwMB99719wAZ8Fc7OvFms6xs8"}
+      const body = {
+        "shopType": shopType,
+        "channel": "18",
+        "shareId": ["XezeBXzhJGnyfjuDxUByXHNZrJLAW4DycDvakCZuIWHTpW-BmnabeRphKRsXU6J22AiHYHaRP46nVw7FCnvqRRx72KbtqoYbNGV-8YpSLodief6QbcvhtAZp6gjsnkYVO5UdEjKphyYZ5LxyeUMwMB99719wAZ8Fc7OvFms6xs8", "BV58Q3kKSNk0AbPKMuDr05UWQDiuSo8kmEzqsVZbmf5-IbTByTpUK7qYy5K9oLr1XKp0tCRSiebOTIJfaoa5ZrdmLw-3wtshpZOJX4cAnDwkCWfebqgYPEGQZslByGpyFlQB2jUWFTY9v9uQikFwdnyCTmadpYJsvVCF_u1thvg", "NhvCboewDl4KLJIZEQcOSY6-HDOplvHeChID78wv70NFtLOIrRmOnfiIA4fYF-QnNYpkkMwaMyAzg7Ac2xx01pm7fmmgOnme6cXRnfn7Iy8kgeInHdZ1ydgqidG81dZbj1xavgze3mWtD011VRZuSw1iX2D6uvtxmaOI1fQ5_Wc"][Math.floor(Math.random() * 3)],
+      }
       const op = {
         url: `${JD_API_HOST}?functionId=smtg_newHome&appid=jdsupermarket&clientVersion=8.0.0&client=m&eid=&body=${escape(JSON.stringify(body))}&t=${Date.now()}`,
         headers: {

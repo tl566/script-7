@@ -1,7 +1,7 @@
 /*
 * 美丽研究院，种植园
 * 需要手动种植，种植多个时，浇水和施肥只会浇第一个植物
-cron 5 5,14 * * * jd_beauty_plantation
+cron 5 5,14 * * * jd_beauty_plantation.js
 * */
 const $ = new Env('美丽种植园');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
