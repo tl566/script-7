@@ -224,7 +224,8 @@ function smtg_newHome(shopType = 0, timeout = 0) {
           'Cookie': cookie,
           'Referer': 'https://jdsupermarket.jd.com/game',
           'Origin': 'https://jdsupermarket.jd.com',
-        }
+        },
+        timeout: 1000 * 10
       }
       $.get(op, async (err, resp, data) => {
         try {
@@ -274,7 +275,8 @@ function smtg_receiveCoinNew(shopId, type = 7) {
         'Cookie': cookie,
         'Referer': 'https://jdsupermarket.jd.com/game',
         'Origin': 'https://jdsupermarket.jd.com',
-      }
+      },
+      timeout: 1000 * 10
     }
     $.get(op, async (err, resp, data) => {
       try {
@@ -315,7 +317,8 @@ function receiveBlueCoinNew(timeout = 0, shopId = '', type = 6) {
           'Cookie': cookie,
           'Referer': 'https://jdsupermarket.jd.com/game',
           'Origin': 'https://jdsupermarket.jd.com',
-        }
+        },
+        timeout: 1000 * 10
       }
       $.get(op, async (err, resp, data) => {
         try {
@@ -1642,7 +1645,8 @@ function TotalBean() {
         "Accept-Language": "zh-cn",
         "Referer": "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
         "Accept-Encoding": "gzip, deflate, br"
-      }
+      },
+      timeout: 1000 * 10
     }
     $.get(options, (err, resp, data) => {
       try {
@@ -1701,7 +1705,8 @@ function taskUrl(function_id, body = {}) {
       'Cookie': cookie,
       'Referer': 'https://jdsupermarket.jd.com/game',
       'Origin': 'https://jdsupermarket.jd.com',
-    }
+    },
+    timeout: 1000 * 10
   }
 }
 /**
