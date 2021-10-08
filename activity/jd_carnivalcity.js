@@ -47,7 +47,7 @@ if ($.isNode()) {
 }
 let inviteCodes = [];
 const JD_API_HOST = 'https://api.m.jd.com/api';
-const activeEndTime = '2021/08/29 00:00:00+08:00';//活动结束时间
+const activeEndTime = '2021/10/2 00:00:00+08:00';//活动结束时间
 let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
 !(async () => {
   if (!cookiesArr[0]) {
@@ -55,13 +55,13 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     return;
   }
   $.temp = [];
-  if (nowTime > new Date(activeEndTime).getTime()) {
-    //活动结束后弹窗提醒
-    $.msg($.name, '活动已结束', `该活动累计获得京豆：${$.jingBeanNum}个\n请删除此脚本\n咱江湖再见`);
-    if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n咱江湖再见`);
-    return
-  }
-  await updateShareCodesCDN();
+  // if (nowTime > new Date(activeEndTime).getTime()) {
+  //   //活动结束后弹窗提醒
+  //   $.msg($.name, '活动已结束', `该活动累计获得京豆：${$.jingBeanNum}个\n请删除此脚本\n咱江湖再见`);
+  //   if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n咱江湖再见`);
+  //   return
+  // }
+  // await updateShareCodesCDN();
   await requireConfig();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
@@ -88,10 +88,18 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
         }
         continue
       }
-      await shareCodesFormat();
+      // await shareCodesFormat();
       await JD818();
     }
   }
+  if (allMessage) {
+    //NODE端,默认每月一日运行进行推送通知一次
+    if ($.isNode()) {
+      await notify.sendNotify($.name, allMessage, { url: 'https://carnivalcity.m.jd.com/' });
+      $.msg($.name, '', allMessage);
+    }
+  }
+  return;
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -116,13 +124,6 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     }
   }
   // console.log(JSON.stringify($.temp))
-  if (allMessage) {
-    //NODE端,默认每月一日运行进行推送通知一次
-    if ($.isNode()) {
-      await notify.sendNotify($.name, allMessage, { url: 'https://carnivalcity.m.jd.com/' });
-      $.msg($.name, '', allMessage);
-    }
-  }
 })()
     .catch((e) => {
       $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -136,10 +137,10 @@ async function JD818() {
     await indexInfo();//获取任务
     // await supportList();//助力情况
     // await getHelp();//获取邀请码
-    await Promise.all([
-      supportList(),
-      getHelp()
-    ])
+    // await Promise.all([
+    //  supportList(),
+    //  getHelp()
+    // ])
     if ($.blockAccount) return
     await indexInfo(true);//获取任务
     await doHotProductTask();//做热销产品任务
