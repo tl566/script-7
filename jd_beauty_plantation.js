@@ -52,49 +52,50 @@ let message = '';
     $.done();
 });
 async function main() {
+  try {
     $.allWater = 0;
     $.token = await getToken(`https://api.m.jd.com/client.action?functionId=isvObfuscator`,'body=%7B%22url%22%3A%22https%3A%5C/%5C/xinruimz-isv.isvjcloud.com%22%2C%22id%22%3A%22%22%7D&build=167490&client=apple&clientVersion=9.3.2&openudid=53f4d9c70c1c81f1c8769d2fe2fef0190a3f60d2&osVersion=14.2&partner=apple&rfs=0000&scope=01&sign=6eb3237cff376c07a11c1e185761d073&st=1610161927336&sv=102&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D');
     if($.token){
-        $.beautyToken = await getBeautyToken('papi/auth',`{"token":"${$.token}","source":"01"}`)
+      $.beautyToken = await getBeautyToken('papi/auth',`{"token":"${$.token}","source":"01"}`)
     }
     if($.token && $.beautyToken){
-        console.log(`初始化成功`);
+      console.log(`初始化成功`);
     }else{
-        console.log(`初始化失败，可能是黑号`);
-        return;
+      console.log(`初始化失败，可能是黑号`);
+      return;
     }
     let userInfo = await takeGet('get_user_info');
     let mainInfo = await takeGet('get_home_info');
     if(JSON.stringify(userInfo) === '{}' && JSON.stringify(mainInfo) === '{}'){
-        console.log(`获取活动详情失败`);
-        return;
+      console.log(`获取活动详情失败`);
+      return;
     }
     console.log('获取活动详情成功');
     $.allWater = mainInfo.user.store_water;
     console.log(`当前等级：${mainInfo.user.level},共有水滴：${$.allWater},拥有土地：${mainInfo.user.gender}块，用户ID：${mainInfo.user.user_id}`);
     if(mainInfo.user.is_beginner === 1){
-        console.log('新用户');
+      console.log('新用户');
     }
     let plant_info = mainInfo.plant_info;
     let plantList = [];//植物列表
     for(let key in plant_info){
-        let onePlant = plant_info[key];
-        if(JSON.stringify(onePlant.data) === `{}`){
-            continue;
-        }
-        if(onePlant.water !== '0'){
-            console.log(`收取土地：${Number(key)}的水滴`)
-            let collectInfo = await takePost('collect_water',`{"position":${Number(key)}}`);
-            //if(JSON.stringify(collectInfo) === '{}'){}
-            console.log(`收取结果：\n${JSON.stringify(collectInfo)}`)
-            await $.wait(1000);
-        }
-        if(onePlant.data.status === 0){
-            plantList.push(onePlant.data);
-        }
+      let onePlant = plant_info[key];
+      if(JSON.stringify(onePlant.data) === `{}`){
+        continue;
+      }
+      if(onePlant.water !== '0'){
+        console.log(`收取土地：${Number(key)}的水滴`)
+        let collectInfo = await takePost('collect_water',`{"position":${Number(key)}}`);
+        //if(JSON.stringify(collectInfo) === '{}'){}
+        console.log(`收取结果：\n${JSON.stringify(collectInfo)}`)
+        await $.wait(1000);
+      }
+      if(onePlant.data.status === 0){
+        plantList.push(onePlant.data);
+      }
     }
     if(plantList.length === 0){
-        message +=`${userName},还未种植，请先进APP手动种植（美妆馆->美丽研究院->种植园）\n`
+      message +=`${userName},还未种植，请先进APP手动种植（美妆馆->美丽研究院->种植园）\n`
     }
     await $.wait(1000);
     await doTask();
@@ -104,34 +105,37 @@ async function main() {
     let waterTime = Math.floor($.allWater/10);
     console.log(`\n可以浇水：${waterTime}次`);
     for (let i = 0; i < waterTime && plantList.length > 0; i++) {
-        let onePlant = plantList[0];
-        console.log(`进行一次浇水，${onePlant.name}`);
-        let wateringInfo = await takePost('watering',`{"plant_id":${onePlant.id}}`);
-        console.log(`浇水成功，当前等级:${wateringInfo.level},目标等级：${wateringInfo.complete_level}，当前等级已浇水：${wateringInfo.progress}，当前等级还需要浇水：${wateringInfo.need_water}`)
-        await $.wait(1000);
+      let onePlant = plantList[0];
+      console.log(`进行一次浇水，${onePlant.name}`);
+      let wateringInfo = await takePost('watering',`{"plant_id":${onePlant.id}}`);
+      console.log(`浇水成功，当前等级:${wateringInfo.level},目标等级：${wateringInfo.complete_level}，当前等级已浇水：${wateringInfo.progress}，当前等级还需要浇水：${wateringInfo.need_water}`)
+      await $.wait(1000);
     }
     for (let i = 0; i < plantList.length; i++) {
-        let onePlant = plantList[i];
-        let shopMainInfo = await takeGet(`merchant_secondary_pages?shop_id=${onePlant.shop_id}&channel=index`);
-        $.allFertilizer = shopMainInfo.user.store_fertilizer;
-        await doShopTask(onePlant.shop_id);
-        if(shopMainInfo.is_get_fertilizer !== 0){
-            console.log(`收取化肥`);
-            let collectertilizerInfo = await takePost('collect_fertilizer',`{"shop_id":${onePlant.shop_id}}`);
-            console.log(`收取结果：\n${JSON.stringify(collectertilizerInfo)}`);
-            await $.wait(1000);
-        }
+      let onePlant = plantList[i];
+      let shopMainInfo = await takeGet(`merchant_secondary_pages?shop_id=${onePlant.shop_id}&channel=index`);
+      $.allFertilizer = shopMainInfo.user.store_fertilizer;
+      await doShopTask(onePlant.shop_id);
+      if(shopMainInfo.is_get_fertilizer !== 0){
+        console.log(`收取化肥`);
+        let collectertilizerInfo = await takePost('collect_fertilizer',`{"shop_id":${onePlant.shop_id}}`);
+        console.log(`收取结果：\n${JSON.stringify(collectertilizerInfo)}`);
+        await $.wait(1000);
+      }
 
-        let fertilizerTime = Math.floor($.allFertilizer/10);
-        console.log(`\nshop_id=${onePlant.shop_id}，${onePlant.name},可以施肥：${fertilizerTime}次`);
-        for (let i = 0; i < fertilizerTime; i++) {
-            console.log(`进行一次施肥，${onePlant.name}`);
-            let treeInfo = await takePost('fertilization',`{"plant_id":${Number(onePlant.id)}}`);
-            console.log(`施肥成功，当前等级:${treeInfo.level},目标等级：${treeInfo.complete_level}，当前等级已浇水：${treeInfo.progress}，当前等级还需要浇水：${treeInfo.need_water}`)
-            await $.wait(1000);
-        }
-        await $.wait(3000);
+      let fertilizerTime = Math.floor($.allFertilizer/10);
+      console.log(`\nshop_id=${onePlant.shop_id}，${onePlant.name},可以施肥：${fertilizerTime}次`);
+      for (let i = 0; i < fertilizerTime; i++) {
+        console.log(`进行一次施肥，${onePlant.name}`);
+        let treeInfo = await takePost('fertilization',`{"plant_id":${Number(onePlant.id)}}`);
+        console.log(`施肥成功，当前等级:${treeInfo.level},目标等级：${treeInfo.complete_level}，当前等级已浇水：${treeInfo.progress}，当前等级还需要浇水：${treeInfo.need_water}`)
+        await $.wait(1000);
+      }
+      await $.wait(3000);
     }
+  } catch (e) {
+    $.logErr(e)
+  }
 }
 async function doShopTask(shop_id){
     let taskStatus = await takeGet(`fertilizer_state?shop_id=${shop_id}`);

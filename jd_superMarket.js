@@ -211,7 +211,7 @@ var _0xod8='jsjiami.com.v6',_0x435a=[_0xod8,'C8OsSsKcRA==','AsOISg==','wq7Dkjx7'
 function smtg_newHome(shopType = 0, timeout = 0) {
   return new Promise((resolve) => {
     setTimeout( ()=>{
-      const body = {"shopType": shopType,"channel":"18"}
+      const body = {"shopType": shopType,"channel":"18", "shareId": "XezeBXzhJGnyfjuDxUByXHNZrJLAW4DycDvakCZuIWHTpW-BmnabeRphKRsXU6J22AiHYHaRP46nVw7FCnvqRRx72KbtqoYbNGV-8YpSLodief6QbcvhtAZp6gjsnkYVO5UdEjKphyYZ5LxyeUMwMB99719wAZ8Fc7OvFms6xs8"}
       const op = {
         url: `${JD_API_HOST}?functionId=smtg_newHome&appid=jdsupermarket&clientVersion=8.0.0&client=m&eid=&body=${escape(JSON.stringify(body))}&t=${Date.now()}`,
         headers: {

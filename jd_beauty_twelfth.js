@@ -57,22 +57,23 @@ let cookie = '';
     $.done();
 });
 async function main() {
+  try {
     $.allWishValue = 0;
     $.token = await getToken(`https://api.m.jd.com/client.action?functionId=isvObfuscator`, 'area=0_0_0_0&body=%7B%22url%22%3A%22https%3A%5C/%5C/xinrui1-isv.isvjcloud.com%22%2C%22id%22%3A%22%22%7D&build=167841&client=apple&clientVersion=10.1.6&d_brand=apple&d_model=iPhone9%2C2&eid=eidI42470115RDhDRjM1NjktODdGQi00RQ%3D%3DB3mSBu%2BcGp7WhKUUyye8/kqi1lxzA3Dv6a89ttwC7YFdT6JFByyAtAfO0TOmN9G2os20ud7RosfkMq80&ext=%7B%22prstate%22%3A%220%22%7D&isBackground=N&joycious=88&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=5a8a5743a5d2a4110a8ed396bb047471ea120c6a&osVersion=14.6&partner=apple&rfs=0000&scope=01&screen=1242%2A2208&sign=db851e2197569e5ef3b462cd28c3b257&st=1633664483593&sv=111');
     if($.token){
-        $.beautyToken = await getBeautyToken('api/authorized_to_log_in',`token=${$.token}&source=01`);
+      $.beautyToken = await getBeautyToken('api/authorized_to_log_in',`token=${$.token}&source=01`);
     }
     if($.token && $.beautyToken){
-        console.log(`初始化成功`);
+      console.log(`初始化成功`);
     }else{
-        console.log(`初始化失败，可能是黑号`);
-        return;
+      console.log(`初始化失败，可能是黑号`);
+      return;
     }
     let userInfo = await takeGet('get_user_info');
     let mainInfo = await takeGet('get_home_info');
     if(JSON.stringify(userInfo) === '{}' && JSON.stringify(mainInfo) === '{}'){
-        console.log(`获取活动详情失败`);
-        return;
+      console.log(`获取活动详情失败`);
+      return;
     }
     $.allWishValue = mainInfo.user.wish_value;
     $.candleNumber = mainInfo.user.candle_number;
@@ -84,19 +85,22 @@ async function main() {
     let canCandle = Math.floor($.allWishValue/1000);
     console.log(`共有许愿值：${$.allWishValue},可以许愿：${canCandle}次`);
     for (let i = 0; i < canCandle && $.candleNumber < 12 ; i++) {
-        console.log(`\n进行一次许愿`);
-        let candleInfo = await takePost('insert_candle');
-        $.candleNumber = candleInfo.candle_number;
-        $.lotteryNumber = candleInfo.lottery_number;
-        await $.wait(2000);
+      console.log(`\n进行一次许愿`);
+      let candleInfo = await takePost('insert_candle');
+      $.candleNumber = candleInfo.candle_number;
+      $.lotteryNumber = candleInfo.lottery_number;
+      await $.wait(2000);
     }
     for (let i = 0; i < $.lotteryNumber; i++) {
-        console.log(`\n进行一次抽奖`);
-        let lotteryInfo = await takePost('lottery');
-        console.log(`获得：${lotteryInfo.prize.name || ''}`);
-        console.log(JSON.stringify(lotteryInfo));
-        await $.wait(2000);
+      console.log(`\n进行一次抽奖`);
+      let lotteryInfo = await takePost('lottery');
+      console.log(`获得：${lotteryInfo.prize.name || ''}`);
+      console.log(JSON.stringify(lotteryInfo));
+      await $.wait(2000);
     }
+  } catch (e) {
+    $.logErr(e)
+  }
 }
 
 async function doTask(){
