@@ -173,6 +173,7 @@ function doInteractiveAssignment(projectId, encryptAssignmentId, itemId, actionT
                     if (data) {
                         if (data['code'] === '0' && data['subCode'] === '0') {
                             console.log('doInteractiveAssignment成功：' + data.msg);
+                            console.log(`${$.toStr(data)}\n`);
                         } else {
                             console.log('doInteractiveAssignment失败：' + data.msg);
                             if (data['subCode'] === '1403') $.blockAccount = true;
@@ -210,7 +211,8 @@ function queryInteractiveInfo(projectId, reward = false) {
                                 if (item && item[0]) {
                                     const { completionCnt = 0, encryptAssignmentId } = item[0];
                                     $.msg($.name, `账号 ${$.index} ${$.UserName}\n当前已有魔方：${completionCnt}个`);
-                                    console.log(`\n开始兑换成魔方`)
+                                    $.completionCnt = completionCnt || 0;
+                                    console.log(`\n开始碎片兑换成魔方`)
                                     await doInteractiveAssignment($.giftProjectId, encryptAssignmentId, "", "", {"exchangeNum":1})
                                 }
                                 if (item2) {
@@ -221,6 +223,14 @@ function queryInteractiveInfo(projectId, reward = false) {
                                             console.log(`${reward['rewardName']}`)
                                         }
                                     }
+                                }
+                                if ($.completionCnt >= 5) {
+                                  const canDrawAwardNum = Math.floor($.completionCnt / 5);
+                                  console.log(`\n当前共魔方：${$.completionCnt}个，开始消耗5魔方去兑换奖品，可兑换${canDrawAwardNum}次`)
+                                  for (let i = 0; i < new Array(canDrawAwardNum).fill('').length; i++) {
+                                    await doInteractiveAssignment($.giftProjectId, '3Qia2BF8oxZWEFsNdAEAuZsTXHqA', "", "", {"exchangeNum":1})
+                                    await $.wait(2000);
+                                  }
                                 }
                             } else {
                                 console.log(`任务列表获取成功！\n`)
