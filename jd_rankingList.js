@@ -1,7 +1,7 @@
 /*
 
 活动入口：京东APP首页-更多频道-排行榜-悬浮按钮
-
+活动地址：https://h5.m.jd.com/babelDiy/Zeus/3wtN2MjeQgjmxYTLB3YFcHjKiUJj/index.html
 自用
 author：yangtingxiao
 github： https://github.com/yangtingxiao
