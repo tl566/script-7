@@ -23,6 +23,7 @@ const $ = new Env('天天提鹅');
 let cookiesArr = [], cookie = '';
 const JD_API_HOST = 'https://ms.jr.jd.com/gw/generic/uc/h5/m';
 const notify = $.isNode() ? require('./sendNotify') : '';
+const eddSign = $.isNode() ? require('./utils/eddSign') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 if ($.isNode()) {
@@ -106,12 +107,27 @@ function toGoldExchange() {
 }
 function toWithdraw() {
   return new Promise(async resolve => {
+    let signData = {
+      'channelLv': "clv",
+      'environment': "jrApp",
+      'riskDeviceInfo': "{}",
+      'shareUuid': "uuid"
+    };
+    let aar = new eddSign.AAR(); // 1，new对象
+    let nonce = aar.nonce(); // 2，产生nonce
+    let signature = aar.sign(JSON.stringify(signData), nonce);
+    console.log('nonce:'+nonce);
+    console.log('signature:'+signature);
     const body = {
-      "timeSign": 0,
+      "riskDeviceInfo":"{}",
+      "timeSign": Math.random(),
       "environment": "jrApp",
-      "riskDeviceInfo": "{}"
+      "channelLv":"yxjh",
+      "shareUuid":"uuid",
+      "nonce":nonce,
+      "signature":signature
     }
-    $.post(taskUrl('toWithdraw', body), async (err, resp, data) => {
+    $.get(taskUrl2('toWithdraw', body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -223,6 +239,23 @@ function TotalBean() {
       }
     })
   })
+}
+function taskUrl2(function_id, body) {
+  console.log(`${JD_API_HOST}/${function_id}?reqData=${encodeURIComponent(JSON.stringify(body))}`)
+  return {
+    url: `${JD_API_HOST}/${function_id}?reqData=${encodeURIComponent(JSON.stringify(body))}`,
+    headers: {
+      'Host' : `ms.jr.jd.com`,
+      'Origin' : `https://active.jd.com`,
+      'Connection' : `keep-alive`,
+      'Accept' : `*/*`,
+      'User-Agent' : $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      'Accept-Language' : `zh-cn`,
+      'Referer' : `https://active.jd.com/forever/btgoose/`,
+      'Accept-Encoding' : `gzip, deflate, br`,
+      'Cookie' : cookie
+    }
+  }
 }
 function taskUrl(function_id, body) {
   return {
