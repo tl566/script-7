@@ -97,6 +97,8 @@
 16 10,19 * * * node /scripts/jd_mofang.js >> /scripts/logs/jd_mofang.log 2>&1
 #美妆周年庆
 13 11,16 * * * node /scripts/jd_beauty_twelfth.js >> /scripts/logs/jd_beauty_twelfth.log 2>&1
+#海尔京东超级品牌日
+25 13 * * * node /scripts/jd_haier.js >> /scripts/logs/jd_haier.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
