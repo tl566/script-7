@@ -96,7 +96,7 @@ async function main() {
       }
     }
     if(plantList.length === 0){
-      message +=`账号 ${$.index} ${userName}，还未种植，请先进京东APP手动种植（美妆馆->美丽研究院->种植园）\n\n`;
+      message +=`账号 ${$.index} ${userName}\n还未种植，请先进京东APP手动种植（美妆馆->美丽研究院->种植园）\n\n`;
     }
     await $.wait(1000);
     await doTask();
