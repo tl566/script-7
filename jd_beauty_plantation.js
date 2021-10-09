@@ -28,6 +28,7 @@ let message = '';
     }
     for (let i = 0; i < cookiesArr.length; i++) {
         let index = i + 1;
+        $.index = index;
         cookie = cookiesArr[i];
         userName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
         $.isLogin = true;
@@ -95,7 +96,7 @@ async function main() {
       }
     }
     if(plantList.length === 0){
-      message +=`${userName},还未种植，请先进APP手动种植（美妆馆->美丽研究院->种植园）\n`
+      message +=`账号 ${$.index} ${userName}，还未种植，请先进京东APP手动种植（美妆馆->美丽研究院->种植园）\n\n`;
     }
     await $.wait(1000);
     await doTask();
