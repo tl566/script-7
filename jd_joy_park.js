@@ -100,16 +100,9 @@ $.helpAuthor = true;
     $.done();
   });
 
-function showMsg() {
-  return new Promise((resolve) => {
-    $.log($.name, '', `京东账号${$.index}${$.nickName}\n${message}`);
-    resolve();
-  });
-}
-
 async function main() {
   try {
-    await help();
+    await help('e48iHUbaDc_ddPu5v811KcmfBPW9uX25FMxAbpBJ0Tw', '2');
     let taskVos = await api('apTaskList', { linkId });
     let tasks = taskVos.data.filter(vo => vo['taskLimitTimes'] !== vo['taskDoTimes']);
     for (let t of tasks) {
@@ -288,9 +281,9 @@ function help(inviterPin = '', inviteType = '', taskId = '') {
             }
             if (data.data.helpState === 3) {
               console.log('助力失败。不是新用户或已经助力过')
-            } else if(data.data.helpState === 1){
+            } else if (data.data.helpState === 1) {
               console.log(`助力【${inviterPin}】成功`)
-            }else if(data.data.helpState === 2){
+            } else if (data.data.helpState === 2) {
               console.log('助力完成')
             }
           }
