@@ -71,12 +71,30 @@ async function jdDailyEgg() {
 }
 function toGoldExchange() {
   return new Promise(async resolve => {
+    let info = {
+      "eid":"",
+      "fp":"",
+      "token":""
+    };
+    let signData = {
+      'channelLv': "clv",
+      'environment': "other",
+      'riskDeviceInfo': JSON.stringify(info),
+      'shareUuid': "uuid"
+    };
+    let aar = new eddSign.AAR(); // 1，new对象
+    let nonce = aar.nonce(); // 2，产生nonce
+    let signature = aar.sign(JSON.stringify(signData), nonce);
     const body = {
-      "timeSign": 0,
-      "environment": "jrApp",
-      "riskDeviceInfo": "{}"
+      "riskDeviceInfo":JSON.stringify(info),
+      "timeSign": Math.random(),
+      "environment": "other",
+      "channelLv":"clv",
+      "shareUuid":"uuid",
+      "nonce":nonce,
+      "signature":signature
     }
-    $.post(taskUrl('toGoldExchange', body), (err, resp, data) => {
+    $.get(getUrl('toGoldExchange', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -107,27 +125,30 @@ function toGoldExchange() {
 }
 function toWithdraw() {
   return new Promise(async resolve => {
+    let info = {
+      "eid":"",
+      "fp":"",
+      "token":""
+    };
     let signData = {
       'channelLv': "clv",
-      'environment': "jrApp",
-      'riskDeviceInfo': "{}",
+      'environment': "other",
+      'riskDeviceInfo': JSON.stringify(info),
       'shareUuid': "uuid"
     };
     let aar = new eddSign.AAR(); // 1，new对象
     let nonce = aar.nonce(); // 2，产生nonce
     let signature = aar.sign(JSON.stringify(signData), nonce);
-    console.log('nonce:'+nonce);
-    console.log('signature:'+signature);
     const body = {
-      "riskDeviceInfo":"{}",
+      "riskDeviceInfo":JSON.stringify(info),
       "timeSign": Math.random(),
-      "environment": "jrApp",
-      "channelLv":"yxjh",
+      "environment": "other",
+      "channelLv":"clv",
       "shareUuid":"uuid",
       "nonce":nonce,
       "signature":signature
     }
-    $.get(taskUrl2('toWithdraw', body), async (err, resp, data) => {
+    $.get(getUrl('toWithdraw', body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -240,8 +261,7 @@ function TotalBean() {
     })
   })
 }
-function taskUrl2(function_id, body) {
-  console.log(`${JD_API_HOST}/${function_id}?reqData=${encodeURIComponent(JSON.stringify(body))}`)
+function getUrl(function_id, body) {
   return {
     url: `${JD_API_HOST}/${function_id}?reqData=${encodeURIComponent(JSON.stringify(body))}`,
     headers: {
