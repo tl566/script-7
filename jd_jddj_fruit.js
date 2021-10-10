@@ -116,8 +116,8 @@ async function main() {
         $.oneInvite['userPin'] = $.userPin;
     }
     if (Number($.treeInfo.activityInfoResponse.curStageLeftProcess) === 0 && $.treeInfo.activityInfoResponse.stageName === '成熟') {
-        let sendMessage = `【第${$.index}个账号】，${$.UserName},果树已经成熟`;
-        allMessage += `【第${$.index}个账号】，${$.UserName},果树已经成熟\n`;
+        let sendMessage = `账号 ${$.index} ${$.UserName},果树已经成熟\n\n`;
+        allMessage += `京东账号 ${$.index} ${$.UserName},果树已经成熟\n\n`;
         //notify.sendNotify('京东到家水果', sendMessage);
         console.log(`已经成熟`);
         return;
