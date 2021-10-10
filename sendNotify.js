@@ -169,9 +169,9 @@ if (process.env.PUSH_PLUS_USER) {
  * @param author 作者仓库等信息  例：`本脚本免费使用
  * @returns {Promise<unknown>}
  */
-async function sendNotify(text, desp, params = {}, author = '\n\n大额羊毛站 http://mseweb.d-ns.net/') {
+async function sendNotify(text, desp, params = {}, author = '\n\n每日扫码领取支付宝红包，支付可抵扣，https://mp.weixin.qq.com/s/8SPYIz7Ra6Y7QC55DIwzbA \n\n 大额羊毛站 http://mseweb.d-ns.net/ \n\n京东羊毛转换现金玩法：公众号letaolefenxiang（先关注）发送 薅羊毛\n') {
   //提供6种通知
-  desp += '\n\n大额羊毛站 http://mseweb.d-ns.net/\n';//增加作者信息，防止被贩卖等
+  desp += '\n\n每日扫码领取支付宝红包，支付可抵扣，https://mp.weixin.qq.com/s/8SPYIz7Ra6Y7QC55DIwzbA \n\n 大额羊毛站 http://mseweb.d-ns.net/ \n\n京东羊毛转换现金玩法：公众号letaolefenxiang（先关注）发送 薅羊毛\n';//增加作者信息，防止被贩卖等
   await Promise.all([
     serverNotify(text, desp), //微信server酱
     pushPlusNotify(text, desp) //pushplus(推送加)
