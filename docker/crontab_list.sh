@@ -177,7 +177,5 @@
 20 0-23/6 * * * node /scripts/jd_jxrebate.js >> /scripts/logs/jd_jxrebate.log 2>&1
 # 东东世界
 3 0 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
-# 金像奖助力
-3 5 * * * node /scripts/jd_goldenStaue.js >> /scripts/logs/jd_goldenStaue.log 2>&1
 # 美丽研究院，种植园
 5 5,14 * * * node /scripts/jd_beauty_plantation.js >> /scripts/logs/jd_beauty_plantation.log 2>&1
