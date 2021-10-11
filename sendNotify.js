@@ -176,7 +176,19 @@ async function sendNotify(text, desp, params = {}, author = '') {
     iGotNotify(text, desp, params),//iGot
     //CoolPush(text, desp)//QQ酷推
   ])
-  let despArr = desp.split('\n\n');
+  //推送内容过多，进行拆分推送！
+  let despArr = desp.split('\n\n'), arr = [];
+  arr = splitDes(despArr, 3000);
+  if (TG_BOT_TOKEN && TG_USER_ID && arr.length > 0) console.log(`tg bot 机器人拆分${arr.length}次发送\n`)
+  let promiseArr = arr.filter(item => !!item).map(des => tgBotNotify(text, des));
+  await Promise.all(promiseArr);
+
+  arr = splitDes(despArr, 500);
+  if (BARK_PUSH && arr.length > 0) console.log(`BARK APP 将拆分${arr.length}次发送\n`)
+  promiseArr = arr.filter(item => !!item).map(des => BarkNotify(text, des, params));
+  await Promise.all(promiseArr);
+}
+function splitDes(despArr = '', splitLen = 500) {
   let str = '', arr = [];
   for (let i = 0; i < despArr.length; i++) {
     if (i + 1 === despArr.length) {
@@ -184,7 +196,7 @@ async function sendNotify(text, desp, params = {}, author = '') {
     } else {
       str += despArr[i] + '\n\n'
     }
-    if (str.length >= 3000) {
+    if (str.length >= splitLen) {
       if (str.lastIndexOf('\n\n') > -1) str = str.substring(0, str.length - 2);
       arr.push(str);
       str = '';
@@ -195,32 +207,8 @@ async function sendNotify(text, desp, params = {}, author = '') {
       str = '';
     }
   }
-  if (arr.length > 1) console.log(`tg bot 机器人拆分${arr.length}次发送\n`)
-  let promiseArr = arr.filter(item => !!item).map(des => tgBotNotify(text, des));
-  await Promise.all(promiseArr);
-  str = '', arr = [];
-  for (let i = 0; i < despArr.length; i++) {
-    if (i + 1 === despArr.length) {
-      str += despArr[i]
-    } else {
-      str += despArr[i] + '\n\n'
-    }
-    if (str.length >= 500) {
-      if (str.lastIndexOf('\n\n') > -1) str = str.substring(0, str.length - 2);
-      arr.push(str);
-      str = '';
-      continue
-    }
-    if (i + 1 === despArr.length) {
-      arr.push(str);
-      str = '';
-    }
-  }
-  if (arr.length > 1) console.log(`BARK APP 将拆分${arr.length}次发送\n`)
-  promiseArr = arr.filter(item => !!item).map(des => BarkNotify(text, des, params));
-  await Promise.all(promiseArr);
+  return arr;
 }
-
 function serverNotify(text, desp, time = 2100) {
   return  new Promise(resolve => {
     if (SCKEY) {
