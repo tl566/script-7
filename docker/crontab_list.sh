@@ -40,6 +40,8 @@
 5 10,21 * * * node /scripts/jd_beauty_twelfth.js >> /scripts/logs/jd_beauty_twelfth.log 2>&1
 # 伊利养牛
 45 2,19 * * * node /scripts/jd_cow.js >> /scripts/logs/jd_cow.log 2>&1
+# 蒙牛养牛
+35 */1 * * * node /scripts/jd_cow_mengniu.js >> /scripts/logs/jd_cow_mengniu.log 2>&1
 # 清风云养树
 15 4,15 * * * node /scripts/jd_tree.js >> /scripts/logs/jd_tree.log 2>&1
 ##############长期活动##############
