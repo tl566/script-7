@@ -1,6 +1,7 @@
 /*
 京东小家福利社签到
 活动地址：https://pro.m.jd.com/mall/active/3X4HMWmUigG689ZUZAg3Yo8Wtqf5/index.html
+活动地址2：https://pro.m.jd.com/mall/active/3joSPpr7RgdHMbcuqoRQ8HbcPo9U/index.html
 1.每日签到：每个用户限每日签到一次；
 2.连续签到奖励：第一天签到可领取5个京豆，连续签到第四天可领取10个京豆， 其他连续签到日（连续签到第2、3、5、6日）均可获得5个京豆；连续七日签到可领取京豆超级大礼包；
 3.先抢先得：签到活动每日每小时限量发放京豆，先抢先得，每小时发完，可等下一小时开始再来；
@@ -35,7 +36,9 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
     return;
   }
   try {
-    const promiseArr = cookiesArr.map((ck, index) => getActInfo(ck, index));
+    let promiseArr = cookiesArr.map((ck, index) => getActInfo(ck, index));
+    await Promise.all(promiseArr);
+    promiseArr = cookiesArr.map((ck, index) => getActInfo(ck, index, 'https://pro.m.jd.com/mall/active/3joSPpr7RgdHMbcuqoRQ8HbcPo9U/index.html'));
     await Promise.all(promiseArr);
   } catch (e) {
     $.logErr(e)
@@ -48,6 +51,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
     $.done();
   })
 function getActInfo(taskCookie, index, url='https://pro.m.jd.com/mall/active/3X4HMWmUigG689ZUZAg3Yo8Wtqf5/index.html') {
+  if (index === 0) console.log(`活动地址：${url}`)
   const userName = decodeURIComponent(taskCookie.match(/pt_pin=([^; ]+)(?=;?)/) && taskCookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
   return new Promise(resolve => {
     $.get({
