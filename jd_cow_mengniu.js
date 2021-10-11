@@ -1,13 +1,18 @@
-/*
-11 1,21 * * * jd_cow.js
- */
-const $ = new Env('伊利云养牛');
+const $ = new Env('蒙牛云养牛');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
-Object.keys(jdCookieNode).forEach((item) => {
-    cookiesArr.push(jdCookieNode[item])
-})
+if ($.isNode()) {
+    Object.keys(jdCookieNode).forEach((item) => {
+        cookiesArr.push(jdCookieNode[item])
+    });
+    if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+} else {
+    cookiesArr = [
+        $.getdata("CookieJD"),
+        $.getdata("CookieJD2"),
+        ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+}
 let activityID = '',cookie = '',userName = '';
 let token = '',LZ_TOKEN_KEY = '',LZ_TOKEN_VALUE = '',Referer = '',nickname = '';
 let Host = '', venderId = ``,shopId = ``,pin =  ``,lz_jdpin_token = ``;
@@ -18,8 +23,18 @@ let attrTouXiang = '',actorUuid = '';
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
         return;
     }
-    $.shareUuid = '2be917bf080d4d1596152f9a9979030d';
-    let activityList = [{'id':'dz2103100001340201','endTime':'1640966399000'},];
+    let res = [];
+    try{res = await getAuthorShareCode('https://raw.githubusercontent.com/lsh26/share_code/main/cow.json');}catch (e) {}
+    if(!res){
+        try{res = await getAuthorShareCode('https://gitee.com/star267/share-code/raw/master/cow.json');}catch (e) {}
+        if(!res){res = [];}
+    }
+    if(res.length > 0){
+        $.shareUuid = getRandomArrayElements(res,1)[0];
+    }else{
+        $.shareUuid = '6b5a0b158abf4c19b660eb7875b11fc6';
+    }
+    let activityList = [{'id':'dz2110100001480321','endTime':'1635695940000'}];
     for (let i = 0; i < cookiesArr.length; i++) {
         let index = i + 1;
         cookie = cookiesArr[i];
@@ -46,25 +61,26 @@ let attrTouXiang = '',actorUuid = '';
 });
 
 async function main() {
-    Host = `lzdz-isv.isvjcloud.com`;
-    Referer = `https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/activity?activityId=${activityID}&shareUuid=${$.shareUuid}`;
+    Host = `lzdz1-isv.isvjcloud.com`;
+    Referer = `https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/activity?activityId=${activityID}&shareUuid=${$.shareUuid}`;
     console.log(`活动地址：${Referer}`);
     token = '',LZ_TOKEN_KEY='',LZ_TOKEN_VALUE='',lz_jdpin_token = ``,venderId = ``,shopId = ``,pin =  ``,nickname = '',actorUuid = '';
     token = await getToken();
     if(!token){console.log(`获取token失败`);return;}
     //console.log(`token:${token}`);
-    await getWxCommonInfoToken('https://lzdz-isv.isvjcloud.com/wxCommonInfo/token');
+    await getWxCommonInfoToken('https://lzdz1-isv.isvjcloud.com/wxCommonInfo/token');
     if(!LZ_TOKEN_KEY || !LZ_TOKEN_VALUE){
         console.log(`初始化失败`);return;
     }
     await takePostRequest('getSimpleActInfoVo');
+    venderId = '1000014803';
     if (venderId === ``) {console.log(`获取venderId失败`);return;}
     console.log(`venderId :${venderId}`);
-    await getMyPing('https://lzdz-isv.isvjcloud.com/customer/getMyPing');
+    await getMyPing('https://lzdz1-isv.isvjcloud.com/customer/getMyPing');
     if (pin === ``) {hotFlag = true;console.log(`获取pin失败,该账号可能是黑号`);return;}
-    await accessLogWithAD('https://lzdz-isv.isvjcloud.com/common/accessLogWithAD');
+    await accessLogWithAD('https://lzdz1-isv.isvjcloud.com/common/accessLogWithAD');
     attrTouXiang = 'https://img10.360buyimg.com/imgzone/jfs/t1/7020/27/13511/6142/5c5138d8E4df2e764/5a1216a3a5043c5d.png';
-    await getUserInfo('https://lzdz-isv.isvjcloud.com/wxActionCommon/getUserInfo');
+    await getUserInfo('https://lzdz1-isv.isvjcloud.com/wxActionCommon/getUserInfo');
     await getHtml();
     $.activityData = {};
     await takePostRequest('activityContent');
@@ -80,15 +96,21 @@ async function main() {
         await takePostRequest('saveCow');
         await $.wait(1000);
     }
+    if($.activityData.loadMinute === 60){
+        console.log(`进行割草`);
+        await takePostRequest('saveForage');
+    }else{
+        console.log(`未到割草时间`);
+    }
     await doTask();
     await $.wait(1000);
     await takePostRequest('activityContent');
     await $.wait(1000);
-    let canScore = Math.floor($.activityData.score2/10);
-    console.log(`可以喂奶${canScore}次`);
+    let canScore = Math.floor($.activityData.score/20);
+    console.log(`当前有草料${$.activityData.score}颗，可以喂草${canScore}次`);
     let fresh = false;
     for (let i = 0; i < canScore; i++) {
-        console.log(`进行一次喂奶`)
+        console.log(`进行一次喂草`)
         await takePostRequest('feedCow');
         await $.wait(2000);
         fresh = true;
@@ -97,84 +119,140 @@ async function main() {
         await takePostRequest('activityContent');
         await $.wait(1000);
     }
-    let assistCount = $.activityData.assistCount;
-    console.log(`可以抽奖${assistCount}次`);
-    for (let i = 0; i < assistCount; i++) {
+    let canDrawTimes = $.activityData.canDrawTimes;
+    console.log(`可以抽奖${canDrawTimes}次`);
+    for (let i = 0; i < canDrawTimes; i++) {
         console.log(`\n进行一次抽奖`)
         await takePostRequest('start');
         await $.wait(2000);
     }
-
-    //https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/saveBirth
-    //actorUuid=2be917bf080d4d1596152f9a9979030d&pin=99%2B61mVGdtWS%2BaajTN%2BHVU7oeVP9kq2pYSH90mYt4m3fwcJlClpxrfmVYaGKuquQkdK3rLBQpEQH9V4tdrrh0w%3D%3D&activityId=dz2103100001340201&phone=18901735229&birth=20020928&sex=0
-
 }
 async function doTask(){
-    let taskTypeLis = [
-        {'type':'signData','taskType':0,},
-        {'type':'toMainActiveData','taskType':12,},
-        {'type':'skuAllAddCartData','taskType':21,},
-        {'type':'shopFollowData','taskType':1,},
-    ];
-    for (let i = 0; i < taskTypeLis.length; i++) {
-        let type = taskTypeLis[i].type;
-        if($.activityData[type].allStatus){
-            console.log(`任务：${type},已完成`);
-        }else{
-            console.log(`任务：${type},去执行`);
-            $.taskType = taskTypeLis[i].taskType;
-            $.taskValue = '';
+    let freshFlag = false;
+    $.allTask = {};
+    await takePostRequest('getTaskDetail');
+    let taskInfo = $.allTask.taskInfo;
+    if(taskInfo.sign.allStatus){
+        console.log(`任务：每日打卡,已完成`);
+    }else{
+        console.log(`任务：每日打卡,去执行`);
+        let settings = taskInfo.sign.settings[0];
+        $.taskType = settings.type;
+        $.taskValue = settings.value;
+        await takePostRequest('saveTask');
+        await $.wait(1000);
+        freshFlag = true;
+    }
+    if(taskInfo.followShop.allStatus){
+        console.log(`任务：关注店铺,已完成`);
+    }else{
+        console.log(`任务：关注店铺,去执行`);
+        let settings = taskInfo.followShop.settings[0];
+        $.taskType = settings.type;
+        $.taskValue = settings.value;
+        await takePostRequest('saveTask');
+        await $.wait(1000);
+        freshFlag = true;
+    }
+    if(taskInfo.visitSku.allStatus){
+        console.log(`任务：浏览商品,已完成`);
+    }else{
+        console.log(`任务：浏览商品,需要完成${taskInfo.visitSku.dayMaxNum}次，已完成${taskInfo.visitSku.okNum}次`);
+        let needTime = Number(taskInfo.visitSku.dayMaxNum) - Number(taskInfo.visitSku.okNum)
+        let settingsList = taskInfo.visitSku.settings;
+        for (let i = 0; i < settingsList.length && needTime >0; i++) {
+            let settings = settingsList[i];
+            if(settings.status !== 0){
+                continue;
+            }
+            console.log(`任务：浏览商品,${settings.name}`);
+            $.taskType = settings.type;
+            $.taskValue = settings.value;
             await takePostRequest('saveTask');
             await $.wait(1000);
+            needTime--;
+            freshFlag = true;
         }
     }
-    if(!$.activityData.ziyingCoupon){
-        console.log(`任务：领取优惠券,去执行`);
-        $.taskType = 13;
-        $.taskValue = 'ziying';
+    if(taskInfo.addSku.allStatus){
+        console.log(`任务：加购商品,已完成`);
+    }else{
+        console.log(`任务：加购商品,去执行一键加购`);
+        let settings = taskInfo.sign.settings[0];
+        $.taskType = 21;
+        $.taskValue = settings.value;
         await takePostRequest('saveTask');
         await $.wait(1000);
+        freshFlag = true;
     }
-    if(!$.activityData.popCoupon){
-        console.log(`任务：领取优惠券,去执行`);
-        $.taskType = 13;
-        $.taskValue = 'pop';
-        await takePostRequest('saveTask');
+    if(freshFlag){
+        await takePostRequest('getTaskDetail');
+    }
+    let dayTask = $.allTask.dayTask;
+    if(dayTask.taskTimes >=3 && dayTask.note1 === 0){
+        console.log(`第一次每日额外奖励`)
+        $.index = 1;
+        await takePostRequest('saveExtraTask');
         await $.wait(1000);
     }
+    if(dayTask.taskTimes >= 5 && dayTask.note2 === 0){
+        console.log(`第二次每日额外奖励`)
+        $.index = 2;
+        await takePostRequest('saveExtraTask');
+        await $.wait(1000);
+    }
+    if(dayTask.taskTimes >= 12 && dayTask.note3 === 0){
+        console.log(`第三次每日额外奖励`)
+        $.index = 3;
+        await takePostRequest('saveExtraTask');
+        await $.wait(1000);
+    }
+
 }
 function takePostRequest(type) {
     let url = '';
     let body = ``;
     switch (type) {
         case 'getSimpleActInfoVo':
-            url = 'https://lzdz-isv.isvjcloud.com/dz/common/getSimpleActInfoVo';
+            url = 'https://lzdz1-isv.isvjcloud.com/dz/common/getSimpleActInfoVo';
             body = `activityId=${activityID}`;
             break;
         case 'activityContent':
-            url = 'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/activityContent';
+            url = 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/activityContent';
             body = `activityId=${activityID}&pin=${encodeURIComponent(pin)}&pinImg=${encodeURIComponent(attrTouXiang)}&nick=${encodeURIComponent(nickname)}&cjyxPin=&cjhyPin=&shareUuid=${$.shareUuid}`;
             break;
         case 'drawContent':
-            url= 'https://lzdz-isv.isvjcloud.com/dingzhi/taskact/common/drawContent';
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/taskact/common/drawContent';
             body = `activityId=${activityID}&pin=${encodeURIComponent(pin)}`;
             break;
         case 'saveCow':
             let cowNick = '牛牛';//getRandomChineseWord()+getRandomChineseWord()+'牛';
             console.log(`领取一头牛，取名：${cowNick}`);
-            url= 'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/saveCow';
-            body = `activityId=${activityID}&actorUuid=${actorUuid}&shareUuid=${$.shareUuid}&cowNick=${cowNick}`;
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/saveCow';
+            body = `activityId=${activityID}&actorUuid=${actorUuid}&pin=${encodeURIComponent(pin)}&cowNick=${cowNick}&shareUuid=${$.shareUuid}`;
             break;
         case 'feedCow':
-            url= 'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/feedCow';
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/feedCow';
+            body = `activityId=${activityID}&actorUuid=${actorUuid}&pin=${encodeURIComponent(pin)}`;
+            break;
+        case 'getTaskDetail':
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/getTaskDetail';
             body = `activityId=${activityID}&actorUuid=${actorUuid}&pin=${encodeURIComponent(pin)}`;
             break;
         case 'saveTask':
-            url= 'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/saveTask';
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/saveTask';
             body = `activityId=${activityID}&actorUuid=${actorUuid}&pin=${encodeURIComponent(pin)}&taskType=${$.taskType}&taskValue=${$.taskValue}`;
             break;
+        case 'saveExtraTask':
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/saveExtraTask';
+            body = `activityId=${activityID}&actorUuid=${actorUuid}&pin=${encodeURIComponent(pin)}&index=${$.index}`;
+            break;
+        case 'saveForage':
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/saveForage';
+            body = `activityId=${activityID}&actorUuid=${actorUuid}&pin=${encodeURIComponent(pin)}`;
+            break;
         case 'start':
-            url= 'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/start';
+            url= 'https://lzdz1-isv.isvjcloud.com/dingzhi/mengniumilk/grow/start';
             body = `activityId=${activityID}&actorUuid=${actorUuid}&pin=${encodeURIComponent(pin)}`;
             break;
         default:
@@ -195,7 +273,7 @@ function takePostRequest(type) {
     })
 }
 function dealReturn(type, data) {
-    if(type === 'drawContent'){
+    if(type === 'drawContent' || type === 'getSimpleActInfoVo'){
         return;
     }
     try {
@@ -208,11 +286,12 @@ function dealReturn(type, data) {
     } else {
         console.log(`\n${type},执行异常`);
         console.log(JSON.stringify(data));
+        return;
     }
     switch (type) {
         case 'getSimpleActInfoVo':
-            shopId = data.data.shopId;
-            venderId = data.data.venderId;
+            //shopId = data.data.shopId;
+            //venderId = data.data.venderId;
             break;
         case 'activityContent':
             $.activityData = data.data;
@@ -220,14 +299,21 @@ function dealReturn(type, data) {
         case 'saveCow':
             console.log(`领养成功`);
             break;
-        case 'saveTask':
-            console.log(`执行成功，获得${data.data.milkCount || 0}滴奶`);
+        case 'getTaskDetail':
+            $.allTask = data.data;
             break;
         case 'feedCow':
-            console.log(`成功，当前等级：${data.data.cowDetailMap.cowLevel},需要喂奶：${data.data.cowDetailMap.totalFeedTimes}次，还需要喂奶：${data.data.cowDetailMap.remainderTimes}次`);
+            console.log(`成功，当前等级：${data.data.cowDetailMap.cowLevel},需要喂草：${data.data.cowDetailMap.totalFeedTimes}次，还需要喂草：${data.data.cowDetailMap.remainderTimes}次`);
+            break;
+        case 'saveTask':
+            console.log(`执行成功，获得${data.data.score || 0}颗草`);
+            break;
+        case 'saveExtraTask':
+        case 'saveForage':
+            console.log(`执行成功，获得${data.data.addScore || 0}颗草`);
             break;
         case 'start':
-            console.log(`获得：${data.data.dataname || '空气'}`);
+            console.log(`获得：${data.data.name || '空气'}`);
             console.log(JSON.stringify(data));
             break;
         default:
@@ -244,7 +330,7 @@ function getHtml() {
             'Host':Host,
             'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Cookie': `IsvToken=${token};${cookie} LZ_TOKEN_KEY=${LZ_TOKEN_KEY}; LZ_TOKEN_VALUE=${LZ_TOKEN_VALUE}; AUTH_C_USER=${pin}; ${lz_jdpin_token}`,
-            "User-Agent": 'jdapp;iPhone;10.1.4;14.6;5a8a5743a5d2a4110a8ed396bb047471ea120c6a;network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214111493;appBuild/167814;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+            "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
             'Accept-Language':'zh-cn',
             'Accept-Encoding':'gzip, deflate, br',
             'Connection':'keep-alive'
@@ -332,7 +418,7 @@ function getPostRequest(url, body) {
         'Accept-Encoding' : `gzip, deflate, br`,
         'Content-Type' : `application/x-www-form-urlencoded`,
         'Origin' : `https://${Host}`,
-        "User-Agent": `jdapp;iPhone;10.1.4;14.6;5a8a5743a5d2a4110a8ed396bb047471ea120c6a;network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214111493;appBuild/167814;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`,
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
         'Cookie': `${cookie} LZ_TOKEN_KEY=${LZ_TOKEN_KEY}; LZ_TOKEN_VALUE=${LZ_TOKEN_VALUE}; AUTH_C_USER=${pin}; ${lz_jdpin_token}`,
         'Host' : Host,
         'Referer' : Referer,
@@ -388,7 +474,7 @@ function getWxCommonInfoToken (url) {
         'Accept-Encoding' : `gzip, deflate, br`,
         'Content-Type' : `application/x-www-form-urlencoded`,
         'Origin' : `https://${Host}`,
-        'User-Agent' : `jdapp;iPhone;10.1.4;14.6;5a8a5743a5d2a4110a8ed396bb047471ea120c6a;network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214111493;appBuild/167814;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`,
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
         'Cookie' : cookie,
         'Host' : Host,
         'Referer' : Referer,
@@ -420,7 +506,7 @@ function getWxCommonInfoToken (url) {
 function getToken() {
     let config = {
         url: 'https://api.m.jd.com/client.action?functionId=isvObfuscator',
-        body: 'area=2_2830_51828_0&body=%7B%22url%22%3A%22https%3A%5C/%5C/lzdz-isv.isvjcloud.com%22%2C%22id%22%3A%22%22%7D&build=167814&client=apple&clientVersion=10.1.4&d_brand=apple&d_model=iPhone9%2C2&eid=eidI42470115RDhDRjM1NjktODdGQi00RQ%3D%3DB3mSBu%2BcGp7WhKUUyye8/kqi1lxzA3Dv6a89ttwC7YFdT6JFByyAtAfO0TOmN9G2os20ud7RosfkMq80&isBackground=N&joycious=92&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=5a8a5743a5d2a4110a8ed396bb047471ea120c6a&osVersion=14.6&partner=apple&rfs=0000&scope=01&screen=1242%2A2208&sign=a1a3676a22ac14bf32741b63317ad9fc&st=1632892649587&sv=112',
+        body: `area=2_2841_61104_0&body=%7B%22url%22%3A%22https%3A%5C/%5C/lzdz1-isv.isvjcloud.com%22%2C%22id%22%3A%22%22%7D&build=167841&client=apple&clientVersion=10.1.6&d_brand=apple&d_model=iPhone9%2C2&eid=eidI42470115RDhDRjM1NjktODdGQi00RQ%3D%3DB3mSBu%2BcGp7WhKUUyye8/kqi1lxzA3Dv6a89ttwC7YFdT6JFByyAtAfO0TOmN9G2os20ud7RosfkMq80&ext=%7B%22prstate%22%3A%220%22%7D&isBackground=N&joycious=88&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=5a8a5743a5d2a4110a8ed396bb047471ea120c6a&osVersion=14.6&partner=apple&rfs=0000&scope=01&screen=1242%2A2208&sign=ed8ec31866cf3b64664acfeb364ad263&st=1633919521118&sv=122`,
         headers: {
             'Host': 'api.m.jd.com',
             'accept': '*/*',
