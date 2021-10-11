@@ -1,6 +1,6 @@
 /*
-0 0,22 * * *
-明星小店
+9.10-9.17 明星小店
+0 1,22 10-17 9 *
  */
 const $ = new Env('明星小店');
 const notify = $.isNode() ? require('../sendNotify') : '';
@@ -10,14 +10,11 @@ $.authorCodeList = [];
 let cookiesArr = [];
 $.linkID = '';
 let uniqueIdList = [
-    {'id':'L74LC5','name':'肖战','linkID':'P8Iw2eXANcZA4r_ofEDaAQ','taskId':false},
-    {'id':'7D2GUG','name':'张艺兴','linkID':'MRyP3a30dDZl5kSccE6B2w','taskId':215},
-    {'id':'3SU8SN','name':'陈小春','linkID':'m2okfVwwfUNLJy8RGsIMTw','taskId':230},
-    {'id':'4T2M7Z','name':'黄征','linkID':'m2okfVwwfUNLJy8RGsIMTw','taskId':230},
-    {'id':'Y5DXN4','name':'张智霖','linkID':'m2okfVwwfUNLJy8RGsIMTw','taskId':230},
-    {'id':'MK9U5L','name':'李承铉','linkID':'m2okfVwwfUNLJy8RGsIMTw','taskId':230},
+        {'id':'RU59FC','name':'尹正','linkID':'o4Z4uGy8EYe_-RY7p-Uw_Q','taskId':244},
 ];
-const rewardList = ['P8Iw2eXANcZA4r_ofEDaAQ', 'MRyP3a30dDZl5kSccE6B2w', 'm2okfVwwfUNLJy8RGsIMTw']
+const rewardList = [
+    'o4Z4uGy8EYe_-RY7p-Uw_Q',
+]
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -138,8 +135,6 @@ async function main() {
     }
     console.log(`=============${$.UserName }：明星小店奖励汇总================`);
     await $.wait(1000);
-    $.rewards = [];
-    await getReward();
     for (let i = 0; i < rewardList.length; i++) {
         $.linkID = rewardList[i];
         $.rewards = [];
@@ -162,10 +157,9 @@ async function main() {
                 console.log(`获得其他：${$.rewards[i].prizeDesc || ''}`);
             }
         }
-        await $.wait(2000);
     }
     if(sendMessage){
-        sendMessage += `填写收货地址路径：\n京东首页，搜索明星（肖战,张艺兴或者陈小春），进入明星小店，我的礼物，填写收货地址`;
+        sendMessage += `填写收货地址路径：\n京东首页，搜索明星（陈坤），进入明星小店，我的礼物，填写收货地址`;
         await notify.sendNotify(`星店长`, sendMessage);
     }
 }
