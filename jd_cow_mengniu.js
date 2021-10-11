@@ -1,5 +1,5 @@
 /*
-31 */1 * * * jd_cow_mengniu.js
+31 0-23/1 * * * jd_cow_mengniu.js
  */
 const $ = new Env('蒙牛云养牛');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
