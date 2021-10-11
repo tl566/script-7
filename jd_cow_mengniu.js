@@ -47,8 +47,8 @@ let attrTouXiang = '',actorUuid = '';
                 activityID = activityList[j].id;
                 console.log(`\n活动ID：`+ activityID);
                 await main();
-                //console.log(`防止黑IP，等待30秒`);
-                //await $.wait(30000);
+                console.log(`防止黑IP，等待30秒`);
+                await $.wait(30000);
             }else{
                 console.log(`\n活动ID：${activityID},已过期`)
             }
