@@ -92,7 +92,7 @@ async function main() {
     actorUuid = $.activityData.actorUuid;
     await takePostRequest('drawContent');
     await $.wait(1000);
-    if($.activityData.cowHas === 0){
+    if(!$.activityData.hasCow){
         await takePostRequest('saveCow');
         await $.wait(1000);
     }
