@@ -38,6 +38,10 @@
 20 3,10,21 * * * node /scripts/jd_collect_mf.js >> /scripts/logs/jd_collect_mf.log 2>&1
 # 美妆馆 --》京东美妆12周年庆（活动时间：9.29 - 10.13）
 5 10,21 * * * node /scripts/jd_beauty_twelfth.js >> /scripts/logs/jd_beauty_twelfth.log 2>&1
+# 伊利养牛
+45 2,19 * * * node /scripts/jd_cow.js >> /scripts/logs/jd_cow.log 2>&1
+# 清风云养树
+15 4,15 * * * node /scripts/jd_tree.js >> /scripts/logs/jd_tree.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
