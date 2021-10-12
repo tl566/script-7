@@ -79,7 +79,7 @@ let shareCodes = []
 async function jdSuperMarket() {
   try {
     await smtg_newHome(0)
-    await smtg_newHome(1)
+    // await smtg_newHome(1);//限时超市
     // await receiveGoldCoin();//收金币
     // await businessCircleActivity();//商圈活动
     // await receiveBlueCoin();//收蓝币（小费）
