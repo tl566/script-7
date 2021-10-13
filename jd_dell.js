@@ -1,4 +1,8 @@
 /*
+活动口令
+
+21.0复制整段话 Https:/Ju0NXaoXIV2ajA 分享链接￥3BsA017XEcyUbV%dakai》猄】崠】
+
 10 12,18,23 13 10 * jd_dell.js
  */
 const $ = new Env('戴尔');
@@ -38,42 +42,44 @@ let buyerNickInfo = {};
 });
 
 async function main() {
-  token = '';
-  buyerNick = '';
-  activityData = {};
-  taskList = [];
-  token = await getToken();
-  if (!token) {
-    console.log(`获取token失败`);
-    return;
-  }
-  await takePostRequest('activity_load', `{"actId": "weiruan","userId": 1000000326,"jdToken": "${token}","source": "01","inviteNick": "","method": "/weiruan/activity_load","buyerNick": "${buyerNick}"}`);
-  if (JSON.stringify(activityData) === '{}') {
-    console.log(`获取活动详情失败`);
-    return;
-  }
-  console.log(`获取活动详情成功`);
-  buyerNick = activityData.missionCustomer.buyerNick;
-  buyerNickInfo[userName] = buyerNick;
-  // let shareInfo = "shareNick:" + encodeURIComponent(activityData.missionCustomer.buyerNick) + "&avatar:" + encodeURIComponent(activityData.missionCustomer.headPicUrl) + "&nickName:" + encodeURIComponent(activityData.missionCustomer.nickName);
-  // let shareCode = Buffer.from(shareInfo).toString('base64');
-  // console.log(`助力码：${shareCode}`);
-  await takePostRequest('complete/mission', `{"actId":"weiruan","userId":"1000000326","inviterNick":"9E56nQr37v/RlB+z9uzuv2csCSbFrnrB9hDGvDjqt0yLOg+Ghw8GShho6QOVKD7CCqDoLm2UpGiBGSxUShLKpA==","missionType":"shareAct","method":"/weiruan/complete/mission","buyerNick":"${buyerNick}"}`);
-  await $.wait(2000);
-  await doTask();
-  await $.wait(2000);
-  await takePostRequest('activity_load', `{"jdToken":"${token}","source":"01","actId":"huangheRiver20210908","userId":"1000000326","method":"/fourteenGo/activity_load","buyerNick":"${buyerNick}"}`);
-  await $.wait(2000);
-
-  let remainChance = activityData.missionCustomer.remainChance;
-  let drawTime = Math.floor(remainChance / 100);
-  console.log(`当前积分${remainChance},可以抽奖${drawTime}次`);
-  for (let i = 0; i < drawTime; i++) {
-    await takePostRequest('draw/post', `{"actId":"weiruan","usedGameNum":"2","dataType":"draw","userId":1000000326,"method":"/weiruan/draw/post","buyerNick":"${buyerNick}"}`);
+  try {
+    token = '';
+    buyerNick = '';
+    activityData = {};
+    taskList = [];
+    token = await getToken();
+    if (!token) {
+      console.log(`获取token失败`);
+      return;
+    }
+    await takePostRequest('activity_load', `{"actId": "weiruan","userId": 1000000326,"jdToken": "${token}","source": "01","inviteNick": "","method": "/weiruan/activity_load","buyerNick": "${buyerNick}"}`);
+    if (JSON.stringify(activityData) === '{}') {
+      console.log(`获取活动详情失败`);
+      return;
+    }
+    console.log(`获取活动详情成功`);
+    buyerNick = activityData.missionCustomer.buyerNick;
+    buyerNickInfo[userName] = buyerNick;
+    // let shareInfo = "shareNick:" + encodeURIComponent(activityData.missionCustomer.buyerNick) + "&avatar:" + encodeURIComponent(activityData.missionCustomer.headPicUrl) + "&nickName:" + encodeURIComponent(activityData.missionCustomer.nickName);
+    // let shareCode = Buffer.from(shareInfo).toString('base64');
+    // console.log(`助力码：${shareCode}`);
+    await takePostRequest('complete/mission', `{"actId":"weiruan","userId":"1000000326","inviterNick":"9E56nQr37v/RlB+z9uzuv2csCSbFrnrB9hDGvDjqt0yLOg+Ghw8GShho6QOVKD7CCqDoLm2UpGiBGSxUShLKpA==","missionType":"shareAct","method":"/weiruan/complete/mission","buyerNick":"${buyerNick}"}`);
     await $.wait(2000);
-  }
+    await doTask();
+    await $.wait(2000);
+    await takePostRequest('activity_load', `{"jdToken":"${token}","source":"01","actId":"huangheRiver20210908","userId":"1000000326","method":"/fourteenGo/activity_load","buyerNick":"${buyerNick}"}`);
+    await $.wait(2000);
 
-  //最后抽奖
+    let remainChance = activityData.missionCustomer.remainChance;
+    let drawTime = Math.floor(remainChance / 100);
+    console.log(`当前积分${remainChance},可以抽奖${drawTime}次`);
+    for (let i = 0; i < drawTime; i++) {
+      await takePostRequest('draw/post', `{"actId":"weiruan","usedGameNum":"2","dataType":"draw","userId":1000000326,"method":"/weiruan/draw/post","buyerNick":"${buyerNick}"}`);
+      await $.wait(2000);
+    }
+  } catch (e) {
+    $.logErr(e)
+  }
 }
 
 async function doTask() {
