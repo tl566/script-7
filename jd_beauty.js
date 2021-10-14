@@ -20,14 +20,10 @@ $.init = false;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message, helpInfo, ADD_CART = false;
 
-if ($.isNode()) {
-  Object.keys(jdCookieNode).forEach((item) => {
-    cookiesArr.push(jdCookieNode[item])
-  })
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
-} else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
-}
+Object.keys(jdCookieNode).forEach((item) => {
+  cookiesArr.push(jdCookieNode[item])
+})
+
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 !(async () => {
   if (!cookiesArr[0]) {
@@ -210,8 +206,8 @@ async function mr() {
   client.onmessage = async function (e) {
     if (e.data !== 'pong' && e.data && safeGet(e.data)) {
       let vo = JSON.parse(e.data);
-      await $.wait(Math.random()*2000+500);
-      console.log(`\n开始任务："${JSON.stringify(vo.action)}`);
+      await $.wait(Math.random() * 5000 + 500);
+      console.log(`\n开始任务：${JSON.stringify(vo.action)}`);
       switch (vo.action) {
         case "get_ad":
           console.log(`当期活动：${vo.data.screen.name}`)
@@ -237,7 +233,8 @@ async function mr() {
           console.log(`当前美妆币${$.total}，用户等级${$.level}`);
           break;
         case "shop_products":
-          let count = $.taskState.shop_view.length;
+          if (!$.taskState) break
+          let count = $.taskState?.shop_view?.length;
           if (count < 5) console.log(`去做关注店铺任务`);
           for (let i = 0; i < vo.data.shops.length && count < 5; ++i) {
             const shop = vo.data.shops[i];
@@ -274,6 +271,7 @@ async function mr() {
           break
         case "check_up":
           $.taskState = vo.data
+          console.log('$.taskState', $.taskState)
           // 6-9点签到
           for (let check_up of vo.data.check_up) {
             if (check_up['receive_status'] !== 1) {
@@ -476,7 +474,7 @@ async function mr() {
         case 'get_benefit':
           for (let benefit of vo.data) {
             if (benefit.type === 1) { //type 1 是京豆
-              console.log(`benefit:${JSON.stringify(benefit)}`);
+              console.log(`\nbenefit:${JSON.stringify(benefit)}`);
               if(benefit.description === "1 京豆" &&   //500颗京豆打包兑换
                   parseInt(benefit.day_exchange_count) < 10 &&
                   $.total > benefit.coins){
@@ -509,7 +507,7 @@ async function mr() {
           $.material = vo.data
           break
         case "to_employee":
-          console.log(`雇佣助力码【${vo.data.token}】`)
+          console.log(`雇佣助力码【${vo?.data?.token}】`)
           if (vo?.data?.token) $.tokens.push(vo.data.token)
           break
         case "employee":
