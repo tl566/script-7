@@ -285,7 +285,8 @@ function dealReturn(type, data) {
         console.log(`执行任务异常`);
         console.log(data);
     }
-    if (data.data && data.result && data.count === 0) {
+    if (data && data.data && data.result && data.count === 0) {
+
     } else {
         console.log(`\n${type},执行异常`);
         console.log(JSON.stringify(data));
