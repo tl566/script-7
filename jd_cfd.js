@@ -106,6 +106,7 @@ $.appId = 10028;
         console.log(`账号${$.UserName} 去助力 ${$.shareCodes[j]}`)
         $.delcode = false
         await helpByStage($.shareCodes[j])
+        await uploadShareCode($.shareCodes[j])
         await $.wait(2000)
         if ($.delcode) {
           $.shareCodes.splice(j, 1)
@@ -1712,6 +1713,39 @@ function requireConfig() {
       console.log(`\nBoxJs设置的京喜财富岛邀请码:${$.getdata('jd_jxCFD')}\n`);
     }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
+    resolve()
+  })
+}
+//自动提交助力码
+async function uploadShareCode(code) {
+  return new Promise(async resolve => {
+    $.get({url: `http://transfer.nz.lu/upload/cfd?code=${code}`, timeout: 10000}, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(JSON.stringify(err))
+          console.log(`${$.name} uploadShareCode API请求失败，请检查网路重试`)
+        } else {
+          if (data) {
+            if (data === 'OK') {
+              console.log(`已自动提交助力码\n`)
+            } else if (data === 'error') {
+              console.log(`助力码格式错误，乱玩API是要被打屁屁的~\n`)
+            } else if (data === 'full') {
+              console.log(`车位已满，请等待下一班次\n`)
+            } else if (data === 'exist') {
+              console.log(`助力码已经提交过了~\n`)
+            } else {
+              console.log(`未知错误：${data}\n`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+    await $.wait(10000);
     resolve()
   })
 }
