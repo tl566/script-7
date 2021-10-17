@@ -42,7 +42,7 @@ let shareList = [];
             }
         }
     }
-    console.log(`========================================开始内互助结束=============================================`);
+    console.log(`========================================开始互助=============================================`);
     cookiesArr = getRandomArrayElements(cookiesArr,cookiesArr.length);
     for (let i = 0; i < cookiesArr.length; i++) {
         let cookie = cookiesArr[i];
