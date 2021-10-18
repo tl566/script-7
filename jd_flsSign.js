@@ -1,7 +1,7 @@
 /*
 京东小家福利社签到
 活动地址：https://pro.m.jd.com/mall/active/3X4HMWmUigG689ZUZAg3Yo8Wtqf5/index.html，活动已过期
-活动地址2：https://pro.m.jd.com/mall/active/3joSPpr7RgdHMbcuqoRQ8HbcPo9U/index.html
+活动地址2：https://pro.m.jd.com/mall/active/3joSPpr7RgdHMbcuqoRQ8HbcPo9U/index.html 2021年9月10日-2021年12月31日
 1.每日签到：每个用户限每日签到一次；
 2.连续签到奖励：第一天签到可领取5个京豆，连续签到第四天可领取10个京豆， 其他连续签到日（连续签到第2、3、5、6日）均可获得5个京豆；连续七日签到可领取京豆超级大礼包；
 3.先抢先得：签到活动每日每小时限量发放京豆，先抢先得，每小时发完，可等下一小时开始再来；
