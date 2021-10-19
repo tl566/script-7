@@ -28,7 +28,7 @@ function randomString(e) {
 }
 $.InviteList = []
 $.innerInviteList = [];
-const HelpAuthorFlag = true;//是否助力作者SH  true 助力，false 不助力
+const HelpAuthorFlag = false;//是否助力作者SH  true 助力，false 不助力
 const buildFlag = true;//是否执行建筑升级 true 升级，false 手动
 
 // 热气球接客 每次运行接客次数
@@ -60,28 +60,27 @@ $.appId = 10032;
     for (let i = 0; i < cookiesArr.length; i++) {
         if (cookiesArr[i]) {
             $.cookie = cookiesArr[i] + '';
+            cookie = cookiesArr[i];
             $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
             $.index = i + 1;
             $.isLogin = true;
-            console.log(`\n*****开始【京东账号${$.index}】${$.UserName}****\n`);
             UA = `jdpingou;iPhone;5.2.2;14.3;${randomString(40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`;
+            await TotalBean();
+            console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+            if (!$.isLogin) {
+                $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+                if ($.isNode()) {
+                    await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+                }
+                continue
+            }
             await run();
         }
     }
     // 助力
     $.InviteLists =[]
     $.AuthoLists = [
-        "2958A00A747C0FA0E57D547A5506E4948C167C3902F2C804D0E878DF3F86CC49",
-        "BABDC3F93EC5D5AF72414039E5DCA6F8C431A57043D21FACC8001C89984F29B2",
-        "FA6BEB0ABCE5DAECDD342EAEB3586E5BCBE7A98CC6709CF4057211FDFA610060",
-        "BFDC50E3F3B4A34F2E705A758E862C9EB6474DEEC7EC1F1B95192ADAFE7B8DE8",
-        "A44D1494A608A04E8508002B55614323468439BBC06307F39AEED4142E348714",
-        "44D73C955ED3D4DDABB81F78E4F12A84899B8516EE5643AFD1DA1B3C19777C90",
-        "8AC418C3D2FEDE556ACA7B3DEA521CCD7D3DF7DE034EC4E0D7CFFA48D597E424",
-        "5426614D6E46D889082C27219B1A0786969D826B8DDDD7192D197C6328FD4CCF",
-        "F246F9163ADB8B1063371D294E78DEBBA125DE962A68676FAF6D53F181E3845F",
-        "EC5EDEB580A045BFE08257FF4BF3E245ADB3E7737D4BD09722D59C90DB4CA7A0",
-        "D581C63D5041BD6E4329DBEEDC60CA153566BC76B004FFBE32E6C61EBBCB1243"
+     ""
     ]
     if(HelpAuthorFlag){
         $.InviteLists.push(...$.AuthoLists);
@@ -1135,7 +1134,45 @@ function getUrlQueryParams(url_string, param) {
     return '';
 }
 
-
+function TotalBean() {
+    return new Promise(resolve => {
+        const options = {
+            url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+            headers: {
+                "Host": "me-api.jd.com",
+                "Accept": "*/*",
+                "User-Agent": "ScriptableWidgetExtension/185 CFNetwork/1312 Darwin/21.0.0",
+                "Accept-Language": "zh-CN,zh-Hans;q=0.9",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Cookie": cookie
+            }
+        }
+        $.get(options, (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    if (data) {
+                        data = JSON.parse(data);
+                        if (data['retcode'] === "1001") {
+                            $.isLogin = false; //cookie过期
+                            return;
+                        }
+                        if (data['retcode'] === "0" && data.data && data.data.hasOwnProperty("userInfo")) {
+                            $.nickName = data.data.userInfo.baseInfo.nickname;
+                        }
+                    } else {
+                        console.log('京东服务器返回空数据');
+                    }
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve()
+            }
+        })
+    })
+}
 
 function getAuthorShareCode(url) {
     return new Promise(async resolve => {
