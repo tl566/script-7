@@ -4,8 +4,6 @@
 30 * * * * sh +x /scripts/docker/auto_help.sh collect >> /scripts/logs/auto_help_collect.log 2>&1
 
 ##############短期活动##############
-#省钱大赢家之翻翻乐 7.15-8.15
-10,40 * * * * node /scripts/jd_big_winner.js >> /scripts/logs/jd_big_winner.log 2>&1
 #女装盲盒 活动时间：2021-05-24到2021-06-22
 35 1,22 * * * node /scripts/jd_nzmh.js >> /scripts/logs/jd_nzmh.log 2>&1
 
@@ -30,9 +28,9 @@
 0 0,22 * * * node /scripts/jd_jsg.js >> /scripts/logs/jd_jsg.log 2>&1
 #京喜财富岛——合成珍珠 2021-09-23到2021-9-30
 20 * * * * node /scripts/jd_jxbfd_pear_game.js >> /scripts/logs/jd_jxbfd_pear_game.log 2>&1
-#京东小家电签到（2021年9月3日-2021年10月30日）
+#京东小家电签到（2021年10月13日-2021年12月29日）
 0 0,1 * * * node /scripts/jd_xjdSign.js >> /scripts/logs/jd_xjdSign.log 2>&1
-#京东小家福利社签到（2021年9月16日-2021年9月30日）
+#京东小家福利社签到（2021年9月10日-2021年12月31日）
 5 0,1 * * * node /scripts/jd_flsSign.js >> /scripts/logs/jd_flsSign.log 2>&1
 # 集魔方 活动时间：2021-09-22 00:00:00 - 2022-09-21 00:00:00
 20 3,10,21 * * * node /scripts/jd_collect_mf.js >> /scripts/logs/jd_collect_mf.log 2>&1
@@ -42,6 +40,8 @@
 35 */1 * * * node /scripts/jd_cow_mengniu.js >> /scripts/logs/jd_cow_mengniu.log 2>&1
 # 清风云养树
 15 4,15 * * * node /scripts/jd_tree.js >> /scripts/logs/jd_tree.log 2>&1
+# 京东小家（9.28 - 10.28）
+10 1 * * * node /scripts/jd_chinaJoy.js >> /scripts/logs/jd_chinaJoy.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -177,3 +177,5 @@
 3 0 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
 # 美丽研究院，种植园
 5 5,14 * * * node /scripts/jd_beauty_plantation.js >> /scripts/logs/jd_beauty_plantation.log 2>&1
+# 清空购物车
+15 9 * * 5 node /scripts/jd_clear_cart.js >> /scripts/logs/jd_clear_cart.log 2>&1

@@ -76,6 +76,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     if (cookiesArr && cookiesArr.length > 2) {
       console.log(`\n\n自己账号内部互助`);
       for (let item of $.redPacketId) {
+        if ($.index === 1) break;
         console.log(`账号 ${$.index} ${$.UserName} 开始给 ${item} 进行助力`)
         await jinli_h5assist(item);
         if (!$.canHelp) {
@@ -87,7 +88,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     if ($.canHelp) {
       console.log(`\n\n有剩余助力机会则给作者进行助力`);
       for (let item of $.authorMyShareIds || []) {
-        console.log(`\n账号 ${$.index} ${$.UserName} 开始给作者lxk0301 ${item} 进行助力`)
+        console.log(`\n账号 ${$.index} ${$.UserName} 开始给作者 ${item} 进行助力`)
         await jinli_h5assist(item);
         if (!$.canHelp) {
           console.log(`次数已用完，跳出助力`)

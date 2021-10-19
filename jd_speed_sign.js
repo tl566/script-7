@@ -81,21 +81,21 @@ const JD_API_HOST = 'https://api.m.jd.com/', actCode = 'visa-card-001';
 
 async function jdGlobal() {
   try {
-    await richManIndex()
+    // await richManIndex()
 
     await wheelsHome()
     await apTaskList()
     await wheelsHome()
 
-    await signInit()
-    await sign()
+    // await signInit()
+    // await sign()
     await invite()
     await invite2()
     $.score = 0
     $.total = 0
     await taskList()
     await queryJoy()
-    await signInit()
+    // await signInit()
     await cash()
     await showMsg()
   } catch (e) {
@@ -558,6 +558,7 @@ function wheelsLottery() {
             if (safeGet(data)) {
               data = JSON.parse(data);
               if(data.data && data.data.rewardType){
+                console.log('幸运大转盘抽奖结果：', data);
                 console.log(`幸运大转盘抽奖获得：【${data.data.couponUsedValue}-${data.data.rewardValue}${data.data.couponDesc}】\n`)
                 message += `幸运大转盘抽奖获得：【${data.data.couponUsedValue}-${data.data.rewardValue}${data.data.couponDesc}】\n`
               }else{

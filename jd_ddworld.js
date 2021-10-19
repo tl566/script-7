@@ -257,7 +257,7 @@ async function takeGetRequest(type) {
     })
 }
 
-function dealReturn(type, data) {
+async function dealReturn(type, data) {
     try {
         data = JSON.parse(data);
     } catch (e) {
@@ -302,6 +302,9 @@ function dealReturn(type, data) {
             break;
         case 'do_exchange':
             console.log(JSON.stringify(data));
+            if (data && data.risk_state === 0 && data.prize) {
+              await notify.sendNotify($.name, `账号 ${$.index} ${$.UserName}\n${data.prize.description}兑换成功`)
+            }
             break;
         default:
             console.log('异常');

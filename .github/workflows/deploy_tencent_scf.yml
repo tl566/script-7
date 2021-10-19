@@ -84,6 +84,7 @@ jobs:
       HELP_AUTHOR: ${{ secrets.HELP_AUTHOR}}
       JDJR_VALIDATOR_COUNT: ${{ secrets.JDJR_VALIDATOR_COUNT}}
       SHELL_WAIT_TIME: ${{ secrets.SHELL_WAIT_TIME}}
+      JD_CART: ${{ secrets.JD_CART}}
       
     steps:
       - name: Checkout
@@ -182,6 +183,7 @@ jobs:
           if [ $HELP_AUTHOR ]; then sed -i "/variables/a\      HELP_AUTHOR: $HELP_AUTHOR" serverless.yml; fi;
           if [ $JDJR_VALIDATOR_COUNT ]; then sed -i "/variables/a\      JDJR_VALIDATOR_COUNT: $JDJR_VALIDATOR_COUNT" serverless.yml; fi;
           if [ $SHELL_WAIT_TIME ]; then sed -i "/variables/a\      SHELL_WAIT_TIME: $SHELL_WAIT_TIME" serverless.yml; fi;
+          if [ $JD_CART ]; then sed -i "/variables/a\      JD_CART: $JD_CART" serverless.yml; fi;
           cat serverless.yml
           env
 
