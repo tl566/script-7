@@ -31,6 +31,7 @@ if ($.isNode()) {
         ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 let token ='';
+$.activeid = '';
 !(async () => {
     $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
     await requestAlgo();
@@ -55,7 +56,11 @@ let token ='';
             continue
         }
         token = await getJxToken()
-        await pasture();
+        try {
+            await pasture();
+        } catch (e) {
+            $.logErr(e)
+        }
         await $.wait(2000);
     }
     console.log('\n##################开始账号内互助#################\n');
@@ -81,152 +86,168 @@ let token ='';
     .finally(() => {
         $.done();
     })
-
-
 async function pasture() {
-    try {
-        $.homeInfo = {};
-        $.petidList = [];
-        $.crowInfo = {};
-        await takeGetRequest('GetHomePageInfo');
-        if (JSON.stringify($.homeInfo) === '{}') {
-            return;
-        } else {
-            if (!$.homeInfo.petinfo) {
-                console.log(`\n温馨提示：${$.UserName} 请先手动完成【新手指导任务】再运行脚本再运行脚本\n`);
-                return;
-            }
-            console.log('获取活动信息成功');
-            console.log(`互助码：${$.homeInfo.sharekey}`);
-            $.activeid = $.homeInfo.activeid;
-            $.helpCkList.push($.cookie);
-            $.inviteCodeList.push({'use':$.UserName,'code':$.homeInfo.sharekey,'max':false});
-            for (let i = 0; i < $.homeInfo.petinfo.length; i++) {
-                $.onepetInfo = $.homeInfo.petinfo[i];
-                $.petidList.push($.onepetInfo.petid);
-                if ($.onepetInfo.cangetborn === 1) {
-                    console.log(`开始收鸡蛋`);
-                    await takeGetRequest('GetEgg');
-                    await $.wait(1000);
-                }
-            }
-            $.crowInfo = $.homeInfo.cow;
-        }
-        $.GetVisitBackInfo = {};
-        await $.wait(1000);
-        await takeGetRequest('GetVisitBackInfo');
-        if($.GetVisitBackInfo.iscandraw === 1){
-            await $.wait(1000);
-            await takeGetRequest('GetVisitBackCabbage');
-        }
-        await $.wait(1000);
-        $.GetSignInfo = {};
-        await takeGetRequest('GetSignInfo');
-        if(JSON.stringify($.GetSignInfo) !== '{}' && $.GetSignInfo.signlist){
-            let signList = $.GetSignInfo.signlist;
-            for (let j = 0; j < signList.length; j++) {
-                if(signList[j].fortoday && !signList[j].hasdone){
-                    await $.wait(1000);
-                    console.log(`去签到`);
-                    await takeGetRequest('GetSignReward');
-                }
-            }
-        }
-        await $.wait(1000);
-        if ($.crowInfo.lastgettime) {
-            console.log('收奶牛金币');
-            await takeGetRequest('cow');
-            await $.wait(1000);
-        }
-        $.taskList = [];
-        await takeGetRequest('GetUserTaskStatusList');
-        await $.wait(2000);
-        await doTask();
-        await $.wait(2000);
-        //割草
-        console.log(`\n开始进行割草`);
-        $.runFlag = true;
-        for (let i = 0; i < 10 && $.runFlag; i++) {
-            $.mowingInfo = {};
-            console.log(`开始第${i + 1}次割草`);
-            await takeGetRequest('mowing');
-            await $.wait(1000);
-            if ($.mowingInfo.surprise === true) {
-                //除草礼盒
-                console.log(`领取除草礼盒`);
-                await takeGetRequest('GetSelfResult');
-                await $.wait(3000);
-            }
-        }
-        //横扫鸡腿
-        $.runFlag = true;
-        console.log(`\n开始进行横扫鸡腿`);
-        for (let i = 0; i < 10 && $.runFlag; i++) {
-            console.log(`开始第${i + 1}次横扫鸡腿`);
-            await takeGetRequest('jump');
+    $.homeInfo = {};
+    $.petidList = [];
+    $.crowInfo = {};
+    await takeGetRequest('GetHomePageInfo');
+    if (JSON.stringify($.homeInfo) === '{}') {
+        console.log(`获取活动详情失败`);
+        return;
+    }
+    console.log(`获取活动详情成功`);
+    $.activeid = $.homeInfo.activeid;
+    if($.homeInfo.maintaskId !== 'pause'){
+        let runTime = 0;
+        do {
             await $.wait(2000);
+            console.log(`\n执行初始化任务：${$.homeInfo.maintaskId}`);
+            await takeGetRequest('DoMainTask');
+            await $.wait(2000);
+            await takeGetRequest('GetHomePageInfo');
+            runTime++;
+        }while ($.homeInfo.maintaskId !== 'pause' && runTime<30)
+    }
+    if (!$.homeInfo.petinfo) {
+        console.log(`\n温馨提示：${$.UserName} 请先手动完成【新手指导任务】再运行脚本再运行脚本\n`);
+        return;
+    }
+    console.log(`互助码：${$.homeInfo.sharekey}`);
+    $.helpCkList.push($.cookie);
+    $.inviteCodeList.push({'use':$.UserName,'code':$.homeInfo.sharekey,'max':false});
+    for (let i = 0; i < $.homeInfo.petinfo.length; i++) {
+        $.onepetInfo = $.homeInfo.petinfo[i];
+        $.petidList.push($.onepetInfo.petid);
+        if ($.onepetInfo.cangetborn === 1) {
+            console.log(`开始收鸡蛋`);
+            await takeGetRequest('GetEgg');
+            await $.wait(1000);
         }
-        await takeGetRequest('GetHomePageInfo');
+    }
+    $.crowInfo = $.homeInfo.cow;
+    $.GetVisitBackInfo = {};
+    await $.wait(1000);
+    await takeGetRequest('GetVisitBackInfo');
+    if($.GetVisitBackInfo.iscandraw === 1){
+        await $.wait(1000);
+        await takeGetRequest('GetVisitBackCabbage');
+    }
+    await $.wait(1000);
+    $.GetSignInfo = {};
+    await takeGetRequest('GetSignInfo');
+    if(JSON.stringify($.GetSignInfo) !== '{}' && $.GetSignInfo.signlist){
+        let signList = $.GetSignInfo.signlist;
+        for (let j = 0; j < signList.length; j++) {
+            if(signList[j].fortoday && !signList[j].hasdone){
+                await $.wait(1000);
+                console.log(`去签到`);
+                await takeGetRequest('GetSignReward');
+            }
+        }
+    }
+    await $.wait(1000);
+    if ($.crowInfo.lastgettime) {
+        console.log('收奶牛金币');
+        await takeGetRequest('cow');
+        await $.wait(1000);
+    }
+    $.cardInfo = {}
+    await takeGetRequest('GetCardInfo');
+    if(JSON.stringify($.cardInfo) !== '{}'){
+        console.log(`可以扭蛋次数：${$.cardInfo.times}`);
+        for (let j = 0; j < $.cardInfo.times; j++) {
+            await $.wait(2000);
+            console.log(`\n执行一次扭蛋`);
+            await takeGetRequest('DrawCard');
+        }
+    }
+    await $.wait(1000);
+    console.log(`\n开始执行日常任务`);
+    $.taskList = [];
+    await takeGetRequest('GetUserTaskStatusList');
+    await $.wait(2000);
+    await doTask();
+    await $.wait(2000);
+    //割草
+    console.log(`\n开始进行割草`);
+    $.runFlag = true;
+    for (let i = 0; i < 10 && $.runFlag; i++) {
+        $.mowingInfo = {};
+        console.log(`开始第${i + 1}次割草`);
+        await takeGetRequest('mowing');
+        await $.wait(1000);
+        if ($.mowingInfo.surprise === true) {
+            //除草礼盒
+            console.log(`领取除草礼盒`);
+            await takeGetRequest('GetSelfResult');
+            await $.wait(3000);
+        }
+    }
+    //横扫鸡腿
+    $.runFlag = true;
+    console.log(`\n开始进行横扫鸡腿`);
+    for (let i = 0; i < 10 && $.runFlag; i++) {
+        console.log(`开始第${i + 1}次横扫鸡腿`);
+        await takeGetRequest('jump');
         await $.wait(2000);
-        let materialNumber = 0;
-        let materialinfoList = $.homeInfo.materialinfo;
-        for (let j = 0; j < materialinfoList.length; j++) {
-            if (materialinfoList[j].type !== 1) {
-                continue;
-            }
-            materialNumber = Number(materialinfoList[j].value);//白菜数量
+    }
+    await takeGetRequest('GetHomePageInfo');
+    await $.wait(2000);
+    let materialNumber = 0;
+    let materialinfoList = $.homeInfo.materialinfo;
+    for (let j = 0; j < materialinfoList.length; j++) {
+        if (materialinfoList[j].type !== 1) {
+            continue;
         }
-        if (Number($.homeInfo.coins) > 5000) {
-            let canBuyTimes = Math.floor(Number($.homeInfo.coins) / 5000);
-            console.log(`\n共有金币${$.homeInfo.coins}`);
-            if(Number(materialNumber) < 400){
-                for (let j = 0; j < canBuyTimes && j < 4; j++) {
-                    console.log(`第${j + 1}次购买白菜`);
-                    await takeGetRequest('buy');
-                    await $.wait(2000);
-                }
-                await takeGetRequest('GetHomePageInfo');
+        materialNumber = Number(materialinfoList[j].value);//白菜数量
+    }
+    if (Number($.homeInfo.coins) > 5000) {
+        let canBuyTimes = Math.floor(Number($.homeInfo.coins) / 5000);
+        console.log(`\n共有金币${$.homeInfo.coins}`);
+        if(Number(materialNumber) < 400){
+            for (let j = 0; j < canBuyTimes && j < 4; j++) {
+                console.log(`第${j + 1}次购买白菜`);
+                await takeGetRequest('buy');
                 await $.wait(2000);
-            }else{
-                console.log(`现有白菜${materialNumber},大于400颗,不进行购买`);
             }
+            await takeGetRequest('GetHomePageInfo');
+            await $.wait(2000);
         }else{
-            console.log(`\n共有金币${$.homeInfo.coins}`);
+            console.log(`现有白菜${materialNumber},大于400颗,不进行购买`);
         }
-        materialinfoList = $.homeInfo.materialinfo;
-        for (let j = 0; j < materialinfoList.length; j++) {
-            if (materialinfoList[j].type !== 1) {
-                continue;
-            }
-            if (Number(materialinfoList[j].value) > 10) {
-                $.canFeedTimes = Math.floor(Number(materialinfoList[j].value) / 10);
-                console.log(`\n共有白菜${materialinfoList[j].value}颗，每次喂10颗，可以喂${$.canFeedTimes}次`);
-                $.runFeed = true;
-                for (let k = 0; k < $.canFeedTimes && $.runFeed && k < 40; k++) {
-                    $.pause = false;
-                    console.log(`开始第${k + 1}次喂白菜`);
-                    await takeGetRequest('feed');
-                    await $.wait(4000);
-                    if ($.pause) {
-                        await takeGetRequest('GetHomePageInfo');
-                        await $.wait(1000);
-                        for (let n = 0; n < $.homeInfo.petinfo.length; n++) {
-                            $.onepetInfo = $.homeInfo.petinfo[n];
-                            if ($.onepetInfo.cangetborn === 1) {
-                                console.log(`开始收鸡蛋`);
-                                await takeGetRequest('GetEgg');
-                                await $.wait(1000);
-                            }
+    }else{
+        console.log(`\n共有金币${$.homeInfo.coins}`);
+    }
+    materialinfoList = $.homeInfo.materialinfo;
+    for (let j = 0; j < materialinfoList.length; j++) {
+        if (materialinfoList[j].type !== 1) {
+            continue;
+        }
+        if (Number(materialinfoList[j].value) > 10) {
+            $.canFeedTimes = Math.floor(Number(materialinfoList[j].value) / 10);
+            console.log(`\n共有白菜${materialinfoList[j].value}颗，每次喂10颗，可以喂${$.canFeedTimes}次,每次执行脚本最多会喂40次`);
+            $.runFeed = true;
+            for (let k = 0; k < $.canFeedTimes && $.runFeed && k < 40; k++) {
+                $.pause = false;
+                console.log(`开始第${k + 1}次喂白菜`);
+                await takeGetRequest('feed');
+                await $.wait(4000);
+                if ($.pause) {
+                    await takeGetRequest('GetHomePageInfo');
+                    await $.wait(1000);
+                    for (let n = 0; n < $.homeInfo.petinfo.length; n++) {
+                        $.onepetInfo = $.homeInfo.petinfo[n];
+                        if ($.onepetInfo.cangetborn === 1) {
+                            console.log(`开始收鸡蛋`);
+                            await takeGetRequest('GetEgg');
+                            await $.wait(1000);
                         }
                     }
                 }
             }
         }
-    } catch (e) {
-        $.logErr(e)
     }
 }
-
 async function doTask() {
     for (let i = 0; i < $.taskList.length; i++) {
         $.oneTask = $.taskList[i];
@@ -350,6 +371,21 @@ async function takeGetRequest(type) {
             url = `https://m.jingxi.com/jxmc/operservice/GetSignReward?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=null&currdate=${$.GetSignInfo.currdate}`;
             url += `&jxmc_jstoken=${token.farm_jstoken}&timestamp=${token.timestamp}&phoneid=${token.phoneid}`
             url += `&_stk=activeid%2Cactivekey%2Cchannel%2Ccurrdate%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp&_ste=1`;
+            break;
+        case 'DoMainTask':
+            url = `https://m.jingxi.com/jxmc/operservice/DoMainTask?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=null&step=${$.homeInfo.maintaskId}`;
+            url += `&jxmc_jstoken=${token.farm_jstoken}&timestamp=${token.timestamp}&phoneid=${token.phoneid}`
+            url += `&_stk=activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Cstep%2Ctimestamp&_ste=1`;
+            break;
+        case 'GetCardInfo':
+            url = `https://m.jingxi.com/jxmc/queryservice/GetCardInfo?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=null`;
+            url += `&jxmc_jstoken=${token.farm_jstoken}&timestamp=${token.timestamp}&phoneid=${token.phoneid}`
+            url += `&_stk=activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp&_ste=1`;
+            break;
+        case 'DrawCard':
+            url = `https://m.jingxi.com/jxmc/operservice/DrawCard?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=null`;
+            url += `&jxmc_jstoken=${token.farm_jstoken}&timestamp=${token.timestamp}&phoneid=${token.phoneid}`
+            url += `&_stk=activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp&_ste=1`;
             break;
         default:
             console.log(`错误${type}`);
@@ -495,6 +531,28 @@ function dealReturn(type, data) {
         case 'GetSignReward':
             if (data.ret === 0) {
                 console.log(`签到成功`);
+            }else{
+                console.log(JSON.stringify(data));
+            }
+            break;
+        case 'GetCardInfo':
+            if (data.ret === 0) {
+                $.cardInfo = data.data
+            }else{
+                console.log(JSON.stringify(data));
+            }
+            break;
+        case 'DrawCard':
+            if (data.ret === 0) {
+                let info = data.data;
+                if(info.prizetype === 3){
+                    console.log(`获得金币：${info.addcoins || 0 }`);
+                }else if(info.prizetype === 2){
+                    console.log(`获得红包`);
+                }else{
+                    console.log(`获得其他`);
+                    console.log(JSON.stringify(data));
+                }
             }else{
                 console.log(JSON.stringify(data));
             }
