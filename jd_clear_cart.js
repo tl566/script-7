@@ -31,22 +31,26 @@ if ($.isNode()) {
         "open-url": "https://bean.m.jd.com/bean/signIndex.action"
       });
     }
-    for (let i = 0; i < cookiesArr.length; i++) {
-      if (!cookiesArr[i]) continue;
-      cookie = cookiesArr[i];
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
-      $.index = i + 1;
-      $.isLogin = true;
-      $.nickName = '';
-      console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-      do {
-        await getCart_xh();
-        $.keywordsNum = 0
-        if ($.beforeRemove !== "0") {
-          await cartFilter_xh(venderCart);
-          await removeCart();
-        } else break;
-      } while (isRemoveAll && $.keywordsNum !== $.beforeRemove)
+    try {
+      for (let i = 0; i < cookiesArr.length; i++) {
+        if (!cookiesArr[i]) continue;
+        cookie = cookiesArr[i];
+        $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
+        $.index = i + 1;
+        $.isLogin = true;
+        $.nickName = '';
+        console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+        do {
+          await getCart_xh();
+          $.keywordsNum = 0
+          if ($.beforeRemove !== "0") {
+            await cartFilter_xh(venderCart);
+            await removeCart();
+          } else break;
+        } while (isRemoveAll && $.keywordsNum !== $.beforeRemove)
+      }
+    } catch (e) {
+      $.logErr(e)
     }
   } else {
     console.log("默认不清空购物车，要需：设置环境变量 JD_CART 为 true")
