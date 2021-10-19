@@ -61,15 +61,14 @@ $.activeid = '';
         $.cookie = cookiesArr[j];
         $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
         token = await getJxToken();
+        $.canHelp = true;
         for (let k = 0; k < $.inviteCodeList.length; k++) {
             $.oneCodeInfo = $.inviteCodeList[k];
-            if($.oneCodeInfo.use === $.UserName){
-                continue;
-            }else{
-                console.log(`\n${$.UserName}去助力${$.oneCodeInfo.use},助力码：${$.oneCodeInfo.code}\n`);
-                await takeGetRequest('help');
-                await $.wait(2000);
-            }
+            if( $.oneCodeInfo.use === $.UserName) continue;
+            if (!$.canHelp) break;
+            console.log(`\n${$.UserName}去助力${$.oneCodeInfo.use},助力码：${$.oneCodeInfo.code}\n`);
+            await takeGetRequest('help');
+            await $.wait(2000);
         }
     }
 })()
@@ -105,6 +104,7 @@ async function pasture() {
         console.log(`\n温馨提示：${$.UserName} 请先手动完成【新手指导任务】再运行脚本再运行脚本\n`);
         return;
     }
+    console.log(`当前鸡蛋：${$.homeInfo.eggcnt}个，金币：${$.homeInfo.coins}，小鸡数量：${$.homeInfo.petinfo && $.homeInfo.petinfo.length}`)
     console.log(`互助码：${$.homeInfo.sharekey}`);
     $.helpCkList.push($.cookie);
     $.inviteCodeList.push({'use':$.UserName,'code':$.homeInfo.sharekey,'max':false});
@@ -239,6 +239,26 @@ async function pasture() {
                 }
             }
         }
+    }
+    await takeGetRequest('GetHomePageInfo');
+    if ($.homeInfo.coins > 412000) {
+      console.log(`当前金币：${$.homeInfo.coins}个，直接去购买猪肚鸡`)
+      $.chickType = 4
+      await takeGetRequest('BuyNew')
+    } else if ($.homeInfo.coins > 335500) {
+      console.log(`当前金币：${$.homeInfo.coins}个，直接去购买椰子鸡`)
+      $.chickType = 3
+      await takeGetRequest('BuyNew')
+    } else if ($.homeInfo.coins > 297500) {
+      console.log(`当前金币：${$.homeInfo.coins}个，直接去购买辣子鸡`)
+      $.chickType = 2
+      await takeGetRequest('BuyNew')
+    } else if ($.homeInfo.coins > 250000) {
+      console.log(`当前金币：${$.homeInfo.coins}个，直接去购买小黄鸡`)
+      $.chickType = 1
+      await takeGetRequest('BuyNew')
+    } else {
+      console.log(`当前金币：${$.homeInfo.coins}个，不足以直接购买小鸡\n`);
     }
 }
 async function doTask() {
@@ -380,6 +400,11 @@ async function takeGetRequest(type) {
             url += `&jxmc_jstoken=${token.farm_jstoken}&timestamp=${token.timestamp}&phoneid=${token.phoneid}`
             url += `&_stk=activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp&_ste=1`;
             break;
+        case 'BuyNew':
+            url = `https://m.jingxi.com/jxmc/operservice/BuyNew?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=null&type=${$.chickType}`;
+            url += `&jxmc_jstoken=${token.farm_jstoken}&timestamp=${token.timestamp}&phoneid=${token.phoneid}`
+            url += `&_stk=activeid%2Cactivekey%2Cchannel%2Csceneid%2Ctype&_ste=1`;
+            break;
         default:
             console.log(`错误${type}`);
     }
@@ -491,11 +516,14 @@ function dealReturn(type, data) {
                 console.log(`助力成功`);
             }else if (data.ret === 0 && data.data.result === 4){
                 console.log(`助力次数已用完`);
-                //$.canHelp = false;
+                $.canHelp = false;
             }else if(data.ret === 0 && data.data.result === 5){
                 console.log(`已助力过`);
                 //$.oneCodeInfo.max = true;
-            }else{
+            } else if (data.ret === 1016) {
+              console.log(`助力失败：${data['message']}`);
+              $.canHelp = false;
+            } else{
                 console.log(JSON.stringify(data))
             }
             break;
@@ -550,6 +578,13 @@ function dealReturn(type, data) {
                 console.log(JSON.stringify(data));
             }
             break;
+        case 'BuyNew':
+          if (data && data['ret'] === 0) {
+            console.log(`购买小鸡成功，消耗金币：${data.data.costcoin}，当前小鸡数量：${data.data.currnum}\n`);
+          } else {
+            console.log(`购买小鸡失败：`, JSON.stringify(data));
+          }
+          break;
         default:
             console.log(JSON.stringify(data));
     }
