@@ -171,7 +171,7 @@ async function pasture() {
     //割草
     console.log(`\n开始进行割草`);
     $.runFlag = true;
-    for (let i = 0; i < 10 && $.runFlag; i++) {
+    for (let i = 0; i < 35 && $.runFlag; i++) {
         $.mowingInfo = {};
         console.log(`开始第${i + 1}次割草`);
         await takeGetRequest('mowing');
@@ -186,7 +186,7 @@ async function pasture() {
     //横扫鸡腿
     $.runFlag = true;
     console.log(`\n开始进行横扫鸡腿`);
-    for (let i = 0; i < 10 && $.runFlag; i++) {
+    for (let i = 0; i < 20 && $.runFlag; i++) {
         console.log(`开始第${i + 1}次横扫鸡腿`);
         await takeGetRequest('jump');
         await $.wait(2000);
