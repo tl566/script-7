@@ -198,7 +198,7 @@ async function main() {
     }
     //购买小鸡
     await buyChick(configInfo,homePageInfo,cardInfo);
-    //await doTask();
+    await doTask();
     await $.wait(2000);
     await doMotion(petidList);
     await buyCabbage(homePageInfo);
