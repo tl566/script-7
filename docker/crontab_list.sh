@@ -44,6 +44,8 @@
 10 1 * * * node /scripts/jd_chinaJoy.js >> /scripts/logs/jd_chinaJoy.log 2>&1
 # 城城
 10 * * * * node /scripts/jd_city.js >> /scripts/logs/jd_city.log 2>&1
+# 新品小魔方
+10 0,22 * * * node /scripts/jd_desire.js >> /scripts/logs/jd_desire.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
