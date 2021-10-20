@@ -2,7 +2,7 @@
 金榜创造营
 活动入口：https://h5.m.jd.com/babelDiy/Zeus/2H5Ng86mUJLXToEo57qWkJkjFPxw/index.html
 活动时间：2021-05-21至2021-12-31
-脚本更新时间：2021-10-8
+脚本更新时间：2021-10-20
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===================quantumultx================
 [task_local]
@@ -81,6 +81,7 @@ async function main() {
     await goldCreatorTab();//获取顶部主题
     await getDetail();
     await goldCreatorPublish();
+    await goldCenterDoTask();//金榜签到，首页-排行榜-金榜
     await showMsg();
   } catch (e) {
     $.logErr(e)
@@ -172,6 +173,38 @@ function goldCreatorTab() {
     })
   })
 }
+function goldCenterDoTask() {
+  return new Promise(resolve => {
+    const body = {"type":1};
+    const options = taskUrl('goldCenterDoTask', body)
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} goldCenterDoTask API请求失败，请检查网路重试`)
+        } else {
+          // console.log(`京东金榜签到`, data)
+          data = $.toObj(data);
+          if (data) {
+            if (data.code === '0' && data.result) {
+              if (data.result.taskCode === '0') {
+                console.log(`京东金榜签到成功，获得京豆：${data.result.lotteryScore}`)
+              } else {
+                console.log(`京东金榜签到失败：${data.result.taskMsg}`)
+              }
+            } else {
+              console.log(`京东金榜签到异常`, $.toStr(data))
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 //获取每个主题下面待投票的商品
 function goldCreatorDetail(groupId, subTitleId, taskId, batchId, flag = false) {
   $.skuList = [];
@@ -199,6 +232,7 @@ function goldCreatorDetail(groupId, subTitleId, taskId, batchId, flag = false) {
               $.remainVotes = data.result.remainVotes || 0;
               $.skuList = data.result.skuList || [];
               $.taskList = data.result.taskList || [];
+              $.signTask = data.result.signTask || [];
               if (flag) {
                 await doTask2(batchId);
               } else {
@@ -246,6 +280,11 @@ async function doTask2(batchId) {
       await goldCreatorDoTask(body);
       await $.wait(2000);
     }
+  }
+  console.log('$.signTask[\'taskStatus\']', $.signTask['taskStatus'])
+  if ($.signTask['taskStatus'] === 1) {
+    const body = {"taskId": $.signTask['taskId'], "itemId": $.signTask['taskItemInfo']['itemId'], "type": $.signTask['taskType'], batchId};
+    await goldCreatorDoTask(body);
   }
 }
 function goldCreatorDoTask(body) {
