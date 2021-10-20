@@ -132,19 +132,10 @@ let inviteCodes = []
     $.done();
   })
 async function main() {
-  await getInfo('', true);//获取助力码
-  await getInviteInfo();//雇佣
-  if (exchangeFlag) {
-    const res = await city_lotteryAward();//抽奖
-    if (res && res > 0) {
-      for (let i = 0; i < new Array(res).fill('').length; i++) {
-        await $.wait(1000)
-        await city_lotteryAward();//抽奖
-      }
-    }
-  } else {
-    //默认10.30开启抽奖
-    if ((new Date().getMonth()  + 1) === 10 && new Date().getDate() >= 30 && new Date().getHours() >= 22) {
+  try {
+    await getInfo('', true);//获取助力码
+    await getInviteInfo();//雇佣
+    if (exchangeFlag) {
       const res = await city_lotteryAward();//抽奖
       if (res && res > 0) {
         for (let i = 0; i < new Array(res).fill('').length; i++) {
@@ -152,9 +143,22 @@ async function main() {
           await city_lotteryAward();//抽奖
         }
       }
+    } else {
+      //默认10.30开启抽奖
+      if ((new Date().getMonth()  + 1) === 10 && new Date().getDate() >= 30 && new Date().getHours() >= 22) {
+        const res = await city_lotteryAward();//抽奖
+        if (res && res > 0) {
+          for (let i = 0; i < new Array(res).fill('').length; i++) {
+            await $.wait(1000)
+            await city_lotteryAward();//抽奖
+          }
+        }
+      }
     }
+    await $.wait(1000)
+  } catch (e) {
+    $.logErr()
   }
-  await $.wait(1000)
 }
 function taskPostUrl(functionId,body) {
   return {
