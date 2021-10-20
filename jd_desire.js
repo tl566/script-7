@@ -178,7 +178,7 @@ function doTask(taskType, advertId, sku = null) {
   })
 }
 function getNewMyLotteryInfo() {
-  let body = {"sign":3,"interactionId":316}
+  let body = {"sign":3,"interactionId":319}
   return new Promise(resolve => {
     $.post(taskPostUrl('getNewMyLotteryInfo', body), async (err, resp, data) => {
       try {
