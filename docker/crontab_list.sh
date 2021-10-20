@@ -202,7 +202,7 @@
 # 宠汪汪兑换2
 0 0,8,16 * * *  node /scripts/jd_reward_joy.js >> /scripts/logs/jd_reward_joy.log 2>&1
 # 宠汪汪积分兑换就有版
-58 7,15,23 * * *   node /scripts/jd_joy_reward_Mod.js >> /scripts/logs/jd_joy_reward_Mod.log 2>&1
+58 7,15,23 * * * node /scripts/jd_joy_reward_Mod.js >> /scripts/logs/jd_joy_reward_Mod.log 2>&1
 # 京东疯狂的JOY挂机
 5 5 */2 * *  node /scripts/jd_crazy_joy_coin.js >> /scripts/logs/jd_crazy_joy_coin.log 2>&1
 # 京东摇一摇
@@ -253,6 +253,8 @@
 20 0-23/6 * * * node /scripts/jd_jddj_plantBeans.js >> /scripts/logs/jd_jddj_plantBeans.log 2>&1
 #东东世界
 30 9,13 * * * node /scripts/jd_work_ddworld.js >> /scripts/logs/jd_work_ddworld.log 2>&1
+# 城城分现金
+12 0-23/1 * * * node /scripts/jd_city.js >> /scripts/logs/jd_city.log 2>&1
 ##############默认注释活动##############
 # 京东试用（默认注释，请配合取关脚本使用）
 10 0 * * *  node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1

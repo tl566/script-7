@@ -6,17 +6,17 @@
 =================================Quantumultx=========================
 [task_local]
 #城城领现金
-0 0-23/1 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_city.js, tag=城城领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+0 0-23/1 * * * /jd_city.js, tag=城城领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 =================================Loon===================================
 [Script]
-cron "0 0-23/1 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_city.js,tag=城城领现金
+cron "0 0-23/1 * * *" script-path=/jd_city.js,tag=城城领现金
 
 ===================================Surge================================
-城城领现金 = type=cron,cronexp="0 0-23/1 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_city.js
+城城领现金 = type=cron,cronexp="0 0-23/1 * * *",wake-system=1,timeout=3600,script-path=/jd_city.js
 
 ====================================小火箭=============================
-城城领现金 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_city.js, cronexpr="0 0-23/1 * * *", timeout=3600, enable=true
+城城领现金 = type=cron,script-path=/jd_city.js, cronexpr="0 0-23/1 * * *", timeout=3600, enable=true
  */
 const $ = new Env('城城领现金');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -26,7 +26,6 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let exchangeFlag = $.getdata('jdJxdExchange') || !!0;//是否开启自动抽奖，建议活动快结束开启，默认关闭
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
-
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -37,8 +36,8 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 let inviteCodes = [
-  'xBd-HlYMlLUzqSkuz0qzAzuayqOG3FfAIeOTGLowr29_KbnH2bV4EX4@RtGKzr_wSAn2eIKZRdRm07jvOMS2zVH-g8ri6aOIZPDcI8v7CA@RtGKzr-gRAmmdoaZQdcz30FEv6dt0Mio6a5hyr9dt0vq1P8G0g@RtGKz-ygEAj2e9aYH4U10HcN_2_yeoSSOH50A7CItcn6lB6jwQ',
-  'RtGKz-ygEAj2e9aYH4U10HcN_2_yeoSSOH50A7CItcn6lB6jwQ'
+  'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA@XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq@RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w@HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q@RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw@RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw@RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a@yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c@RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ@H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A@T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
+  'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA@XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq@RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w@HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q@RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw@RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw@RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a@yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c@RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ@H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A@T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
 ]
 !(async () => {
   if (!cookiesArr[0]) {
@@ -99,7 +98,7 @@ let inviteCodes = [
         }
       } else {
         //默认6.2开启抽奖
-        if ((new Date().getMonth()  + 1) === 6 && new Date().getDate() >= 2) {
+        if ((new Date().getMonth()  + 1) === 10 && new Date().getDate() >= 29) {
           const res = await city_lotteryAward();//抽奖
           if (res && res > 0) {
             for (let i = 0; i < new Array(res).fill('').length; i++) {
@@ -113,12 +112,12 @@ let inviteCodes = [
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
 function taskPostUrl(functionId,body) {
   return {
@@ -252,9 +251,8 @@ function city_lotteryAward() {
   })
 }
 function readShareCode() {
-  console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: `http://share.turinglabs.net/api/v3/city/query/10/`, 'timeout': 10000}, (err, resp, data) => {
+    $.get({url: `http://transfer.nz.lu/city`, 'timeout': 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -285,10 +283,6 @@ function shareCodesFormat() {
       console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`)
       const tempIndex = $.index > inviteCodes.length ? (inviteCodes.length - 1) : ($.index - 1);
       $.newShareCodes = inviteCodes[tempIndex].split('@');
-    }
-    const readShareCodeRes = await readShareCode();
-    if (readShareCodeRes && readShareCodeRes.code === 200) {
-      $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
     }
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`)
     resolve();
