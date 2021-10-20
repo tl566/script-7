@@ -1,16 +1,16 @@
 /*
 小魔方
-活动地址：https://h5.m.jd.com/babelDiy/Zeus/2umkvbpZCUtyN6gcymN88ew8WLeU/index.html
-活动时间：2021年9月24日0:00 – 9月29日24:00
+活动地址：https://u.jd.com/3tGMjdf
+活动时间：2021年10月20日 – 10月31日24:00
 
 cron 1 0,22 * * * jd_desire.js
 
  */
 const $ = new Env('小魔方');
 
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message = '', allMsg = '';
 
