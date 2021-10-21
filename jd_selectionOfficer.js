@@ -1,3 +1,6 @@
+/*
+20 0,21 * * * jd_selectionOfficer.js
+ */
 const $ = new Env('选品官');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
