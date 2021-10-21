@@ -48,6 +48,8 @@
 10 0,22 * * * node /scripts/jd_desire.js >> /scripts/logs/jd_desire.log 2>&1
 # 选品官
 20 0,21 * * * node /scripts/jd_selectionOfficer.js >> /scripts/logs/jd_selectionOfficer.log 2>&1
+# 潮玩儿制躁团
+30 0,12,21 * * * node /scripts/jd_zzt.js >> /scripts/logs/jd_zzt.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
