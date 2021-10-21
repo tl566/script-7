@@ -1,3 +1,6 @@
+/*
+30 0,12,21 * * * jd_zzt.js
+ */
 const $ = new Env('潮玩儿制躁团');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [], cookie='',codeList = [],authorizationInfo = {},tokenInfo={};
