@@ -60,7 +60,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
             "sA0J0amfPeyFqzbgvE-y2q5ZlUewN6DWBt1BII3h8QWkRU2jxVAmNkBoZGHiEaQR",
             "sA0J0amfPeyFqzbgvE-y2pL_SCqdayM24TdBmzUymvk"
         ],
-        "activeId":"489177"
+        "activeId":"525597"
     }
     if (res && res.activeId) $.activeId = res.activeId;
     $.authorMyShareIds = [...((res && res.codes) || [])];
