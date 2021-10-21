@@ -73,7 +73,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
 function showMsg() {
   message += `本次运行获得${$.bean}京豆\n当前已获得京豆：${$.peasSum}`;
   return new Promise(resolve => {
-    $.msg($.name, '', `京东账号 ${$.index} ${$.nickName || $.UserName}\n${message}`);
+    // $.msg($.name, '', `京东账号 ${$.index} ${$.nickName || $.UserName}\n${message}`);
     allMsg += `京东账号 ${$.index} ${$.nickName || $.UserName}\n${message}\n\n`;
     resolve();
   })
@@ -94,7 +94,7 @@ function getTaskList() {
         } else {
           data = $.toObj(data);
           if (data) {
-            if (data['code'] === 0 && data.result) {
+            if (data.result && data['result']['code'] === 0 ) {
               if (data.result.taskPoolInfo && data.result.taskPoolInfo.taskList) {
                 $.taskPoolId = data.result.taskPoolInfo.taskPoolId
                 $.interactionId = data.result.interactionId
@@ -159,8 +159,8 @@ function doTask(taskType, advertId, sku = null) {
         } else {
           data = $.toObj(data);
           if (data) {
-            if (data['code'] === 0 && data.result) {
-              if (data.result.lotteryInfoList && data.result.lotteryInfoList.length) {
+            if (data.result) {
+              if (data['result']['code'] === 0 && data.result.lotteryInfoList && data.result.lotteryInfoList.length) {
                 $.bean += data.result.lotteryInfoList[0].halfQuantity || 0
                 console.log(`任务完成成功，获得 ${data.result.lotteryInfoList[0].halfQuantity || 0} 京豆`)
                 $.hasDone = true;
