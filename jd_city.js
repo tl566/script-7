@@ -110,15 +110,12 @@ let inviteCodes = []
             break
           }
           if (res['data']['result']['toasts']) {
-            if (!Object.keys(res['data']['result']['toasts']).length) {
+            if (res['data']['result']['toasts'][0]) {
+              console.log(`助力 【${$.readShareCode[j]}】:${res.data.result.toasts[0].msg}`)
+            } else {
               console.log(`未知错误，跳出`)
               break
             }
-          } else {
-            console.log(`助力失败：不能助力自己`)
-          }
-          if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0]) {
-            console.log(`助力 【${$.readShareCode[j]}】:${res.data.result.toasts[0].msg}`)
           }
         }
         if ((res && res['status'] && res['status'] === '3') || (res && res.data && res.data.bizCode === -11)) {
@@ -137,15 +134,12 @@ let inviteCodes = []
             break
           }
           if (res['data']['result']['toasts']) {
-            if (!Object.keys(res['data']['result']['toasts']).length) {
+            if (res['data']['result']['toasts'][0]) {
+              console.log(`助力 【${$.readShareCode[j]}】:${res.data.result.toasts[0].msg}`)
+            } else {
               console.log(`未知错误，跳出`)
               break
             }
-          } else {
-            console.log(`助力失败：不能助力自己`)
-          }
-          if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0]) {
-            console.log(`助力 【${$.newShareCodes[j]}】:${res.data.result.toasts[0].msg}`)
           }
         }
         if ((res && res['status'] && res['status'] === '3') || (res && res.data && res.data.bizCode === -11)) {
@@ -205,6 +199,7 @@ function getInfo(inviteId, flag = false) {
                   console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
                   if (data.data && data.data.result.userActBaseInfo.inviteId) {
                     $.shareCodes.push(data.data.result.userActBaseInfo.inviteId)
+                    await uploadShareCode(data.data.result.userActBaseInfo.inviteId)
                   }
                 }
                 for (let vo of data.data.result && data.data.result.mainInfos || []) {
@@ -300,7 +295,7 @@ function getInviteInfo() {
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            if (data.code === 0 && data.data.bizCode ===0) {
+            if (data && (data.code === 0 && data.data.bizCode === 0)) {
               if (data.data.result.masterData.actStatus === 2) {
                 await receiveCash('', 2)
                 await $.wait(2000)
@@ -340,6 +335,40 @@ function city_lotteryAward() {
         resolve();
       }
     })
+  })
+}
+function uploadShareCode(code) {
+  return new Promise(async resolve => {
+    $.post({url: `http://${randomString(40)}.transfer.nz.lu/upload/city?code=${code}&ptpin=${encodeURIComponent(encodeURIComponent($.UserName))}`, timeout: 10000}, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(JSON.stringify(err))
+          console.log(`${$.name} uploadShareCode API请求失败，请检查网路重试`)
+        } else {
+          if (data) {
+            if (data === 'OK') {
+              console.log(`已自动提交助力码\n`)
+            } else if (data === 'error') {
+              console.log(`助力码格式错误，乱玩API是要被打屁屁的~\n`)
+            } else if (data === 'full') {
+              console.log(`车位已满，请等待下一班次\n`)
+            } else if (data === 'exist') {
+              console.log(`助力码已经提交过了~\n`)
+            } else if (data === 'not in whitelist') {
+              console.log(`提交助力码失败，此用户不在白名单中\n`)
+            } else {
+              console.log(`未知错误：${data}\n`)
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+    await $.wait(10000);
+    resolve()
   })
 }
 function readShareCode() {
