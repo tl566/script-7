@@ -2,7 +2,8 @@
 50 23 */3 * * rm -rf /scripts/logs/*.log
 
 ##############短期活动##############
-
+#环游记
+18 * * * * node /scripts/jd_hyj.js >> /scripts/logs/jd_hyj.log 2>&1
 # 极速版红包
 30 9 * * * node /scripts/jd_speed_redpocke.js >> /scripts/logs/jd_speed_redpocke.log 2>&1
 # 超级直播间红包雨
