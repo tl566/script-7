@@ -81,7 +81,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
       if ($.index === 1) break
       console.log(`【${$.UserName}】去助力【${code['userName']}】邀请码：${code['strUserPin']}`);
       await enrollFriend(code['strUserPin']);
-      await $.wait(5000);
+      await $.wait(10 * 1000);
       break
     }
     if ($.canHelp) {
@@ -91,7 +91,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
         if (!$.canHelp) break
         console.log(`【${$.UserName}】去助力作者的邀请码：${item}`);
         await enrollFriend(item);
-        await $.wait(5000);
+        await $.wait(10 * 1000);
       }
     }
   }
@@ -120,6 +120,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
 async function main() {
   if (cookie.includes("pt_pin")) await getJxToken();
   await joinActive();
+  await $.wait(5 * 1000);
   await getUserInfo()
 }
 //参与活动
