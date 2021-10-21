@@ -26,9 +26,9 @@ cron "0 0-18/6 * * *" script-path=jd_carnivalcity.js, tag=京东手机狂欢城
 京东手机狂欢城 = type=cron,script-path=jd_carnivalcity.js, cronexpr="0 0-18/6 * * *", timeout=3600, enable=true
 */
 const $ = new Env('京东手机狂欢城');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message = '', allMessage = '';
 if ($.isNode()) {
@@ -84,6 +84,31 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
       }
       await shareCodesFormat();
       await JD818();
+    }
+  }
+  if($.temp.length > 0){
+    for (let i = 0; i < cookiesArr.length; i++) {
+      if (cookiesArr[i]) {
+        cookie = cookiesArr[i];
+        $.canHelp = true;//能否助力
+        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+        if ((cookiesArr && cookiesArr.length >= 1) && $.canHelp) {
+          console.log(`\n先自己账号内部相互邀请助力\n`);
+          for (let item of $.temp) {
+            console.log(`\n${$.UserName} 去参助力 ${item}`);
+            const helpRes = await toHelp(item.trim());
+            if (helpRes.data.status === 5) {
+              console.log(`助力机会已耗尽，跳出助力`);
+              $.canHelp = false;
+              break;
+            }
+          }
+        }
+        if ($.canHelp) {
+          console.log(`\n\n如果有剩余助力机会，则给作者以及随机码助力`)
+          await doHelp();
+        }
+      }
     }
   }
   if (allMessage) {
@@ -514,8 +539,8 @@ function toHelp(code) {
 //获取邀请码API
 function getHelp() {
   return new Promise(resolve => {
-    const body = {"apiMapping":"/khc/task/getSupport"}
-    $.get(taskUrl(body), async (err, resp, data) => {
+    const options = taskPostUrl("/khc/task/getSupport", {});
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -528,7 +553,7 @@ function getHelp() {
             $.temp.push(data.data.shareId);
           } else {
             console.log(`获取邀请码失败：${JSON.stringify(data)}`);
-            if (data.code === 1002) $.blockAccount = true;
+            if (data.code && (data.code === 1002 || data.code === 1001)) $.blockAccount = true;
           }
         }
       } catch (e) {
@@ -687,7 +712,7 @@ function taskUrl(body = {}) {
       "Content-Type": "application/x-www-form-urlencoded",
       "Origin": "https://carnivalcity.m.jd.com",
       "Accept-Language": "zh-cn",
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('../USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
       "Referer": "https://carnivalcity.m.jd.com/",
       "Accept-Encoding": "gzip, deflate, br",
       "Cookie": cookie
