@@ -144,7 +144,7 @@ function getTaskList() {
 function doTask(taskType, advertId, sku = null) {
   let body = {
     "sign": 3,
-    "interactionId": $.interactionId,
+    "interactionId": $.interactionId || 319,
     "taskPoolId": $.taskPoolId,
     "taskType": taskType,
     "advertId": advertId
@@ -184,7 +184,7 @@ function doTask(taskType, advertId, sku = null) {
   })
 }
 function getNewMyLotteryInfo() {
-  let body = {"sign":3,"interactionId":319}
+  let body = {"sign":3,"interactionId": $.interactionId || 319}
   return new Promise(resolve => {
     $.post(taskPostUrl('getNewMyLotteryInfo', body), async (err, resp, data) => {
       try {
@@ -209,7 +209,7 @@ function getNewMyLotteryInfo() {
   })
 }
 function getNewFinalLotteryInfo() {
-  let body = {"sign":3,"interactionId":316}
+  let body = {"sign":3,"interactionId":$.interactionId || 319}
   return new Promise(resolve => {
     $.post(taskPostUrl('getNewFinalLotteryInfo', body), async (err, resp, data) => {
       try {
