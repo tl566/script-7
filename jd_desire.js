@@ -50,9 +50,6 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       }
       try {
         await superBox()
-        await getNewFinalLotteryInfo()
-        await getNewMyLotteryInfo()
-        await showMsg();
       } catch (e) {
         $.logErr(e)
       }
@@ -80,11 +77,31 @@ function showMsg() {
 }
 
 async function superBox() {
-  $.bean = 0
-  await getTaskList()
+  $.bean = 0;
+  $.hasFinalLottery = 0;
+  $.taskRecord = {}
+  let recordNum = 0;//当前已集齐魔方数量
+  await getTaskList();
+  await getTaskList(true)
+  for (let key of Object.keys($.taskRecord)) {
+    recordNum += $.taskRecord[key];
+  }
+  console.log(`\n当前已集齐魔方：${recordNum}个`)
+  if (recordNum >= 9) {
+    if ($.hasFinalLottery === 0) {
+      console.log(`当前已集齐魔方数量已满足开礼盒条件（集齐9魔方）\n`)
+      await getNewFinalLotteryInfo();
+    } else if ($.hasFinalLottery === 1) {
+      console.log(`9个魔方开礼盒：已开启\n`)
+    }
+  } else {
+    console.log(`当前已集齐魔方数量小于开礼盒条件（集齐9魔方）\n`)
+  }
+  await getNewMyLotteryInfo()
+  await showMsg();
 }
 
-function getTaskList() {
+function getTaskList(flag = false) {
   return new Promise(resolve => {
     $.get(taskUrl('getInteractionInfo', {"sign": 3}), async (err, resp, data) => {
       try {
@@ -97,7 +114,11 @@ function getTaskList() {
             if (data.result && data['result']['code'] === 0 ) {
               if (data.result.taskPoolInfo && data.result.taskPoolInfo.taskList) {
                 $.taskPoolId = data.result.taskPoolInfo.taskPoolId
+                $.taskRecord = data.result.taskPoolInfo.taskRecord
+                $.hasFinalLottery = data.result.hasFinalLottery
                 $.interactionId = data.result.interactionId
+                if (flag) return
+                console.log(`任务列表获取成功，interactionId：${$.interactionId}\n`)
                 for (let vo of data.result.taskPoolInfo.taskList) {
                   $.hasDone = false
                   if (vo.groupId) {
@@ -218,6 +239,16 @@ function getNewFinalLotteryInfo() {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           console.log(`\n九个魔方开大奖结果：${data}\n`);
+          data = $.toObj(data);
+          if (data && data['result']) {
+            if (data['result']['code'] === 0) {
+              if (data['result']['lotteryStatus'] === 1) {
+                console.log(`九个魔方开大奖，获得：${data.result.lotteryInfoList && data.result.lotteryInfoList[0].quantity}京豆\n`);
+              } else {
+                console.log(`九个魔方开大奖：${data.result.toast}\n`)
+              }
+            }
+          }
         }
       } catch (e) {
         $.logErr(e, resp)
