@@ -28,7 +28,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let shareId = ["v9gbrN1-r_o", "Szj0uA5UQphKuYH5ABOn7cAdoUJQ3Dik"][Math.floor((Math.random() * 2))];
-let helpId = ["07d6c9d9-4f58-4f25-aeee-d6cd52804746", "ab709563-c2d1-46a0-bed4-06660e7a0fdf"];
+let helpId = ["d5b3de3b-4aee-416a-91fb-ee7d336c04a0", "bab45171-0a94-4243-95f7-67178d78c472"][Math.floor((Math.random() * 2))];
 $.shareCodes = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
