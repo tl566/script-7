@@ -7,7 +7,7 @@ const $ = new Env('京东京粉联盟');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
-const jfUrl = ''  //传入一个京粉转链后的地址
+const jfUrl = 'https://u.jd.com/3CSu1H9'  //传入一个京粉转链后的地址
 
 let cookiesArr = [], cookie = '', message;
 if ($.isNode()) {
@@ -72,13 +72,14 @@ function clickJF() {
             try {
                 if (err) {
                 } else {
-                    if (data) data = JSON.parse(data)
+                    // if (data) data = JSON.parse(data)
+                    console.log(data)
                 }
             } catch (e) {
                 $.logErr(e, resp)
             } finally {
                 console.log(data)
-                resolve(data);
+                // resolve(data);
             }
         })
     })
