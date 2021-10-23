@@ -91,7 +91,7 @@ let inviteCodes = []
             for (let code1 of ls) {
                 if (code['user'] === code1['user']) continue;
                 console.log(code['user'] + '助力' + code1['user'])
-                let res = await getInfo(code['code'])
+                let res = await getInfo(code1['code'])
                 if (res && res['data'] && res['data']['bizCode'] === 0) {
                     if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0] && res['data']['result']['toasts'][0]['status'] === '3') {
                         console.log(`助力次数已耗尽`)
