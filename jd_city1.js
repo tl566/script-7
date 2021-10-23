@@ -27,7 +27,7 @@ let inviteCodes = []
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
         return;
     }
-    console.log(`注意：只助力第一个CK，等待10秒`);
+    console.log(`注意：每4人一组均等助力，不满4人的暂不助力`);
     await $.wait(10000);
     let res = [];
     if(res.length > 0){
