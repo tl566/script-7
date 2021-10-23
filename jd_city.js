@@ -27,7 +27,8 @@ let inviteCodes = []
   console.log(`注意：助力第一个CK和脚本内置作者助力码，介意勿跑，等待10秒`);
   await $.wait(10000);
   let res = [
-    'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA', 'XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq', 'RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w', 'HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q', 'RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw', 'RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw', 'RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a', 'yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c', 'RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ', 'H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A', 'T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
+    'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA@XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq@RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w@HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q@RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw@RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw@RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a@yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c@RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ@H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A@T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
+    'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA@XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq@RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w@HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q@RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw@RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw@RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a@yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c@RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ@H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A@T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
   ]
   if(res.length > 0){
     if(res.length > 3){
