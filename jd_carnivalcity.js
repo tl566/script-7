@@ -262,7 +262,10 @@ function headInfo() {
           data = JSON.parse(data);
           if (data && data['code'] === 200) {
             const {taskId, taskIndex, taskType, taskCount, state} = data['data'];
-            if (state === '1') $.state = true;
+            if (state === '1') {
+              console.log(`账号 ${$.index} ${$.UserName} 手机现货抢购，点亮成功！`)
+              $.state = true;
+            }
             if (taskType && taskType === '13') {
               console.log(`\n浏览${taskCount}个商品任务，需等待6秒`)
               const browseId = await doBrowseHead('/khc/task/doBrowseHead', {taskIndex, taskId, taskType});
@@ -282,7 +285,8 @@ function headInfo() {
               }
             }
           } else {
-            console.log(`doBrowse异常`);
+            console.log(`headInfo 异常`);
+            $.state = true;
           }
         }
       } catch (e) {
