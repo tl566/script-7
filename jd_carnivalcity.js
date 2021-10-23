@@ -89,7 +89,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
         continue
       }
       // await shareCodesFormat();
-      // await JD818();
+      await JD818();
     }
   }
   if (allMessage) {
