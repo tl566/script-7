@@ -4,21 +4,12 @@ cron 0 0-23/1 * * *
 说明：只助力第一个CK
  */
 const $ = new Env('城城领现金组内助力版');
-// const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let exchangeFlag = $.getdata('jdJxdExchange') || false;//是否开启自动抽奖，建议活动快结束开启，默认关闭
 let cookiesArr = [], cookie = '', message;
 
-cookiesArr = [
-    'pt_pin=jd_eosBHmLfDUYa;pt_key=AAJhaE0TADDzSqxdXwmOQqXGacTsN15bwdgUoiQkVTA38qsX8vUbPDt-uM5-jLw9Ur0Dn8zqcUk;',
-    'pt_pin=jd_SkJrHIJTgZTk;pt_key=AAJhbWpYADBbbG4mK7UsVd9anCxwpqx-RCkHN9JXg6Zkj_kglqAraCA-YBMIaBtyYZ_UPx3MaX0;',
-    'pt_pin=jd_rZwsEvrcBhll;pt_key=AAJhbrCGADDaiHIwmjcHXd4xWAS_-uB2LsI4BbTihZ6In7USRYRjNCKbB_0L9oT7O076UmhJ3UM;',
-    'pt_pin=%E4%BD%86%E8%A1%8C%E8%80%95%E8%80%98%E8%8E%AB%E9%97%AE%E6%94%B6%E8%8E%B7;pt_key=AAJhUzNSAECg6ALx7GM9tKcpNK6cVPKchSFsdQPI42L_O3ivcZPlhjTcXLLHplt-8hbD_p0U10rzQH5a4L4K26KjnjqO1feH;',
-    'pt_key=AAJhcQW0ADA8Cy0ZSAcYVaY3aDb1QvZZ-B0vukAzcf7dCzSe8uu6otPYfWuCvC0Z0Tg1lrfabU8;pt_pin=18820175587_p;',
-    'pt_key=AAJhcg1qADCuU9Rn-ZJdoUwdiYLCQOSG2M5-0I1nKxGisT-yxirIaBVS80uixVhRD_Bb6kSHTAk;pt_pin=jd_72c889cc5daca;',
-    'pt_key=AAJhcRBPADDALzAb-bp1k9yUJtiHdVt12l-6mZBhkqnQ0zNu7xgYmDvrOhkcU05csOejgYOeyhQ;pt_pin=jd_4f3364d4a25e3;',
-    'pt_key=AAJhcRc4ADCu6X7r2WoR5G37k731Mhh2bbPhWtcS9YcpuN28rULFo4HH2W69rlxkxKnrdSUMbKk;pt_pin=jd_4634212d405cd;'
-]
+cookiesArr = []
 
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
@@ -37,7 +28,7 @@ let inviteCodes = []
         return;
     }
     console.log(`注意：只助力第一个CK，等待10秒`);
-    // await $.wait(10000);
+    await $.wait(10000);
     let res = [];
     if(res.length > 0){
         if(res.length > 3){
@@ -64,14 +55,14 @@ let inviteCodes = []
             message = '';
             await TotalBean();
             console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-            // if (!$.isLogin) {
-            //     $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
-            //
-            //     if ($.isNode()) {
-            //         await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-            //     }
-            //     continue
-            // }
+            if (!$.isLogin) {
+                $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+
+                if ($.isNode()) {
+                    await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+                }
+                continue
+            }
             await main();
         }
     }
