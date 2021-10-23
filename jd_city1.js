@@ -13,7 +13,11 @@ cookiesArr = [
     'pt_pin=jd_eosBHmLfDUYa;pt_key=AAJhaE0TADDzSqxdXwmOQqXGacTsN15bwdgUoiQkVTA38qsX8vUbPDt-uM5-jLw9Ur0Dn8zqcUk;',
     'pt_pin=jd_SkJrHIJTgZTk;pt_key=AAJhbWpYADBbbG4mK7UsVd9anCxwpqx-RCkHN9JXg6Zkj_kglqAraCA-YBMIaBtyYZ_UPx3MaX0;',
     'pt_pin=jd_rZwsEvrcBhll;pt_key=AAJhbrCGADDaiHIwmjcHXd4xWAS_-uB2LsI4BbTihZ6In7USRYRjNCKbB_0L9oT7O076UmhJ3UM;',
-    'pt_pin=%E4%BD%86%E8%A1%8C%E8%80%95%E8%80%98%E8%8E%AB%E9%97%AE%E6%94%B6%E8%8E%B7;pt_key=AAJhUzNSAECg6ALx7GM9tKcpNK6cVPKchSFsdQPI42L_O3ivcZPlhjTcXLLHplt-8hbD_p0U10rzQH5a4L4K26KjnjqO1feH;'
+    'pt_pin=%E4%BD%86%E8%A1%8C%E8%80%95%E8%80%98%E8%8E%AB%E9%97%AE%E6%94%B6%E8%8E%B7;pt_key=AAJhUzNSAECg6ALx7GM9tKcpNK6cVPKchSFsdQPI42L_O3ivcZPlhjTcXLLHplt-8hbD_p0U10rzQH5a4L4K26KjnjqO1feH;',
+    'pt_key=AAJhcQW0ADA8Cy0ZSAcYVaY3aDb1QvZZ-B0vukAzcf7dCzSe8uu6otPYfWuCvC0Z0Tg1lrfabU8;pt_pin=18820175587_p;',
+    'pt_key=AAJhcg1qADCuU9Rn-ZJdoUwdiYLCQOSG2M5-0I1nKxGisT-yxirIaBVS80uixVhRD_Bb6kSHTAk;pt_pin=jd_72c889cc5daca;',
+    'pt_key=AAJhcRBPADDALzAb-bp1k9yUJtiHdVt12l-6mZBhkqnQ0zNu7xgYmDvrOhkcU05csOejgYOeyhQ;pt_pin=jd_4f3364d4a25e3;',
+    'pt_key=AAJhcRc4ADCu6X7r2WoR5G37k731Mhh2bbPhWtcS9YcpuN28rULFo4HH2W69rlxkxKnrdSUMbKk;pt_pin=jd_4634212d405cd;'
 ]
 
 if ($.isNode()) {
@@ -71,6 +75,8 @@ let inviteCodes = []
             await main();
         }
     }
+
+    console.log('\n##################开始账号内互助#################\n');
     // 真正的账号内互助部分代码实现
     // 先分组，根据获取到的所有的inviteCodes分组
     console.log(inviteCodes)
@@ -86,9 +92,12 @@ let inviteCodes = []
             ls.push(inviteCodes[i])
         }
         cur = cur + 4
-        for (let code of inviteCodes) {
+        // 当前invitecodes就是最终的要分组的列表
+        // console.log(ls)
 
-            for (let code1 of inviteCodes) {
+        for (let code of ls) {
+
+            for (let code1 of ls) {
                 if (code['user'] === code1['user']) continue;
                 console.log(code['user'] + '助力' + code1['user'])
                 let res = await getInfo(code['code'])
@@ -103,11 +112,6 @@ let inviteCodes = []
         $.done();
     })
 
-
-
-
-    console.log('\n##################开始账号内互助#################\n');
-
 function getRandomArrayElements(arr, count) {
     var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
     while (i-- > min) {getRandomArrayElements
@@ -121,28 +125,28 @@ function getRandomArrayElements(arr, count) {
 async function main() {
     try {
         await getInfo('', true);//获取助力码
-        // await getInviteInfo();//雇佣
-        // if (exchangeFlag) {
-        //     const res = await city_lotteryAward();//抽奖
-        //     if (res && res > 0) {
-        //         for (let i = 0; i < new Array(res).fill('').length; i++) {
-        //             await $.wait(1000)
-        //             await city_lotteryAward();//抽奖
-        //         }
-        //     }
-        // } else {
-        //     //默认10.30开启抽奖
-        //     if ((new Date().getMonth()  + 1) === 10 && new Date().getDate() >= 30 && new Date().getHours() >= 22) {
-        //         const res = await city_lotteryAward();//抽奖
-        //         if (res && res > 0) {
-        //             for (let i = 0; i < new Array(res).fill('').length; i++) {
-        //                 await $.wait(1000)
-        //                 await city_lotteryAward();//抽奖
-        //             }
-        //         }
-        //     }
-        // }
-        // await $.wait(1000)
+        await getInviteInfo();//雇佣
+        if (exchangeFlag) {
+            const res = await city_lotteryAward();//抽奖
+            if (res && res > 0) {
+                for (let i = 0; i < new Array(res).fill('').length; i++) {
+                    await $.wait(1000)
+                    await city_lotteryAward();//抽奖
+                }
+            }
+        } else {
+            //默认10.30开启抽奖
+            if ((new Date().getMonth()  + 1) === 10 && new Date().getDate() >= 30 && new Date().getHours() >= 22) {
+                const res = await city_lotteryAward();//抽奖
+                if (res && res > 0) {
+                    for (let i = 0; i < new Array(res).fill('').length; i++) {
+                        await $.wait(1000)
+                        await city_lotteryAward();//抽奖
+                    }
+                }
+            }
+        }
+        await $.wait(1000)
     } catch (e) {
         $.logErr()
     }
@@ -179,7 +183,7 @@ function getInfo(inviteId, flag = false) {
                                 if (flag) console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
                                 if (flag) console.log(`【京东账号${$.index}（${$.UserName}）当前现金】${data.data && data.data.result.userActBaseInfo.poolMoney}元`);
 
-                                if (data.data && data.data.result.userActBaseInfo.inviteId && inviteCodes.length <4) {
+                                if (flag && data.data && data.data.result.userActBaseInfo.inviteId) {
                                     inviteCodes.push({
                                         user: $.UserName,
                                         code: data.data.result.userActBaseInfo.inviteId
