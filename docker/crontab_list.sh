@@ -50,6 +50,10 @@
 20 0,21 * * * node /scripts/jd_selectionOfficer.js >> /scripts/logs/jd_selectionOfficer.log 2>&1
 # 潮玩儿制躁团
 30 0,12,21 * * * node /scripts/jd_zzt.js >> /scripts/logs/jd_zzt.log 2>&1
+# 手机狂欢城(2021-10-23至2021-11-13)
+0 0-18/6 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
+# 手机狂欢城-助力(2021-10-23至2021-11-13)
+0 0-23/6 * * * node /scripts/jd_carnivalcity_help.js >> /scripts/logs/jd_carnivalcity_help.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
