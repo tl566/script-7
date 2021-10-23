@@ -79,7 +79,7 @@ let inviteCodes = []
     console.log('\n##################开始账号内互助#################\n');
     // 真正的账号内互助部分代码实现
     // 先分组，根据获取到的所有的inviteCodes分组
-    console.log(inviteCodes)
+    // console.log(inviteCodes)
 
     const times = Math.floor(inviteCodes.length/4)
     console.log('一共有' + times + '组进行4人互相助力')
@@ -101,6 +101,17 @@ let inviteCodes = []
                 if (code['user'] === code1['user']) continue;
                 console.log(code['user'] + '助力' + code1['user'])
                 let res = await getInfo(code['code'])
+                if (res && res['data'] && res['data']['bizCode'] === 0) {
+                    if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0] && res['data']['result']['toasts'][0]['status'] === '3') {
+                        console.log(`助力次数已耗尽`)
+                        // break
+                    }
+                }
+                if ((res && res['status'] && res['status'] === '3') || (res && res.data && res.data.bizCode === -11)) {
+                    // 助力次数耗尽 || 黑号
+                    console.log('助力次数耗尽 || 黑号')
+                    // break
+                }
             }
         }
     }
