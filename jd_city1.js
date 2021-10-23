@@ -76,8 +76,8 @@ let inviteCodes = []
     console.log('一共有' + times + '组进行4人互相助力')
     let cur = 0 //当前分组游标
     // 当前第一次
-    for (let i=1;i<=times;i++) {
-        console.log('第' + i + '次组内助力')
+    for (let i=0;i<times;i++) {
+        console.log('第' + parseInt(i + 1) + '次组内助力')
         let ls = []  // 当前组内4人组成的列表
         for (let i = cur; i <= cur + 3; i++) {
             ls.push(inviteCodes[i])
@@ -85,8 +85,11 @@ let inviteCodes = []
         cur = cur + 4
         // 当前invitecodes就是最终的要分组的列表
         // console.log(ls)
-
+        let index = 0  //当前组内索引
         for (let code of ls) {
+            // 指定cookie索引
+            let ck_index = i*4 + index
+            cookie = cookiesArr[ck_index];
 
             for (let code1 of ls) {
                 if (code['user'] === code1['user']) continue;
@@ -107,6 +110,7 @@ let inviteCodes = []
                     // break
                 }
             }
+            index +=1
         }
     }
 })()
