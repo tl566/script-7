@@ -84,6 +84,8 @@
 0 0-18/6,21 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 # 手机狂欢城助力
 10 0,21 * * * node /scripts/jd_carnivalcity_help.js >> /scripts/logs/jd_carnivalcity_help.log 2>&1
+# 电竞预言家
+20 0 * * * node /scripts/jd_djyyj.js >> /scripts/logs/jd_djyyj.log 2>&1
 
 ##############长期活动##############
 # 签到
