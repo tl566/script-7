@@ -178,7 +178,7 @@ function getInfo(inviteId, flag = false) {
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
                     if (safeGet(data)) {
-                        if (inviteId) $.log(`\n助力结果:\n${data}\n`)
+                        // if (inviteId) $.log(`\n助力结果:\n${data}\n`)
                         data = JSON.parse(data);
                         if (data.code === 0) {
                             if (data.data && data['data']['bizCode'] === 0) {
