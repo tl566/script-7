@@ -25,7 +25,8 @@ if ($.isNode()) {
     for (let i = 0; i < cookiesArr.length; i++) {
         if (cookiesArr[i]) {
             cookie = cookiesArr[i];
-            console.log(cookie)
+            await clickJF()
+
             // $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
             // $.index = i + 1;
             // $.isLogin = true;
@@ -42,7 +43,13 @@ if ($.isNode()) {
             // }
         }
     }
-})
+})()
+    .catch((e) => {
+        $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+        $.done();
+    })
 
 
 // 点击京粉链接
@@ -70,6 +77,7 @@ function clickJF() {
             } catch (e) {
                 $.logErr(e, resp)
             } finally {
+                console.log(data)
                 resolve(data);
             }
         })
