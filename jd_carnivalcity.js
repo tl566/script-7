@@ -26,9 +26,9 @@ cron "0 0-18/6,21 * * *" script-path=jd_carnivalcity.js, tag=京东手机狂欢�
 京东手机狂欢城 = type=cron,script-path=jd_carnivalcity.js, cronexpr="0 0-18/6,21 * * *", timeout=3600, enable=true
 */
 const $ = new Env('京东手机狂欢城');
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message = '', allMessage = '';
 if ($.isNode()) {
