@@ -44,7 +44,7 @@ let allMessage = '';
     return;
   }
   let res = await getAuthorShareCode('http://adguard.ipq.co/connoisseur.json')
-  if (res) {
+  if (!res) {
     $.http.get({url: 'http://adguard.ipq.co/connoisseur.json'}).then((resp) => {}).catch((e) => console.log('刷新CDN异常', e));
     await $.wait(1000)
     res = await getAuthorShareCode('http://adguard.ipq.co/connoisseur.json')
