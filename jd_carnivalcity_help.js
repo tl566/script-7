@@ -20,9 +20,9 @@ cron "10 0,8 * * *" script-path=https://raw.githubusercontent.com/LingFeng0918/j
 京东手机狂欢城助力 = type=cron,script-path=https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_carnivalcity_help.js, cronexpr="10 0,8 * * *", timeout=3600, enable=true
 */
 const $ = new Env('京东手机狂欢城助力');
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message = '', allMessage = '';
 let isLoginInfo = {}
