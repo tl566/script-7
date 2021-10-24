@@ -10,7 +10,7 @@
     2. jdFruitShareCodes.js
     3. jdCookie.js
 
-2. jd_priceProtect.js
+2. jd_price.js
 京东价格保护自动申请
 入口：京东app-我的-客户服务-价格保护
 来源：https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_priceProtect.js
