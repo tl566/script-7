@@ -48,3 +48,6 @@
 依赖脚本：
     1.jdCookie.js
     2.jdPlantBeanShareCodes.js
+
+8. jd_kd.js
+京东快递签到
