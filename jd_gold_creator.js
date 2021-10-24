@@ -82,6 +82,7 @@ async function main() {
     await getDetail();
     await goldCreatorPublish();
     await goldCenterDoTask();//金榜签到，首页-排行榜-金榜
+    await goldCenterDoTask(2)
     await showMsg();
   } catch (e) {
     $.logErr(e)
@@ -173,9 +174,9 @@ function goldCreatorTab() {
     })
   })
 }
-function goldCenterDoTask() {
+function goldCenterDoTask(type = 1) {
   return new Promise(resolve => {
-    const body = {"type":1};
+    const body = {type};
     const options = taskUrl('goldCenterDoTask', body)
     $.get(options, async (err, resp, data) => {
       try {
