@@ -1,4 +1,20 @@
 /*
+JD_TRY
+true
+是否开启试用
+
+JD_TRY_PRICE
+9
+商品原价最低
+
+JD_TRY_TRIALPRICE
+9
+需要花钱的试用最高自己花多少钱
+ */
+
+
+
+/*
  * 如需运行请自行添加环境变量：JD_TRY，值填 true 即可运行
  * 脚本兼容: Node.js
  * X1a0He留
@@ -136,10 +152,10 @@ let args_xh = {
      * */
     whiteListKeywords: process.env.JD_TRY_WHITELISTKEYWORDS && process.env.JD_TRY_WHITELISTKEYWORDS.split('@') || [],
     /*
-     * 每多少个账号发送一次通知，默认为4
+     * 每多少个账号发送一次通知，默认为40
      * 可通过环境变量控制 JD_TRY_SENDNUM
      * */
-    sendNum: process.env.JD_TRY_SENDNUM * 1 || 4,
+    sendNum: process.env.JD_TRY_SENDNUM * 1 || 40,
 }
 //上面很重要，遇到问题请把上面注释看一遍再来问
 !(async() => {
