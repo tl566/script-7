@@ -11,13 +11,13 @@
 
 ================Loon==============
 [Script]
-cron "20 7 * * *" script-path=jd_super_box.js,tag=京东超级盒子
+cron "20 7 * * *" script-path=https://raw.githubusercontent.com/msechen/script/main/jd_super_box.js,tag=京东超级盒子
 
 ===============Surge=================
-京东超级盒子 = type=cron,cronexp="20 7 * * *",wake-system=1,timeout=3600,script-path=jd_super_box.js
+京东超级盒子 = type=cron,cronexp="20 7 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/msechen/script/main/jd_super_box.js
 
 ============小火箭=========
-京东超级盒子 = type=cron,script-path=jd_super_box.js, cronexpr="20 7 * * *", timeout=3600, enable=true
+京东超级盒子 = type=cron,script-path=https://raw.githubusercontent.com/msechen/script/main/jd_super_box.js, cronexpr="20 7 * * *", timeout=3600, enable=true
 */
 const $ = new Env('京东超级盒子');
 
