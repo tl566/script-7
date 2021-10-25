@@ -23,6 +23,9 @@
 依赖脚本：
     1.jdCookie.js
 
+4. jd_unsubscribe.js
+批量取消关注店铺商品和收藏店铺商品脚本，主要用于配合试用脚本
+
 4. jd_bean_change.js
 京东资产变动通知脚本
 依赖脚本：
