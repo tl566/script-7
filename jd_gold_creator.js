@@ -81,9 +81,10 @@ async function main() {
     await goldCreatorTab();//获取顶部主题
     await getDetail();
     await goldCreatorPublish();
-    await goldCenterDoTask();//金榜签到，首页-排行榜-金榜
-    await $.wait(2000)
-    await goldCenterDoTask(2)
+    await goldCenterHead();
+    // await goldCenterDoTask()
+    // await $.wait(2000)
+    // await goldCenterDoTask(2)
     await showMsg();
   } catch (e) {
     $.logErr(e)
@@ -185,7 +186,7 @@ function goldCenterDoTask(type = 1) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} goldCenterDoTask API请求失败，请检查网路重试`)
         } else {
-          // console.log(`京东金榜签到`, data)
+          console.log(`京东金榜签到`, data)
           data = $.toObj(data);
           if (data) {
             if (data.code === '0' && data.result) {
@@ -196,6 +197,48 @@ function goldCenterDoTask(type = 1) {
               }
             } else {
               console.log(`京东金榜签到异常`, $.toStr(data))
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+function goldCenterHead() {
+  return new Promise(resolve => {
+    const body = {};
+    const options = taskUrl('goldCenterHead', body)
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} goldCenterDoTask API请求失败，请检查网路重试`)
+        } else {
+          data = $.toObj(data);
+          if (data) {
+            if (data.code === '0' && data.result) {
+              const { medalNum, taskDone, bingoDone } = data.result;
+              console.log(`京东金榜当前勋章数：${medalNum}\n`)
+              if (taskDone === 1) {
+                console.log(`你已点亮过勋章了，请明日继续！`)
+              } else {
+                await goldCenterDoTask();//金榜签到，首页-排行榜-金榜
+                if (medalNum && medalNum >= 5) {
+                  if (bingoDone === 0) {
+                    console.log(`勋章已有5枚，开始抽盲盒`)
+                    await $.wait(1000)
+                    await goldCenterDoTask(2)
+                  } else {
+                    console.log(`已抽过盲盒`)
+                  }
+                }
+              }
+            } else {
+              console.log(`goldCenterHead 异常`, $.toStr(data))
             }
           }
         }
@@ -239,7 +282,7 @@ function goldCreatorDetail(groupId, subTitleId, taskId, batchId, flag = false) {
                 await doTask2(batchId);
               } else {
                 console.log(`当前剩余投票次数：${$.remainVotes}`);
-                await doTask(subTitleId, taskId, batchId);
+                if ($.remainVotes) await doTask(subTitleId, taskId, batchId);
               }
             } else {
               console.log(`goldCreatorDetail 异常：${JSON.stringify(data)}`)
@@ -256,6 +299,7 @@ function goldCreatorDetail(groupId, subTitleId, taskId, batchId, flag = false) {
 }
 async function doTask(subTitleId, taskId, batchId) {
   $.skuList = $.skuList.filter(vo => !!vo && vo['isVoted'] === 0);
+  if ($.skuList && $.skuList.length <= 0) return
   let randIndex = Math.floor(Math.random() * $.skuList.length);
   console.log(`给 【${$.skuList[randIndex]['name']}】 商品投票`);
   const body = {
