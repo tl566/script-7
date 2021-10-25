@@ -86,6 +86,8 @@
 10 0,21 * * * node /scripts/jd_carnivalcity_help.js >> /scripts/logs/jd_carnivalcity_help.log 2>&1
 # 电竞预言家
 20 0 * * * node /scripts/jd_djyyj.js >> /scripts/logs/jd_djyyj.log 2>&1
+# 潮玩儿制躁团
+30 11,22 * * * node /scripts/jd_zzt.js >> /scripts/logs/jd_zzt.log 2>&1
 
 ##############长期活动##############
 # 签到
