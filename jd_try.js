@@ -4,12 +4,16 @@ true
 是否开启试用
 
 JD_TRY_PRICE
-9
+19
 商品原价最低
 
 JD_TRY_TRIALPRICE
-9
+19
 需要花钱的试用最高自己花多少钱
+
+JD_TRY_TITLEFILTERS
+手机卡@课程@尿库@尿不湿@情趣@婴儿@性用品@手机壳
+屏蔽黑名单关键词，中间用@隔开
  */
 
 
