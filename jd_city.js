@@ -1,12 +1,14 @@
 /*
 城城领现金
 cron 0 0-23/1 * * * jd_city.js
-说明：助力第一个CK和脚本内置作者助力码，介意勿跑
+说明：默认助力第一个CK和脚本内置作者助力码，介意勿跑
+环境变量：CITYHELP, 脚本助力哪一个CK，默认助力第一个CK； 例：CITYHELP="3"，则助力第3个CK
  */
 const $ = new Env('城城领现金');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let exchangeFlag = $.getdata('jdJxdExchange') || false;//是否开启自动抽奖，建议活动快结束开启，默认关闭
+const helpIndex = $.isNode() ? (process.env.CITYHELP ? process.env.CITYHELP : `999`):`999`;//环境变量：CITYHELP, 脚本助力哪一个CK，默认助力第一个CK； 例：CITYHELP="3"，则助力第3个CK
 let cookiesArr = [], cookie = '', message;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -27,16 +29,10 @@ let inviteCodes = []
   console.log(`注意：助力第一个CK和脚本内置作者助力码，介意勿跑，等待10秒`);
   await $.wait(10000);
   let res = [
-    'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA@XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq@RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w@HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q@RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw@RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw@RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a@yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c@RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ@H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A@T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
-    'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA@XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq@RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w@HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q@RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw@RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw@RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a@yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c@RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ@H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A@T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
+    'HY3ny-ukSAuheoP1V5h_mvC8685NtHbHIu96p_GP4VgzBA', 'XNmgjLO6RAiiduzHW5h_1mpkyZKLRznu_JdoqFgxRlAq', 'RtGKzezyQ1j2eoWdE9dlhRx1g6wO-g5nOBFMQBv1kHExWO-S5w', 'HYDlwO6tSAiheYD1V5h_mlqrVhULhLHgxts9X-D0WaZ25Q', 'RtGKzuSkEgOqeICaHoJhgKwPDiozh5mJKAtg37HwoXTPJOdHWw', 'RtGKzb_wQA_wetGaH9Q0hd_0YRyV8D5BEJ-m4CdMHJk3WRRKZw', 'RtGKrIj3KFzkO8nuRYprmg2WrIzFGT6QCvbxfpO28zDVB4_a', 'yg1tHkIDCFbvMs-aW5h_j0f2Y_Rrz0WX13Myq4c', 'RtGKzeigElvwLYTIFtBmgEc5YX3qDYh_5cp1QYLHbAMhXcJ5VQ', 'H4Tmy--nQQ2qY4qfE9I0353RgQ1AZTgmLrWxUSRx8_CnspAF7A', 'T4Tgzu-tSAKmfoCbW5h_1o8aZ5su81O0JNg5JHcnEGU3',
   ]
   if(res.length > 0){
-    if(res.length > 3){
-      insertCodes = getRandomArrayElements(res,3);
-    }else{
-      insertCodes = getRandomArrayElements(res,res.length);
-    }
-    //$.newShareCodes.push(...shareUuid)
+      insertCodes = [...res];
   }
   console.log(JSON.stringify(insertCodes));
   await requireConfig();
@@ -45,7 +41,7 @@ let inviteCodes = []
   } else {
     console.log(`脚本默认在10.30日自动开启抽奖,如需现在自动抽奖请设置环境变量  JD_CITY_EXCHANGE 为true`);
   }
-  for (let i = 0; i < cookiesArr.length; i++) {
+  for (let i = 0; i < cookiesArr.length && inviteCodes.length === 0; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
@@ -65,6 +61,9 @@ let inviteCodes = []
       }
       await main();
     }
+  }
+  if(inviteCodes.length === 0){
+    return ;
   }
   console.log('\n##################开始账号内互助#################\n');
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -193,7 +192,12 @@ function getInfo(inviteId, flag = false) {
               if (data.data && data['data']['bizCode'] === 0) {
                 if (flag) console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
                 if (flag) console.log(`【京东账号${$.index}（${$.UserName}）当前现金】${data.data && data.data.result.userActBaseInfo.poolMoney}元`);
-                if (data.data && data.data.result.userActBaseInfo.inviteId && inviteCodes.length === 0) {
+                if (data.data && data.data.result.userActBaseInfo.inviteId && inviteCodes.length === 0 && helpIndex === '999') {
+                  inviteCodes.push({
+                    user: $.UserName,
+                    code: data.data.result.userActBaseInfo.inviteId
+                  });
+                }else if (data.data && data.data.result.userActBaseInfo.inviteId && inviteCodes.length === 0 && Number(helpIndex) === Number($.index)) {
                   inviteCodes.push({
                     user: $.UserName,
                     code: data.data.result.userActBaseInfo.inviteId
