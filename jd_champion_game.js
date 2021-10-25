@@ -1,6 +1,6 @@
 /*
 电竞预言家
-2021年11月22日～2021年11月6日
+2021年10月22日～2021年11月6日
 默认选答案A，也可自己设置环境变量 rightAnswerCode
 活动地址 https://dnsm618-100million.m.jd.com
 0 0,11,15,17 * * * jd_champion_game.js
