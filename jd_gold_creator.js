@@ -82,6 +82,7 @@ async function main() {
     await getDetail();
     await goldCreatorPublish();
     await goldCenterDoTask();//金榜签到，首页-排行榜-金榜
+    await $.wait(2000)
     await goldCenterDoTask(2)
     await showMsg();
   } catch (e) {
