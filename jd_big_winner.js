@@ -222,7 +222,7 @@ function openRedReward(functionId = 'gambleChangeReward', type) {
                   //已翻倍到0.3元，可以提现了
                   $.canApCashWithDraw = true;
                   $.changeReward = false;
-                  // message += `${data.data.rewardValue}元现金\n`
+                   message += `${data.data.rewardValue}元现金\n`
                 }
                 if (data.data.rewardType === 1) {
                   console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 成功，获得：${data.data.rewardValue}元红包\n`);
