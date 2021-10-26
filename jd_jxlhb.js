@@ -96,18 +96,37 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
     }
   }
   //拆红包
+  console.log(`============================开始拆红包================================`)
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
+    if (!$.packetIdArr[i]) continue;
     if (cookie.includes("pt_pin")) await getJxToken();
     $.canOpenGrade = true;
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+    const data = await getUserInfo(true);
     $.grades = [1, 2, 3, 4, 5, 6, 7];
-    for (let grade of $.grades) {
-      if (!$.canOpenGrade) break;
-      if (!$.packetIdArr[i]) continue;
-      console.log(`\n【${$.UserName}】去拆第${grade}个红包`);
-      await openRedPack($.packetIdArr[i]['strUserPin'], grade);
-      await $.wait(10 * 1000);
+    if (data.iRet === 0) {
+      const { strUserPin, dwCurrentGrade, gradeConfig = [], dwHelpedTimes = 0, dwRemainInvite = 90, dwTotalNum = 0 } = data['Data'];
+      console.log(`${dwCurrentGrade}号红包还需${dwRemainInvite}人助力可领取，当前已获得红包：${dwTotalNum / 100}元\n`);
+      for (const item of gradeConfig) {
+        if (item['dwIsHasDraw'] === 0) {
+          console.log(`${item['strGradeName']}红包不可拆，助力人数未达标：${dwHelpedTimes}/${item['dwHelpTimes']}`)
+        }
+        if (item['dwIsHasDraw'] === 1) {
+          console.log(`${item['strGradeName']}红包已可拆（未拆开）`)
+          console.log(`\n【${$.UserName}】去拆${item['strGradeName']}红包`);
+          await openRedPack($.packetIdArr[i]['strUserPin'], item['dwGrade']);
+          await $.wait(15 * 1000);
+        }
+        if (item['dwIsHasDraw'] === 2) {
+          console.log(`${item['strGradeName']}红包已拆，最高可获得：${item.dwQuoTa / 100}元，实际获取：${(item['dwDrawValue'] || 0) / 100}元`)
+        }
+      }
+      if (dwCurrentGrade >= gradeConfig.length && dwRemainInvite === 0) {
+        console.log(`\n${gradeConfig.length}个阶梯红包已全部拆完🎉，助力人数：${dwHelpedTimes}\n`)
+      }
+    } else {
+      console.log(`getUserInfo失败：${data.sErrMsg}\n`);
     }
   }
 })()
@@ -151,7 +170,7 @@ function joinActive() {
   })
 }
 //获取助力码
-function getUserInfo() {
+function getUserInfo(flag = false) {
   return new Promise(resolve => {
     const body = `joinDate=${$.time('yyyyMMdd')}`;
     const options = taskurl('GetUserInfo', body, 'activeId,channel,joinDate,phoneid,publishFlag,timestamp');
@@ -162,17 +181,19 @@ function getUserInfo() {
           $.logErr(err);
         } else {
           // console.log('获取助力码', data)
-          data = JSON.parse(data)
-          if (data.iRet === 0) {
-            console.log(`获取助力码成功：${data.Data.strUserPin}\n`);
-            if (data.Data.strUserPin) {
-              $.packetIdArr.push({
-                strUserPin: data.Data.strUserPin,
-                userName: $.UserName
-              })
+          data = $.toObj(data);
+          if (!flag) {
+            if (data.iRet === 0) {
+              console.log(`获取助力码成功：${data.Data.strUserPin}\n`);
+              if (data.Data.strUserPin) {
+                $.packetIdArr.push({
+                  strUserPin: data.Data.strUserPin,
+                  userName: $.UserName
+                })
+              }
+            } else {
+              console.log(`获取助力码失败：${data.sErrMsg}\n`);
             }
-          } else {
-            console.log(`获取助力码失败：${data.sErrMsg}\n`);
           }
         }
       } catch (e) {
