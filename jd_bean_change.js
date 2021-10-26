@@ -66,7 +66,6 @@ RemainMessage += '【东东萌宠】京东->我的->东东萌宠,完成是京东
 RemainMessage += '【领现金】京东->我的->东东萌宠->领现金(微信提现+京东红包)\n';
 RemainMessage += '【东东农场】京东->我的->东东农场,完成是京东红包,可以用于京东app的任意商品\n';
 RemainMessage += '【京喜工厂】京喜->我的->京喜工厂,完成是商品红包,用于购买指定商品(不兑换会过期)\n';
-RemainMessage += '【京喜牧场】京喜->我的->京喜牧场,完成是金蛋,用于兑换指定商品\n';
 RemainMessage += '【其他】京喜红包只能在京喜使用,其他同理';
 
 let WP_APP_TOKEN_ONE = "";
@@ -629,63 +628,65 @@ async function showMsg() {
 		TempBaipiao += `【京喜工厂】${$.jxFactoryReceive} 可以兑换了!\n`;
 
 	}
+	
 	const response = await PetRequest('energyCollect');
 	const initPetTownRes = await PetRequest('initPetTown');
-	if (initPetTownRes.code === '0' && initPetTownRes.resultCode === '0' && initPetTownRes.message === 'success') {
-		$.petInfo = initPetTownRes.result;
-		if ($.petInfo.userStatus === 0) {
-			ReturnMessage += `【东东萌宠】活动未开启!\n`;
-		} else if ($.petInfo.petStatus === 5) {
-			ReturnMessage += `【东东萌宠】${$.petInfo.goodsInfo.goodsName}已可领取!\n`;
-			TempBaipiao += `【东东萌宠】${$.petInfo.goodsInfo.goodsName}已可领取!\n`;
-			if (userIndex2 != -1) {
-				ReceiveMessageGp2 += `【账号${IndexGp2} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
-			}
-			if (userIndex3 != -1) {
-				ReceiveMessageGp3 += `【账号${IndexGp3} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
-			}
-			if (userIndex4 != -1) {
-				ReceiveMessageGp4 += `【账号${IndexGp4} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
-			}
-			if (userIndex2 == -1 && userIndex3 == -1 && userIndex4 == -1) {
-				allReceiveMessage += `【账号${IndexAll} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
-			}
-		} else if ($.petInfo.petStatus === 6) {
-			TempBaipiao += `【东东萌宠】未选择物品! \n`;
-			if (userIndex2 != -1) {
-				WarnMessageGp2 += `【账号${IndexGp2} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
-			}
-			if (userIndex3 != -1) {
-				WarnMessageGp3 += `【账号${IndexGp3} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
-			}
-			if (userIndex4 != -1) {
-				WarnMessageGp4 += `【账号${IndexGp4} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
-			}
-			if (userIndex2 == -1 && userIndex3 == -1 && userIndex4 == -1) {
-				allWarnMessage += `【账号${IndexAll} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
-			}
-		} else if (response.resultCode === '0') {
-			ReturnMessage += `【东东萌宠】${$.petInfo.goodsInfo.goodsName}`;
-			ReturnMessage += `(${(response.result.medalPercent).toFixed(0)}%,${response.result.medalNum}/${response.result.medalNum+response.result.needCollectMedalNum}块)\n`;
-		} else if (!$.petInfo.goodsInfo) {
-			ReturnMessage += `【东东萌宠】暂未选购新的商品!\n`;
-			TempBaipiao += `【东东萌宠】暂未选购新的商品! \n`;
-			if (userIndex2 != -1) {
-				WarnMessageGp2 += `【账号${IndexGp2} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
-			}
-			if (userIndex3 != -1) {
-				WarnMessageGp3 += `【账号${IndexGp3} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
-			}
-			if (userIndex4 != -1) {
-				WarnMessageGp4 += `【账号${IndexGp4} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
-			}
-			if (userIndex2 == -1 && userIndex3 == -1 && userIndex4 == -1) {
-				allWarnMessage += `【账号${IndexAll} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
-			}
+	if(initPetTownRes){
+		if (initPetTownRes.code === '0' && initPetTownRes.resultCode === '0' && initPetTownRes.message === 'success') {
+			$.petInfo = initPetTownRes.result;
+			if ($.petInfo.userStatus === 0) {
+				ReturnMessage += `【东东萌宠】活动未开启!\n`;
+			} else if ($.petInfo.petStatus === 5) {
+				ReturnMessage += `【东东萌宠】${$.petInfo.goodsInfo.goodsName}已可领取!\n`;
+				TempBaipiao += `【东东萌宠】${$.petInfo.goodsInfo.goodsName}已可领取!\n`;
+				if (userIndex2 != -1) {
+					ReceiveMessageGp2 += `【账号${IndexGp2} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
+				}
+				if (userIndex3 != -1) {
+					ReceiveMessageGp3 += `【账号${IndexGp3} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
+				}
+				if (userIndex4 != -1) {
+					ReceiveMessageGp4 += `【账号${IndexGp4} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
+				}
+				if (userIndex2 == -1 && userIndex3 == -1 && userIndex4 == -1) {
+					allReceiveMessage += `【账号${IndexAll} ${$.nickName || $.UserName}】${$.petInfo.goodsInfo.goodsName}可以兑换了! (东东萌宠)\n`;
+				}
+			} else if ($.petInfo.petStatus === 6) {
+				TempBaipiao += `【东东萌宠】未选择物品! \n`;
+				if (userIndex2 != -1) {
+					WarnMessageGp2 += `【账号${IndexGp2} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
+				}
+				if (userIndex3 != -1) {
+					WarnMessageGp3 += `【账号${IndexGp3} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
+				}
+				if (userIndex4 != -1) {
+					WarnMessageGp4 += `【账号${IndexGp4} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
+				}
+				if (userIndex2 == -1 && userIndex3 == -1 && userIndex4 == -1) {
+					allWarnMessage += `【账号${IndexAll} ${$.nickName || $.UserName}】未选择物品! (东东萌宠)\n`;
+				}
+			} else if (response.resultCode === '0') {
+				ReturnMessage += `【东东萌宠】${$.petInfo.goodsInfo.goodsName}`;
+				ReturnMessage += `(${(response.result.medalPercent).toFixed(0)}%,${response.result.medalNum}/${response.result.medalNum+response.result.needCollectMedalNum}块)\n`;
+			} else if (!$.petInfo.goodsInfo) {
+				ReturnMessage += `【东东萌宠】暂未选购新的商品!\n`;
+				TempBaipiao += `【东东萌宠】暂未选购新的商品! \n`;
+				if (userIndex2 != -1) {
+					WarnMessageGp2 += `【账号${IndexGp2} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
+				}
+				if (userIndex3 != -1) {
+					WarnMessageGp3 += `【账号${IndexGp3} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
+				}
+				if (userIndex4 != -1) {
+					WarnMessageGp4 += `【账号${IndexGp4} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
+				}
+				if (userIndex2 == -1 && userIndex3 == -1 && userIndex4 == -1) {
+					allWarnMessage += `【账号${IndexAll} ${$.nickName || $.UserName}】暂未选购新的商品! (东东萌宠)\n`;
+				}
 
+			}
 		}
 	}
-
 	ReturnMessage += `🧧🧧🧧红包明细🧧🧧🧧\n`;
 	ReturnMessage += `${$.message}`;
 
@@ -890,7 +891,7 @@ async function jdCash() {
 				try {
 					if (err) {
 						console.log(`${JSON.stringify(err)}`)
-						console.log(`${$.name} API请求失败，请检查网路重试`)
+						console.log(`jdCash API请求失败，请检查网路重试`)
 					} else {
 						if (safeGet(data)) {
 							data = JSON.parse(data);
@@ -1104,7 +1105,7 @@ function getJingBeanBalanceDetail(page) {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`getJingBeanBalanceDetail API请求失败，请检查网路重试`)
 				} else {
 					if (data) {
 						data = JSON.parse(data);
@@ -1142,7 +1143,7 @@ function queryexpirejingdou() {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`queryexpirejingdou API请求失败，请检查网路重试`)
 				} else {
 					if (data) {
 						// console.log(data)
@@ -1190,7 +1191,7 @@ function redPacket() {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`redPacket API请求失败，请检查网路重试`)
 				} else {
 					if (data) {
 						data = JSON.parse(data).data;
@@ -1304,7 +1305,7 @@ function getMs() {
 			try {
 				if (err) {
 					console.log(`${err},${jsonParse(resp.body)['message']}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`getMs API请求失败，请检查网路重试`)
 				} else {
 					if (safeGet(data)) {
 						data = JSON.parse(data)
@@ -1496,7 +1497,7 @@ function cash() {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`cash API请求失败，请检查网路重试`)
 				} else {
 					if (safeGet(data)) {
 						data = JSON.parse(data);
@@ -1569,7 +1570,7 @@ async function JxmcGetRequest() {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`API请求失败，请检查网路重试`)
+					console.log(`JxmcGetRequest API请求失败，请检查网路重试`)
 					$.runFlag = false;
 					console.log(`请求失败`)
 				} else {
@@ -1690,7 +1691,7 @@ function GetCommodityDetails() {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`GetCommodityDetails API请求失败，请检查网路重试`)
 				} else {
 					if (safeGet(data)) {
 						data = JSON.parse(data);
