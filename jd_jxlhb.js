@@ -96,13 +96,13 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
     }
   }
   //拆红包
-  console.log(`============================开始拆红包================================`)
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (!$.packetIdArr[i]) continue;
     if (cookie.includes("pt_pin")) await getJxToken();
     $.canOpenGrade = true;
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+    console.log(`============================账号 ${$.UserName} 开始拆红包================================`)
     const data = await getUserInfo(true);
     $.grades = [1, 2, 3, 4, 5, 6, 7];
     if (data.iRet === 0) {
@@ -128,6 +128,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
     } else {
       console.log(`getUserInfo失败：${data.sErrMsg}\n`);
     }
+    await $.wait(5 * 1000);
   }
 })()
     .catch((e) => {
