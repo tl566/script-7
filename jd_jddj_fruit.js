@@ -117,7 +117,7 @@ async function main() {
     }
     if (Number($.treeInfo.activityInfoResponse.curStageLeftProcess) === 0 && $.treeInfo.activityInfoResponse.stageName === '成熟') {
         let sendMessage = `账号 ${$.index} ${$.UserName},果树已经成熟\n\n`;
-        allMessage += `京东账号 ${$.index} ${$.UserName},果树已经成熟\n\n`;
+        allMessage += `京东账号 ${$.index} ${$.UserName} 果树已经成熟\n兑换入口：京东app首页 ===》京东到家 ===》免费水果\n\n`;
         //notify.sendNotify('京东到家水果', sendMessage);
         console.log(`已经成熟`);
         return;

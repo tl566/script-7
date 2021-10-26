@@ -251,7 +251,7 @@ function pigPetLogin() {
                 }
                 if (data.resultData.resultData.wished) {
                   if (data.resultData.resultData.wishAward) {
-                    allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n${data.resultData.resultData.wishAward.name}已可兑换${$.index !== cookiesArr.length ? '\n\n' : ''}`
+                    allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n${data.resultData.resultData.wishAward.name}已可兑换\n兑换入口：京东金融app ===》我的 ===》游戏与互动 ===》养猪猪${$.index !== cookiesArr.length ? '\n\n' : ''}`
                   }
                 }
               } else {
