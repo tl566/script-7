@@ -312,6 +312,7 @@ async function doTask(subTitleId, taskId, batchId) {
     "type": 1,
     batchId
   };
+  await $.wait(3000);
   await goldCreatorDoTask(body);
 }
 async function doTask2(batchId) {
