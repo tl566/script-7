@@ -110,7 +110,7 @@ async function main() {
     await doTasks();//任务赚京币&成就赚财富
     await rewardSign();//连续营业赢红包&打工赢红包
     await buildAction();//建筑升级与收集金币
-    await EmployTourGuideFun();//雇佣导游
+    // await EmployTourGuideFun();//雇佣导游
     await SpeedUp();//接待游客
     await GetActTask();//活动任务
     await receiveBigReward();//完成所有任务开宝箱
