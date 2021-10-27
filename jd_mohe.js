@@ -492,7 +492,7 @@ function taskurl(url, bo = {}) {
     }
   }
 }
-function updateShareCodesCDN(url = 'https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/jd_shareCodes.json') {
+function updateShareCodesCDN(url = 'https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jd_shareCodes.json') {
   return new Promise(resolve => {
     $.get({
       url ,

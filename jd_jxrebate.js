@@ -310,7 +310,7 @@ function TotalBean() {
     })
   })
 }
-function getAuthorShareCode(url = "https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/jx_rebate.json") {
+function getAuthorShareCode(url = "https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jx_rebate.json") {
   return new Promise(resolve => {
     const options = {
       url: `${url}?${new Date()}`, "timeout": 10000, headers: {

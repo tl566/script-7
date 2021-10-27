@@ -46,7 +46,8 @@ let inviteCodes = []
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  let res = await getAuthorShareCode() || [];
+  let res = await getAuthorShareCode();
+  if (!res) res = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/city.json');
   if (res && res.length) insertCodes = res;
   await requireConfig();
   if (exchangeFlag) {
@@ -380,7 +381,7 @@ function jsonParse(str) {
     }
   }
 }
-function getAuthorShareCode(url = "https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/city.json") {
+function getAuthorShareCode(url = "https://raw.githubusercontent.com/gitupdate/updateTeam/master/shareCodes/city.json") {
   return new Promise(resolve => {
     const options = {
       url: `${url}?${new Date()}`, "timeout": 10000, headers: {

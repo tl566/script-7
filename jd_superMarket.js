@@ -1778,7 +1778,7 @@ async function barGain() {
   }
 }
 async function bigWinner() {
-  let res = await getAuthorShareCode2('https://raw.fastgit.org/gitupdate/updateTeam/master/shareCodes/bigWinner.json'), res2 = [];
+  let res = await getAuthorShareCode2('https://raw.githubusercontent.com/gitupdate/updateTeam/master/shareCodes/bigWinner.json'), res2 = [];
   if (!res) {
     res = await getAuthorShareCode2('https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/bigWinner.json')
   }
