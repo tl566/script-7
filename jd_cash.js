@@ -135,7 +135,7 @@ function index(info=false) {
               if(info){
                 if (message) {
                   message += `当前现金：${data.data.result.signMoney}元`;
-                  allMessage += `京东账号${$.index} ${$.nickName}\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+                  allMessage += `京东账号${$.index} ${$.UserName}\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
                 }
                 console.log(`\n\n当前现金：${data.data.result.signMoney}元`);
                 return
@@ -276,9 +276,9 @@ function getReward(source = 1) {
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            if (data.code === 0 && data.data.bizCode === 0 && data.data.result) {
+            if (data.code === 0 && data.data.bizCode === 0) {
               console.log(`领奖成功`)
-              message += `领奖成功\n`;
+              message += `0.01元领取成功\n`;
               // console.log(data.data.result.taskInfos)
             } else {
               // console.log(`领奖失败，${$.toStr(data)}`)
