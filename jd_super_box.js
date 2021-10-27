@@ -11,13 +11,13 @@
 
 ================Loon==============
 [Script]
-cron "20 7 * * *" script-path=https://raw.githubusercontent.com/msechen/script/main/jd_super_box.js,tag=京东超级盒子
+cron "20 7 * * *" script-path=jd_super_box.js,tag=京东超级盒子
 
 ===============Surge=================
-京东超级盒子 = type=cron,cronexp="20 7 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/msechen/script/main/jd_super_box.js
+京东超级盒子 = type=cron,cronexp="20 7 * * *",wake-system=1,timeout=3600,script-path=jd_super_box.js
 
 ============小火箭=========
-京东超级盒子 = type=cron,script-path=https://raw.githubusercontent.com/msechen/script/main/jd_super_box.js, cronexpr="20 7 * * *", timeout=3600, enable=true
+京东超级盒子 = type=cron,script-path=jd_super_box.js, cronexpr="20 7 * * *", timeout=3600, enable=true
 */
 const $ = new Env('京东超级盒子');
 
@@ -382,7 +382,7 @@ function TotalBean() {
         "Connection": "keep-alive",
         "Cookie": cookie,
         "Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0")
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1"
       }
     }
     $.post(options, (err, resp, data) => {
@@ -397,7 +397,11 @@ function TotalBean() {
               $.isLogin = false; //cookie过期
               return
             }
-            $.nickName = data['base'].nickname;
+            if (data['retcode'] === 0) {
+              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
+            } else {
+              $.nickName = $.UserName
+            }
           } else {
             console.log(`京东服务器返回空数据`)
           }
@@ -410,6 +414,7 @@ function TotalBean() {
     })
   })
 }
+
 
 function safeGet(data) {
   try {
