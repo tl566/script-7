@@ -276,7 +276,7 @@ function getReward(source = 1) {
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            if (data.code === 0 && data.data.bizCode === 0) {
+            if (data.code === 0 && data.data.bizCode === 0 && data.data.result) {
               console.log(`领奖成功`)
               message += `0.01元领取成功\n`;
               // console.log(data.data.result.taskInfos)
