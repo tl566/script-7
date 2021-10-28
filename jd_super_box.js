@@ -98,6 +98,13 @@ function showMsg() {
   })
 }
 
+async function superBox() {
+  $.earn = 0.0
+  await drawInfo()
+  await getTask()
+  await drawInfo(false)
+  await helpFriends()
+}
 
 async function helpFriends() {
   for (let code of $.newShareCodes) {
@@ -106,14 +113,6 @@ async function helpFriends() {
     const helpRes = await doSupport(code);
     await $.wait(1000)
   }
-}
-
-async function superBox() {
-  $.earn = 0.0
-  await drawInfo()
-  await getTask()
-  await drawInfo(false)
-  await helpFriends()
 }
 
 
@@ -302,7 +301,7 @@ function draw() {
 }
 
 function doSupport(shareId) {
-  let body = {"taskId":"116","linkId":"DQFdr1ttvWWzn0wsQ7JDZQ","encryptPin":shareId}
+  let body = {"taskId":"332","linkId":"DQFdr1ttvWWzn0wsQ7JDZQ","encryptPin":shareId}
   return new Promise(resolve => {
     $.get(taskUrl('superboxSupBoxHomePage',body), async (err, resp, data) => {
       try {
@@ -337,17 +336,17 @@ function taskPostUrl(function_id, body = {}) {
     url: `${JD_API_HOST}`,
     body: `functionId=${function_id}&body=${escape(JSON.stringify(body))}&_t=${t}&appid=activities_platform`,
     headers: {
-      "Accept": "*/*",
+      "Accept": "application/json, text/plain, */*",
       "Accept-Encoding": "gzip, deflate, br",
       "Accept-Language": "zh-cn",
       "Connection": "keep-alive",
       "Content-Type": "application/x-www-form-urlencoded",
       "Host": "api.m.jd.com",
-      "Referer": "https://prodev.m.jd.com",
+      "Referer": "https://pro.m.jd.com/mall/active/3z9BVbnAa1sVy88yEyKdp9wcWZ7Z/index.html",
       "Cookie": cookie,
       'dnt': '1',
       'pragma': 'no-cache',
-      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.141"
+      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1"
     }
   }
 }
@@ -357,15 +356,15 @@ function taskUrl(function_id, body = {}) {
   return {
     url: `${JD_API_HOST}?functionId=${function_id}&body=${escape(JSON.stringify(body))}&_t=${t}&appid=activities_platform`,
     headers: {
-      "Accept": "*/*",
+      "Accept": "application/json, text/plain, */*",
       "Accept-Encoding": "gzip, deflate, br",
       "Accept-Language": "zh-cn",
       "Connection": "keep-alive",
       "Content-Type": "application/x-www-form-urlencoded",
       "Host": "api.m.jd.com",
-      "Referer": "https://prodev.m.jd.com",
+      "Referer": "https://pro.m.jd.com/mall/active/3z9BVbnAa1sVy88yEyKdp9wcWZ7Z/index.html",
       "Cookie": cookie,
-      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.141"
+      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1"
     }
   }
 }
