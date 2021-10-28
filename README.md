@@ -1,3 +1,7 @@
+https://segmentfault.com/a/1190000022052961
+
+https://www.cxyzjd.com/article/dayunwang/107199697
+
 ### 使用 nodejs + wecharty 打造你的个人微信机器人
 
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-green.svg)](https://github.com/chatie/wechaty) [![Wechaty开源激励计划](https://img.shields.io/badge/Wechaty-开源激励计划-green.svg)](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)
@@ -97,4 +101,3 @@ cnpm start //npm start
 底层 api 基于 [wechaty](https://github.com/wechaty/wechaty)
 
 更多微信消息、群消息、好友、对话等相关 api 可查阅官方文档 [wechaty 官方文档](https://github.com/wechaty/wechaty/blob/master/docs/index.md)
-
