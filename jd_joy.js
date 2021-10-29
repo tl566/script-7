@@ -827,7 +827,7 @@ function getPetTaskConfig() {
                 $.getPetTaskConfigRes = data;
                 await petTask();
               } else {
-                console.log(`获取任务列表失败：${$.toStr(data)}\\n`);
+                console.log(`获取任务列表失败：${$.toStr(data)}\n`);
               }
             } else {
               console.log(`获取任务列表异常：${$.toStr(data)}\n`);
