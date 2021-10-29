@@ -446,10 +446,10 @@ async function missions() {
         //分享任务
         await pigPetDoMission(item.mid);
       }
-      if (item.mid !== 'MC2452' && item.mid !== 'MC4639') {
+      if (item.mid !== 'MC2452' && item.mid !== 'MC4639' && item.mid !== 'MC4764' && item.mid !== 'MC5078' && item.mid !== 'MC5173' && item.mid !== 'MC2452' && item.mid !== 'MC4639' && item.mid !== 'MC4702' && item.mid !== 'MC5127' && item.mid !== 'MC4776') {
         console.log(`开始做任务：${item['missionContent']}\n`);
         console.log('url', item['url'])
-        //TODO
+        console.log('mid', item['mid'])
         await pigPetDoMission(item.mid);
         await $.wait(2000)
         if (!item['url']) continue;
@@ -751,15 +751,23 @@ function taskUrl(function_id, body) {
   }
 }
 function getQueryString(qStr,name) {
-  var query = qStr.split('?')[1];
-  var vars = query.split('&');
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split('=');
-    if (pair[0] == name) {
-      return pair[1];
+  try {
+    var query = qStr.split('?');
+    if (query[1]) {
+      query = query[1];
+      var vars = query.split('&');
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (pair[0] == name) {
+          return pair[1];
+        }
+      }
     }
+    return null;
+  } catch (e) {
+    $.logErr(e)
+    return null
   }
-  return null;
 }
 function jsonParse(str) {
   if (typeof str == "string") {
