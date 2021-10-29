@@ -11,9 +11,6 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
-
-$.inviteCodes = [];
-
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -30,6 +27,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {"open-url": "https://bean.m.jd.com/"});
     return;
   }
+  $.shareInfo = {};
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -39,7 +37,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       $.beans = 0
       $.nickName = '';
       message = '';
-      await TotalBean();
+      //await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
@@ -56,26 +54,16 @@ const JD_API_HOST = 'https://api.m.jd.com/';
     }
   }
   // 开始内部助力
-  for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
-    $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-    $.index = i + 1;
-    $.canHelp = true;
-    for (let code of $.inviteCodes) {
-      if (!code) continue
-      console.log(`用户：${$.UserName} 去助力好友${code}`)
-      await doSupport(code);
-      await $.wait(1000)
-    }
-  }
+  cookie = cookiesArr[0];
+  await doSupport($.shareInfo);
+  await $.wait(1000)
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
-
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 function showMsg() {
   message += `本次运行获得${$.earn}红包`
   return new Promise(resolve => {
@@ -94,7 +82,6 @@ async function superBox() {
     $.logErr(e)
   }
 }
-
 
 function getTask() {
   return new Promise(resolve => {
@@ -119,6 +106,7 @@ function getTask() {
                     console.log(`${vo.taskTitle}任务已做完`)
                 }else if(vo.taskType==='SHARE_INVITE'){
                   console.log(`助力任务完成进度${vo.taskDoTimes}/${vo.taskLimitTimes}`)
+                  $.shareInfo.id = vo.id
                 }
               }
             } else {
@@ -208,6 +196,9 @@ function doTask(taskId,taskType,itemId) {
 }
 function drawInfo(share=true) {
   let body = {"taskId":"","linkId":linkId,"encryptPin":""}
+  if(JSON.stringify($.shareInfo) !== `{}`){
+    body = {"taskId":$.shareInfo.id.toString(),"linkId":linkId,"encryptPin":$.shareInfo.code}
+  }
   return new Promise(resolve => {
     $.get(taskUrl('superboxSupBoxHomePage',body), async (err, resp, data) => {
       try {
@@ -219,7 +210,7 @@ function drawInfo(share=true) {
             data = JSON.parse(data);
             if (data.success) {
               if(share) {
-                if (data.data.encryptPin) $.inviteCodes.push(data.data.encryptPin)
+                if (data.data.encryptPin) $.shareInfo.code = data.data.encryptPin
                 console.log(`您的好友助力码为${data.data.encryptPin}`)
               }
               else {
@@ -280,8 +271,8 @@ function draw() {
   })
 }
 
-function doSupport(shareId) {
-  let body = {"taskId":"116","linkId":linkId,"encryptPin":shareId}
+function doSupport(oneInvite) {
+  let body = {"taskId":oneInvite.id.toString(),"linkId":linkId,"encryptPin":oneInvite.code}
   return new Promise(resolve => {
     $.get(taskUrl('superboxSupBoxHomePage',body), async (err, resp, data) => {
       try {
