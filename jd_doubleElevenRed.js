@@ -43,7 +43,7 @@ let newCookie = '', resMsg = '';
   if (message) {
     $.msg($.name, ``, message);
     if ($.isNode()) {
-      // await notify.sendNotify(`${$.name}`, message);
+      await notify.sendNotify(`${$.name}`, message);
     }
   }
 })()
