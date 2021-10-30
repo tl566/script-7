@@ -3,6 +3,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
+    {'appId': '1FFRWxaY', 'endTime': 1636603133000,'name':'送你超能力'},//京东APP--》玩一玩---》送你超能力
     {'appId': '1FV1VwKc', 'endTime': 1636819200000,'name':'惊喜大作战'},//京东APP--》玩一玩---》惊喜大作战
     {'appId': '1E1NXxq0', 'endTime': 1641002400000,'name':'众筹许愿池'},//京东APP--》京东众筹---》众筹许愿池
     {'appId': '1EFRQwA', 'endTime': 1704038400000,'name':'疯狂砸金蛋'},//京东APP--》每日特价---》疯狂砸金蛋
