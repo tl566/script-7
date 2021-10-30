@@ -26,8 +26,7 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-//邀请码填写此处
-let inviteCodes = [] 
+let inviteCodes = []
 $.shareCodesArr = [];
 
 !(async () => {
@@ -347,6 +346,7 @@ function shareCodesFormat() {
     // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
     $.newShareCodes = [];
     const readShareCodeRes = await readShareCode();
+    console.log(readShareCodeRes.data)
     $.readShareCode = (readShareCodeRes && readShareCodeRes.data) || []
     if (readShareCodeRes && readShareCodeRes.code === 200) {
       $.newShareCodes = [...new Set([...$.shareCodesArr, ...inviteCodes, ...$.readShareCode])];
