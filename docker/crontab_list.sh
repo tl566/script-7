@@ -44,8 +44,6 @@
 15 4,15 * * * node /scripts/jd_tree.js >> /scripts/logs/jd_tree.log 2>&1
 # 京东小家（9.28 - 10.28）
 10 1 * * * node /scripts/jd_chinaJoy.js >> /scripts/logs/jd_chinaJoy.log 2>&1
-# 城城 活动时间：2021-01-20到2021-10-30
-10 * * * * node /scripts/jd_city.js >> /scripts/logs/jd_city.log 2>&1
 # 新品小魔方 活动时间：2021年10月20日 – 10月31日24:00
 10 0,22 * * * node /scripts/jd_desire.js >> /scripts/logs/jd_desire.log 2>&1
 # 选品官
