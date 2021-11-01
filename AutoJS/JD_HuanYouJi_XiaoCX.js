@@ -9,6 +9,8 @@
   202211027 V1.2
   增加页面状态参数，避免误点
   修改任务界面判断和任务列表判断
+  202211031 V1.3
+  修复完成所有任务无法退出脚本问题
  */
 Start();
 console.info("开始任务");
@@ -64,19 +66,20 @@ function Run(){
     sleep(3000);
     var boundsX = 0;
     var boundsY = 0;
-    let taskButton = text("去完成").findOne(10000)
-    while(taskButton != null) {
-        console.log("找到未完成任务");
-        boundsX = text("去完成").findOne().bounds().centerX();
-        boundsY = text("去完成").findOne().bounds().centerY();
-        console.info("开始浏览任务");
-        click(boundsX,boundsY);
-        sleep(10000);
-        back();
-        sleep(1000);
-        if(text("去完成").findOnce() == null){
+    while(text("去完成").findOne() != null) {
+        if(!text("去完成").exists()){
             break;
         }
+        else{
+            console.log("找到未完成任务");
+            boundsX = text("去完成").findOne().bounds().centerX();
+            boundsY = text("去完成").findOne().bounds().centerY();
+            console.info("开始浏览任务");
+            click(boundsX,boundsY);
+            sleep(10000);
+            back();
+        }
+        sleep(1000);
     }
     if(text("去完成").findOnce() == null) {
         console.log("小程序所有任务完成");
