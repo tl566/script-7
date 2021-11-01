@@ -54,6 +54,8 @@
 23 2,3 * * * node /scripts/jd_xsqjd.js >> /scripts/logs/jd_xsqjd.log 2>&1
 # 京东双十一京享红包
 0 3,12,23 * * * node /scripts/jd_doubleElevenRed.js >> /scripts/logs/jd_doubleElevenRed.log 2>&1
+#发财挖宝
+20 12,16,22 * * * node /scripts/jd_fcwb.js >> /scripts/logs/jd_fcwb.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
