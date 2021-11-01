@@ -40,14 +40,8 @@
 35 */1 * * * node /scripts/jd_cow_mengniu.js >> /scripts/logs/jd_cow_mengniu.log 2>&1
 # 清风云养树
 15 4,15 * * * node /scripts/jd_tree.js >> /scripts/logs/jd_tree.log 2>&1
-# 京东小家（9.28 - 10.28）
-10 1 * * * node /scripts/jd_chinaJoy.js >> /scripts/logs/jd_chinaJoy.log 2>&1
-# 新品小魔方 活动时间：2021年10月20日 – 10月31日24:00
-10 0,22 * * * node /scripts/jd_desire.js >> /scripts/logs/jd_desire.log 2>&1
-# 选品官
+# 选品官 2021年11月14日结束
 20 0,21 * * * node /scripts/jd_selectionOfficer.js >> /scripts/logs/jd_selectionOfficer.log 2>&1
-# 潮玩儿制躁团
-30 0,12,21 * * * node /scripts/jd_zzt.js >> /scripts/logs/jd_zzt.log 2>&1
 # 手机狂欢城(2021-10-23至2021-11-13)
 0 0-18/6 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 # 手机狂欢城-助力(2021-10-23至2021-11-13)
