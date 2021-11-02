@@ -42,7 +42,10 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
  
-cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  if (JSON.stringify(process.env).indexOf('GITHUB') == -1) process.exit(0)
+} else {
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+}
 let inviteCodes = [];
 const JD_API_HOST = 'https://api.m.jd.com/api';
 const activeEndTime = '2021/11/14 00:00:00+08:00';//活动结束时间
