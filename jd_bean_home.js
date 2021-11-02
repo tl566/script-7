@@ -87,7 +87,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       if (helpAuthor && $.authorCode && $.canHelp) {
         console.log(`\n【抢京豆】${$.UserName} 去帮助作者`)
         for (let code of $.authorCode) {
-          const helpRes = await help(code.shareCode, code.groupCode);
+          const helpRes = await help('346EF4BD0A25F405067AC1C3991110BA', '904903474800779264');
           if (helpRes && helpRes['code'] === '0') {
             if (helpRes && helpRes.data && helpRes.data.respCode === 'SG209') {
               console.log(`${helpRes.data.helpToast}\n`);
