@@ -18,7 +18,7 @@ const $ = new Env('惊喜牧场');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 const JXUserAgent =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : ``):``;
-const ByType = $.isNode() ? (process.env.BYTYPE ? process.env.BYTYPE : `888`):`888`;
+const ByType = $.isNode() ? (process.env.BYTYPE ? process.env.BYTYPE : `1`):`1`;
 let cookiesArr = [],token = {},ua = '';
 $.appId = 10028;
 let activeid = 'null';
@@ -144,10 +144,10 @@ async function main() {
         return;
     }
     console.log(`获取获得详情成功,总共有小鸡：${petidList.length}只,鸡蛋:${homePageInfo.eggcnt}个,金币:${homePageInfo.coins},互助码：${homePageInfo.sharekey}`);
-    if(!petidList || petidList.length === 0){
-        console.log(`账号内没有小鸡，暂停执行`);
-        return ;
-    }
+    // if(!petidList || petidList.length === 0){
+    //     console.log(`账号内没有小鸡，暂停执行`);
+    //     return ;
+    // }
     $.inviteCodeList.push({'use':$.UserName,'code':homePageInfo.sharekey,'max':false,'activeid':activeid});
     if(JSON.stringify(visitBackInfo) !== '{}'){
         if(visitBackInfo.iscandraw === 1){
