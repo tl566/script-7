@@ -39,7 +39,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
 !(async () => {
   $.newShareCodes = []
   $.authorCode = [
-      '346EF4BD0A25F405067AC1C3991110BA', 'F4AEC40E3AA2DA5266C483C883F5F1CB', '9C178626C4351B0C716F5A643D1E382BAD1DAAB9A3E3F6CBAFDE81EEB7393333', 'D6ACE4F72D41FD6F14194566BFC5E039', '4AAED53A1E1B3926909BA4BE0E1A0C38AD1DAAB9A3E3F6CBAFDE81EEB7393333', 'D8DC88C77CD2D9FB3F15A6D8CB5A761AAD1DAAB9A3E3F6CBAFDE81EEB7393333', '2725FBBF6C6A725E72DE239ED2A1A72B', '83BCF84C93D8E275B3EC041AB22DC87C', 'C489B75A189137284F5644BC77BDFB05AD1DAAB9A3E3F6CBAFDE81EEB7393333', '0B26809632A7EE40A034794D6C36152CAD1DAAB9A3E3F6CBAFDE81EEB7393333', '247246D27761498DD9A97C60BA70714D',
+    {"shareCode": "346EF4BD0A25F405067AC1C3991110BA", "groupCode": "904903474800779264"}, {"shareCode": "F4AEC40E3AA2DA5266C483C883F5F1CB", "groupCode": "904541839095914496"}, {"shareCode": "9C178626C4351B0C716F5A643D1E382BAD1DAAB9A3E3F6CBAFDE81EEB7393333", "groupCode": "904542522412130304"}, {"shareCode": "D6ACE4F72D41FD6F14194566BFC5E039", "groupCode": "904543206216458240"}, {"shareCode": "4AAED53A1E1B3926909BA4BE0E1A0C38AD1DAAB9A3E3F6CBAFDE81EEB7393333", "groupCode": "904543889482735616"}, {"shareCode": "D8DC88C77CD2D9FB3F15A6D8CB5A761AAD1DAAB9A3E3F6CBAFDE81EEB7393333", "groupCode": "904544574385709056"}, {"shareCode": "2725FBBF6C6A725E72DE239ED2A1A72B", "groupCode": "904545260143140864"}, {"shareCode": "83BCF84C93D8E275B3EC041AB22DC87C", "groupCode": "904545944849768448"}, {"shareCode": "C489B75A189137284F5644BC77BDFB05AD1DAAB9A3E3F6CBAFDE81EEB7393333", "groupCode": "904546630434578432"}, {"shareCode": "0B26809632A7EE40A034794D6C36152CAD1DAAB9A3E3F6CBAFDE81EEB7393333", "groupCode": "904547316253745152"}
   ]
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -87,7 +87,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       if (helpAuthor && $.authorCode && $.canHelp) {
         console.log(`\n【抢京豆】${$.UserName} 去帮助作者`)
         for (let code of $.authorCode) {
-          const helpRes = await help('346EF4BD0A25F405067AC1C3991110BA', '904903474800779264');
+          const helpRes = await help(code.shareCode, code.groupCode);
           if (helpRes && helpRes['code'] === '0') {
             if (helpRes && helpRes.data && helpRes.data.respCode === 'SG209') {
               console.log(`${helpRes.data.helpToast}\n`);
@@ -442,6 +442,7 @@ function getUserInfo() {
                 }
                 console.log(`\n京东账号${$.index} ${$.nickName || $.UserName} 抢京豆邀请码：${shareCode}\n`);
                 $.newShareCodes.push([shareCode, groupCode, $.UserName])
+                console.log($.newShareCodes);
               }
             }
           }
