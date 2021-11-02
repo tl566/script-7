@@ -130,6 +130,7 @@ async function main(ck) {
             "itemId": oneTask.assistId,
             'type': 2
           }
+          console.log(`后面账号将会助力${mainPin}，邀请码信息：${$.toStr(ownCode)}\n`)
         }
         if (!helpId) {
           helpId = oneTask.assignmentId;
