@@ -72,14 +72,16 @@ async function main() {
     $.canApCashWithDraw = false;
     $.changeReward = true;
     $.canOpenRed = true;
+    let times = 0;
     await gambleHomePage();
     if (!$.time) {
       console.log(`开始进行翻翻乐拿红包\n`)
       await gambleOpenReward();//打开红包
       if ($.canOpenRed) {
-        while (!$.canApCashWithDraw && $.changeReward) {
+        while (!$.canApCashWithDraw && $.changeReward && times < 5) {
           await openRedReward();
-          await $.wait(500);
+          times++
+          await $.wait(1500);
         }
         if ($.canApCashWithDraw) {
           //提现
@@ -109,6 +111,7 @@ function gambleHomePage() {
   const options = {
     url: `https://api.m.jd.com/?functionId=gambleHomePage&body=${encodeURIComponent(JSON.stringify(body))}&appid=activities_platform&clientVersion=3.5.0`,
     headers,
+    timeout: 10000
   }
   return new Promise(resolve => {
     $.get(options, (err, resp, data) => {
@@ -155,6 +158,7 @@ function gambleOpenReward() {
   const options = {
     url: `https://api.m.jd.com/`,
     headers,
+    timeout: 10000,
     body: `functionId=gambleOpenReward&body=${encodeURIComponent(JSON.stringify(body))}&t=${+new Date()}&appid=activities_platform&clientVersion=3.5.0`
   }
   return new Promise(resolve => {
@@ -202,6 +206,7 @@ function openRedReward(functionId = 'gambleChangeReward', type) {
   const options = {
     url: `https://api.m.jd.com/`,
     headers,
+    timeout: 10000,
     body: `functionId=${functionId}&body=${encodeURIComponent(JSON.stringify(body))}&t=${+new Date()}&appid=activities_platform&clientVersion=3.5.0`
   }
   return new Promise(resolve => {
@@ -284,6 +289,7 @@ function apCashWithDraw(id, poolBaseId, prizeGroupId, prizeBaseId, prizeType) {
   const options = {
     url: `https://api.m.jd.com/`,
     headers,
+    timeout: 10000,
     body: `functionId=apCashWithDraw&body=${encodeURIComponent(JSON.stringify(body))}&t=${+new Date()}&appid=activities_platform&clientVersion=3.5.0`
   }
   return new Promise(resolve => {
