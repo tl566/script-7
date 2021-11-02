@@ -56,6 +56,8 @@
 0 3,12,23 * * * node /scripts/jd_doubleElevenRed.js >> /scripts/logs/jd_doubleElevenRed.log 2>&1
 #发财挖宝
 20 12,16,22 * * * node /scripts/jd_fcwb.js >> /scripts/logs/jd_fcwb.log 2>&1
+# 双11特务 11.8日结束
+10 9,13,16,19 2-8 11 * node /scripts/jd_superBrand.js >> /scripts/logs/jd_superBrand.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
