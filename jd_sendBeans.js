@@ -138,38 +138,42 @@ if ($.isNode()) {
 });
 
 async function getActivityInfo() {
-  $.activityList = [];
-  await getActivityList();
-  await getWXActivityList();
-  if ($.activityList.length === 0) {
-    return;
-  }
-  // console.log(JSON.stringify($.activityList))
-  for (let i = 0; i < $.activityList.length; i++) {
-    console.log(`活动ID【${$.activityList[i].activeId}】账号${$.index} ${$.UserName}：${$.activityList[i].status === 'COMPLETE' ? '已完成' : $.activityList[i].status === 'FINISH' ? '已结束' : $.activityList[i].status === 'NOT_BEGIN' ? '未开始，开始时间 ' + $.time('yyyy-MM-dd HH:mm:ss', $.activityList[i].beginTime) : $.activityList[i].status === 'ON_GOING' ? '活动火热进行中' : '未知状态 ' + $.activityList[i].status}`);
-  }
-
-  for (let i = 0; i < $.activityList.length; i++) {
-    if ($.activityList[i].status !== 'NOT_BEGIN' && $.activityList[i].status !== 'COMPLETE') {
-      $.activityId = $.activityList[i].activeId;
-      $.redirectActiveCode = $.activityList[i].activityCode;
-      console.log(`活动ID获取成功：${$.activityId}`)
-      console.log(`活动 activityCode 获取成功：${$.redirectActiveCode}`)
-      break;
+  try {
+    $.activityList = [];
+    await getActivityList();
+    await getWXActivityList();
+    if ($.activityList.length === 0) {
+      return;
     }
+    // console.log(JSON.stringify($.activityList))
+    for (let i = 0; i < $.activityList.length; i++) {
+      console.log(`活动ID【${$.activityList[i].activeId}】账号${$.index} ${$.UserName}：${$.activityList[i].status === 'COMPLETE' ? '已完成' : $.activityList[i].status === 'FINISH' ? '已结束' : $.activityList[i].status === 'NOT_BEGIN' ? '未开始，开始时间 ' + $.time('yyyy-MM-dd HH:mm:ss', $.activityList[i].beginTime) : $.activityList[i].status === 'ON_GOING' ? '活动火热进行中' : '未知状态 ' + $.activityList[i].status}`);
+    }
+
+    for (let i = 0; i < $.activityList.length; i++) {
+      if ($.activityList[i].status !== 'NOT_BEGIN' && $.activityList[i].status !== 'COMPLETE') {
+        $.activityId = $.activityList[i].activeId;
+        $.redirectActiveCode = $.activityList[i].activityCode;
+        console.log(`活动ID获取成功：${$.activityId}`)
+        console.log(`活动 activityCode 获取成功：${$.redirectActiveCode}`)
+        break;
+      }
+    }
+    if (!$.activityId || !$.redirectActiveCode) return
+    await $.wait(3000);
+    $.detail = {};
+    await getActivityDetail();
+    if (JSON.stringify($.detail) === '{}') {
+      console.log(`获取活动详情失败`);
+      return;
+    } else {
+      console.log(`\n获取活动详情成功`);
+    }
+    $.completeNumbers = $.detail.activityInfo.completeNumbers;
+    console.log(`获取到的活动ID：${$.activityId},需要邀请${$.completeNumbers}人瓜分`);
+  } catch (e) {
+    $.logErr(e)
   }
-  if (!$.activityId || !$.redirectActiveCode) return
-  await $.wait(3000);
-  $.detail = {};
-  await getActivityDetail();
-  if (JSON.stringify($.detail) === '{}') {
-    console.log(`获取活动详情失败`);
-    return;
-  } else {
-    console.log(`\n获取活动详情成功`);
-  }
-  $.completeNumbers = $.detail.activityInfo.completeNumbers;
-  console.log(`获取到的活动ID：${$.activityId},需要邀请${$.completeNumbers}人瓜分`);
 }
 
 async function getActivityList() {
@@ -257,50 +261,7 @@ async function getWXActivityList() {
 }
 
 async function openTuan() {
-  $.detail = {};
-  $.rewardRecordId = '';
-  await getActivityDetail();
-  if (JSON.stringify($.detail) === '{}') {
-    console.log(`获取活动详情失败`);
-    return;
-  } else {
-    $.rewardRecordId = $.detail.rewardRecordId;
-    console.log(`获取活动详情成功`);
-  }
-  await $.wait(3000);
-  if (!$.rewardRecordId) {
-    if (!$.detail.invited) {
-      await invite();
-      await $.wait(1000);
-      await getActivityDetail();
-      await $.wait(3000);
-      $.rewardRecordId = $.detail.rewardRecordId;
-      console.log(`【京东账号${$.index}】${$.UserName} 瓜分ID:${$.rewardRecordId}`);
-    }
-  } else {
-    console.log(`【京东账号${$.index}】${$.UserName} 瓜分ID:${$.rewardRecordId}`);
-  }
-  if($.rewardRecordId){
-      $.openTuanList.push({
-          'user': $.UserName,
-          'rewardRecordId': $.rewardRecordId,
-          'completed': $.detail.completed,
-          'rewardOk': $.detail.rewardOk
-      });
-  }
-}
-
-async function helpMain() {
-  $.canHelp = true;
-  for (let j = 0; j < $.openTuanList.length && $.canHelp; j++) {
-    $.oneTuanInfo = $.openTuanList[j];
-    if ($.UserName === $.oneTuanInfo['user']) {
-      continue;
-    }
-    if ($.oneTuanInfo['completed']) {
-      continue;
-    }
-    console.log(`\n${$.UserName}去助力${$.oneTuanInfo['user']}`);
+  try {
     $.detail = {};
     $.rewardRecordId = '';
     await getActivityDetail();
@@ -312,43 +273,98 @@ async function helpMain() {
       console.log(`获取活动详情成功`);
     }
     await $.wait(3000);
-    await help();
-    await $.wait(2000);
+    if (!$.rewardRecordId) {
+      if (!$.detail.invited) {
+        await invite();
+        await $.wait(1000);
+        await getActivityDetail();
+        await $.wait(3000);
+        $.rewardRecordId = $.detail.rewardRecordId;
+        console.log(`【京东账号${$.index}】${$.UserName} 瓜分ID:${$.rewardRecordId}`);
+      }
+    } else {
+      console.log(`【京东账号${$.index}】${$.UserName} 瓜分ID:${$.rewardRecordId}`);
+    }
+    if($.rewardRecordId){
+      $.openTuanList.push({
+        'user': $.UserName,
+        'rewardRecordId': $.rewardRecordId,
+        'completed': $.detail.completed,
+        'rewardOk': $.detail.rewardOk
+      });
+    }
+  } catch (e) {
+    $.logErr(e)
+  }
+}
+
+async function helpMain() {
+  try {
+    $.canHelp = true;
+    for (let j = 0; j < $.openTuanList.length && $.canHelp; j++) {
+      $.oneTuanInfo = $.openTuanList[j];
+      if ($.UserName === $.oneTuanInfo['user']) {
+        continue;
+      }
+      if ($.oneTuanInfo['completed']) {
+        continue;
+      }
+      console.log(`\n${$.UserName}去助力${$.oneTuanInfo['user']}`);
+      $.detail = {};
+      $.rewardRecordId = '';
+      await getActivityDetail();
+      if (JSON.stringify($.detail) === '{}') {
+        console.log(`获取活动详情失败`);
+        return;
+      } else {
+        $.rewardRecordId = $.detail.rewardRecordId;
+        console.log(`获取活动详情成功`);
+      }
+      await $.wait(3000);
+      await help();
+      await $.wait(2000);
+    }
+  } catch (e) {
+    $.logErr(e)
   }
 }
 
 async function rewardMain() {
-  $.detail = {};
-  $.rewardRecordId = '';
-  await getActivityDetail();
-  if (JSON.stringify($.detail) === '{}') {
-    console.log(`获取活动详情失败`);
-    return;
-  } else {
-    $.rewardRecordId = $.detail.rewardRecordId;
-    console.log(`获取活动详情成功`);
-  }
-  $.myRewardList = [];
-  await getMyReward();
-  // await $.wait(3000);
-  // if($.rewardRecordId && $.detail.completed && !$.detail.rewardOk){
-  //   await rewardBean();
-  //   await $.wait(2000);
-  // }else if($.rewardRecordId && $.detail.completed && $.detail.rewardOk){
-  //   console.log(`奖励已领取`);
-  // }else{
-  //   console.log(`未满足条件，不可领取奖励`);
-  // }
-  for (let i = 0; i < $.myRewardList.length; i++) {
-    if ($.myRewardList[i].status === 3) {
-      $.rewardRecordId = $.myRewardList[i].id;
-      console.log(`${$.time('yyyy-MM-dd HH:mm:ss.S', $.myRewardList[i]['createdDate'])} ${$.myRewardList[i].beanQuantity}京豆未领取，开始领取！`);
-      if ($.myRewardList[i].beanQuantity) $.beans += parseInt($.myRewardList[i].beanQuantity);
-      rewardBean();
-      await $.wait(3000);
-    } else if ($.myRewardList[i].status === 4) {
-      console.log(`${$.myRewardList[i]['subtitle']} 已领取${$.myRewardList[i].beanQuantity}个京豆`);
+  try {
+    $.detail = {};
+    $.rewardRecordId = '';
+    await getActivityDetail();
+    if (JSON.stringify($.detail) === '{}') {
+      console.log(`获取活动详情失败`);
+      return;
+    } else {
+      $.rewardRecordId = $.detail.rewardRecordId;
+      console.log(`获取活动详情成功`);
     }
+    $.myRewardList = [];
+    await getMyReward();
+    // await $.wait(3000);
+    // if($.rewardRecordId && $.detail.completed && !$.detail.rewardOk){
+    //   await rewardBean();
+    //   await $.wait(2000);
+    // }else if($.rewardRecordId && $.detail.completed && $.detail.rewardOk){
+    //   console.log(`奖励已领取`);
+    // }else{
+    //   console.log(`未满足条件，不可领取奖励`);
+    // }
+    for (let i = 0; i < $.myRewardList.length; i++) {
+      if ($.myRewardList[i].status === 3) {
+        $.rewardRecordId = $.myRewardList[i].id;
+        console.log(`${$.time('yyyy-MM-dd HH:mm:ss.S', $.myRewardList[i]['createdDate'])} ${$.myRewardList[i].beanQuantity}京豆未领取，开始领取！`);
+        if ($.myRewardList[i].beanQuantity) $.beans += parseInt($.myRewardList[i].beanQuantity);
+        rewardBean();
+        await $.wait(3000);
+      } else if ($.myRewardList[i].status === 4) {
+        console.log(`${$.myRewardList[i]['subtitle']} 已领取${$.myRewardList[i].beanQuantity}个京豆`);
+      }
+    }
+  } catch (e) {
+    $.logErr(e)
   }
 }
 
