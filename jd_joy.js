@@ -2,7 +2,7 @@
 jd宠汪汪 搬的https://github.com/uniqueque/QuantumultX/blob/4c1572d93d4d4f883f483f907120a75d925a693e/Script/jd_joy.js
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 IOS用户支持京东双账号,NodeJs用户支持N个京东账号
-更新时间：2021-10-20
+更新时间：2021-11-2
 活动入口：京东APP我的-更多工具-宠汪汪
 活动链接：https://h5.m.jd.com/babelDiy/Zeus/2wuqXrZrhygTQzYA7VufBEpj4amH/index.html
 建议先凌晨0点运行jd_joy.js脚本获取狗粮后，再运行此脚本(jd_joy_steal.js)可偷好友积分，6点运行可偷好友狗粮
@@ -1090,7 +1090,7 @@ function showMsg() {
 function iconClick(functionId, id) {
   return new Promise(resolve => {
     $.get({
-      url: `https://jdjoy.jd.com/common/pet/icon/click?iconCode=${functionId}&linkAddr=${id}&reqSource=h5&invokeKey=${invokeKey}`,
+      url: `https://jdjoy.jd.com/common/pet/icon/click?code=1624363341529274068136&iconCode=${functionId}&linkAddr=${id}&reqSource=h5&invokeKey=${invokeKey}`,
       headers: {
         'Accept': '*/*',
         'Connection': 'keep-alive',
