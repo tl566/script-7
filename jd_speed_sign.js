@@ -347,6 +347,7 @@ async function queryItem(activeType = 1) {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
+          $.canStartNewItem = false
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
@@ -383,6 +384,7 @@ async function startItem(activeId, activeType) {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
+          $.canStartNewItem = false
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
