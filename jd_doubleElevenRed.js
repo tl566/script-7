@@ -9,8 +9,8 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 // const Faker = require('./utils/jd_sign_validate.js')
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message = '';
-$.shareCode = 'B7oH0'
-$.hbCode = '3IXBgiv'
+$.shareCode = 'Dfl4B'
+$.hbCode = 'ywnEaEX'
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
