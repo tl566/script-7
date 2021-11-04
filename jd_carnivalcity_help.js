@@ -111,6 +111,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
               $.canHelp = false;
               break;
             }
+            await $.wait(2000)
           }
         }
         if ($.canHelp) {
@@ -123,6 +124,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
               console.log(`助力机会已耗尽，跳出助力`);
               break;
             }
+            await $.wait(2000)
           }
         }
       }
