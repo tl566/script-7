@@ -90,6 +90,10 @@
 8 9,13,16,19 2-8 11 * node /scripts/jd_superBrand.js >> /scripts/logs/jd_superBrand.log 2>&1
 #手机竞猜
 0 0 * * * node /scripts/jd_sjjc.js >> /scripts/logs/jd_sjjc.log 2>&1
+#星推官
+22 3,4 * * * node /scripts/jd_xtg.js >> /scripts/logs/jd_xtg.log 2>&1
+#
+0 8 1-20 * * node /scripts/jd_dqmh.js >> /scripts/logs/jd_dqmh.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
