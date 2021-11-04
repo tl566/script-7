@@ -49,6 +49,7 @@ if ($.isNode()) {
         res = await UserSignNew();
         await drawUserTask();
     }
+    shareCodes = shareCodes.filter(code => code)
     await getShareCode('nnfls.json',3,true)
     shareCodes = [...new Set([...shareCodes, ...($.shareCode || [])])];
     if (shareCodes.length > 0) {
