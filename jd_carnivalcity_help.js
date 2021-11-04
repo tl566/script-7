@@ -91,40 +91,44 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
       await JD818();
     }
   }
-  for (let i = 0; i < cookiesArr.length; i++) {
-    if (cookiesArr[i]) {
-      cookie = cookiesArr[i];
-      $.index = i + 1;
-      $.canHelp = true;//能否助力
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-      if ((cookiesArr && cookiesArr.length >= 1) && $.canHelp) {
-        console.log(`\n先自己账号内部相互邀请助力\n`);
-        for (let item of $.temp) {
-          if ($.index === 1) break
-          if (!$.canHelp) break
-          if (!item) continue
-          console.log(`\n${$.UserName} 去参助力 ${item}`);
-          const helpRes = await toHelp(item.trim());
-          if (helpRes.data.status === 5) {
-            console.log(`助力机会已耗尽，跳出助力`);
-            $.canHelp = false;
-            break;
+  try {
+    for (let i = 0; i < cookiesArr.length; i++) {
+      if (cookiesArr[i]) {
+        cookie = cookiesArr[i];
+        $.index = i + 1;
+        $.canHelp = true;//能否助力
+        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+        if ((cookiesArr && cookiesArr.length >= 1) && $.canHelp) {
+          console.log(`\n先自己账号内部相互邀请助力\n`);
+          for (let item of $.temp) {
+            if ($.index === 1) break
+            if (!$.canHelp) break
+            if (!item) continue
+            console.log(`\n${$.UserName} 去参助力 ${item}`);
+            const helpRes = await toHelp(item.trim());
+            if (helpRes.data.status === 5) {
+              console.log(`助力机会已耗尽，跳出助力`);
+              $.canHelp = false;
+              break;
+            }
           }
         }
-      }
-      if ($.canHelp) {
-        console.log(`\n\n${$.UserName}如果有剩余助力机会，则给作者以及随机码助力`)
-        for (let item of $.updatePkActivityIdRes || []) {
-          if (!item) continue;
-          console.log(`${$.UserName} 开始助力作者邀请码：${item}`);
-          const helpRes = await toHelp(item.trim());
-          if (helpRes.data.status === 5) {
-            console.log(`助力机会已耗尽，跳出助力`);
-            break;
+        if ($.canHelp) {
+          console.log(`\n\n${$.UserName}如果有剩余助力机会，则给作者以及随机码助力`)
+          for (let item of $.updatePkActivityIdRes || []) {
+            if (!item) continue;
+            console.log(`${$.UserName} 开始助力作者邀请码：${item}`);
+            const helpRes = await toHelp(item.trim());
+            if (helpRes.data.status === 5) {
+              console.log(`助力机会已耗尽，跳出助力`);
+              break;
+            }
           }
         }
       }
     }
+  } catch (e) {
+    $.logErr(e)
   }
   // console.log(JSON.stringify($.temp))
 })()
