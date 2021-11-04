@@ -2,7 +2,7 @@
 京喜领88元红包
 活动入口：京喜app-》我的-》京喜领88元红包
 活动时间：4.22-8.31
-助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者
+助力逻辑：所有的账号先助力自己的第一个CK，剩下的助力会助力作者。
 温馨提示：如提示助力火爆，可尝试寻找京东客服
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
@@ -48,7 +48,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
   }
   console.log('京喜领88元红包\n' +
       '活动入口：京喜app-》我的-》京喜领88元红包\n' +
-      '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
+      '助力逻辑：所有的账号先助力自己的第一个CK，剩下的助力会助力作者\n' +
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
   let res = await getAuthorShareCode();
   if (!res) res = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/gitupdate/updateTeam@master/shareCodes/jxhb.json');
@@ -81,7 +81,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
       if ($.index === 1) break
       console.log(`【${$.UserName}】去助力【${code['userName']}】邀请码：${code['strUserPin']}`);
       await enrollFriend(code['strUserPin']);
-      await $.wait(10 * 1000);
+      await $.wait(15 * 1000);
       break
     }
     if ($.canHelp) {
@@ -211,11 +211,12 @@ function enrollFriend(strPin) {
     // console.log('\nstrPin ' + strPin);
     const body = `strPin=${strPin}&joinDate=${$.time('yyyyMMdd')}`
     const options = taskurl('EnrollFriend', body, 'activeId,phoneid,stepreward_jstoken,strPin,timestamp');
-    $.get(options, (err, resp, data) => {
+    $.get(options, async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`\n${$.name}:  API查询请求失败 ‼️‼️`)
+          console.log(`\n${$.name}:  EnrollFriend API查询请求失败 ‼️‼️`)
           $.log(JSON.stringify(err));
+          await $.wait(15 * 1000)
         } else {
           // console.log('助力结果', data)
           data = JSON.parse(data)
