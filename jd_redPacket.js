@@ -1,6 +1,6 @@
 /*
 京东全民开红包
-Last Modified time: 2021-08-25 16:27:18
+Last Modified time: 2021-11-5 14:27:18
 活动入口：京东APP首页-领券-锦鲤红包。[活动地址](https://happy.m.jd.com/babelDiy/zjyw/3ugedFa7yA6NhxLN5gw2L3PF9sQC/index.html)
 未实现功能：领3张券功能
 
@@ -67,6 +67,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       await showMsg();
     }
   }
+  console.log(`\n\n自己账号内部互助：${$.toStr($.redPacketId)}`);
   for (let v = 0; v < cookiesArr.length; v++) {
     cookie = cookiesArr[v];
     $.index = v + 1;
@@ -74,7 +75,6 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.canHelp = true;
     $.redPacketId = [...new Set($.redPacketId)];
     if (cookiesArr && cookiesArr.length > 2) {
-      console.log(`\n\n自己账号内部互助`);
       for (let item of $.redPacketId) {
         if ($.index === 1) break;
         console.log(`账号 ${$.index} ${$.UserName} 开始给 ${item} 进行助力`)
@@ -332,6 +332,7 @@ function startTask(taskType) {
   // 从taskHomePage返回的数据里面拿taskType
   let data = {taskType};
   data['token'] = $.md5($.md5("j"+JSON.stringify(data)+"D"))
+  Object.assign(data, {"random":`${randomString(6)}`,"log":"42588613~8,~0iuxyee","sceneid":"JLHBhPageh5"})
   return new Promise((resolve) => {
     $.post(taskUrl(arguments.callee.name.toString(), data), (err, resp, data) => {
       try {
@@ -445,6 +446,7 @@ function receiveTaskRedpacket(taskType) {
 function jinli_h5assist(redPacketId) {
   //一个人一天只能助力两次，助力码redPacketId 每天都变
   const body = {"clientInfo":{},redPacketId,"followShop":0,"promUserState":""};
+  Object.assign(body, {"random":`${randomString(6)}`,"log":"42588613~8,~0iuxyee","sceneid":"JLHBhPageh5"})
   const options = taskUrl(arguments.callee.name.toString(), body)
   return new Promise((resolve) => {
     $.post(options, (err, resp, data) => {
@@ -475,6 +477,7 @@ function jinli_h5assist(redPacketId) {
 function h5receiveRedpacket(redPacketId) {
   const data = {redPacketId};
   data['token'] = $.md5($.md5("j"+JSON.stringify(data)+"D"))
+  Object.assign(data, {"random":`${randomString(6)}`,"log":"f88c05a0~8,~1iqo16j","sceneid":"JLHBhPageh5"})
   const options = taskUrl(arguments.callee.name.toString(), data)
   return new Promise((resolve) => {
     $.post(options, (err, resp, data) => {
@@ -501,6 +504,7 @@ function h5receiveRedpacket(redPacketId) {
 //发起助力红包API
 function h5launch() {
   const body = {"clientInfo":{},"followShop":0,"promUserState":""};
+  Object.assign(body, {"random":`${randomString(6)}`,"log":"4817e3a2~8,~1wsv3ig","sceneid":"JLHBhPageh5"})
   const options = taskUrl(arguments.callee.name.toString(), body)
   return new Promise((resolve) => {
     $.post(options, (err, resp, data) => {
@@ -722,7 +726,13 @@ function TotalBean() {
     })
   })
 }
-
+function randomString(e) {
+  e = e || 32;
+  let t = "0123456789", a = t.length, n = "";
+  for (i = 0; i < e; i++)
+    n += t.charAt(Math.floor(Math.random() * a));
+  return n
+}
 function jsonParse(str) {
   if (typeof str == "string") {
     try {
