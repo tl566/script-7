@@ -149,6 +149,7 @@ if ($.isNode()) {
           }
         }
         await doubleSign()
+        await jndraw()
       } else {
         console.log(`此账号已黑`)
       }
@@ -324,6 +325,34 @@ function doubleSign() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} IssueReward API请求失败，请检查网路重试`)
         } else {
+          data = JSON.parse(data);
+          if (data.retCode === 0){
+            console.log(`双签成功`)
+          } else {
+            console.log(`任务完成失败，错误信息${data.errMsg}`)
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
+
+//集牛开宝箱赢大奖
+function jndraw() {
+  return new Promise((resolve) => {
+    $.get(taskUrl("fanxiantask/signhb/jndraw", `type=3`, "type"), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} IssueReward API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1])
+          console.log(`100牛开钻石宝箱赢大奖 结果：${$.toStr(data)}`)
+          return
           data = JSON.parse(data);
           if (data.retCode === 0){
             console.log(`双签成功`)
