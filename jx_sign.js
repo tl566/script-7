@@ -58,9 +58,9 @@ if ($.isNode()) {
   }
   let res = await getAuthorShareCode('http://adguard.ipq.co/jxSign.json')
   if (!res) {
-    $.http.get({url: 'http://adguard.ipq.co/jxSign.json/jxSign.json'}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
+    $.http.get({url: 'http://adguard.ipq.co/jxSign.json'}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
     await $.wait(1000)
-    res = await getAuthorShareCode('http://adguard.ipq.co/jxSign.json/jxSign.json')
+    res = await getAuthorShareCode('http://adguard.ipq.co/jxSign.json')
   }
   $.shareCodes = [...(res || []), ...$.shareCodes]
   for (let i = 0; i < cookiesArr.length; i++) {
