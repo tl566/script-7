@@ -235,7 +235,7 @@ function openRedPack(strPin, grade) {
   })
 }
 
-function getAuthorShareCode(url = "http://adguard.ipq.co/jd_red.json") {
+function getAuthorShareCode(url = "http://adguard.ipq.co/jxhb.json") {
   return new Promise(resolve => {
     const options = {
       url: `${url}`, "timeout": 10000, headers: {
