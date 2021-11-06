@@ -3,12 +3,13 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
+    {'appId': '1FFRWwqg', 'endTime': 1636646399000,'name':'心动电波'},//
     {'appId': '1FFRWxaY', 'endTime': 1636603133000,'name':'送你超能力'},//京东APP--》玩一玩---》送你超能力
     {'appId': '1FV1VwKc', 'endTime': 1636819200000,'name':'惊喜大作战'},//京东APP--》玩一玩---》惊喜大作战
     {'appId': '1E1NXxq0', 'endTime': 1641002400000,'name':'众筹许愿池'},//京东APP--》京东众筹---》众筹许愿池
     {'appId': '1EFRQwA', 'endTime': 1704038400000,'name':'疯狂砸金蛋'},//京东APP--》每日特价---》疯狂砸金蛋
-    {'appId': '1EFRRxA', 'endTime': 1704038400000,'name':'没找到活动在哪'},
-    {'appId': '1EFRXxg', 'endTime': 1672415999000,'name':'闪购盲盒'},//京东APP--》品牌闪购---》右下闪购盲盒
+    {'appId': '1EFRRxA', 'endTime': 1704038400000,'name':'闪购盲盒'},
+    {'appId': '1EFRXxg', 'endTime': 1672415999000,'name':'闪购盲盒N'},//京东APP--》品牌闪购---》右下闪购盲盒
     {'appId': '1E1xZy6s', 'endTime': 1661356799000,'name':'PLUS生活特权'},//京东APP--》PLUS会员--》生活特权---》天天赚京豆（https://h5.m.jd.com/babelDiy/Zeus/6Z5oyrCaX6U7cZw8eNKABiYKKXx/index.html）
 ];
 let inviteInfo = {};
