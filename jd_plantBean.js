@@ -104,6 +104,12 @@ async function jdPlantBean() {
       const shareUrl = $.plantBeanIndexResult.data.jwordShareInfo.shareUrl
       $.myPlantUuid = getParam(shareUrl, 'plantUuid')
       console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.myPlantUuid}\n`);
+      const submitCodeRes = await submitCode();
+      if (submitCodeRes && submitCodeRes.code === 200) {
+         console.log(`🥑种豆得豆-互助码提交成功！🥑`);
+      }else if (submitCodeRes.code === 300) {
+         console.log(`🥑种豆得豆-互助码已提交！🥑`);
+      }
       roundList = $.plantBeanIndexResult.data.roundList;
       currentRoundId = roundList[num].roundId;//本期的roundId
       lastRoundId = roundList[num - 1].roundId;//上期的roundId
@@ -560,6 +566,31 @@ function readShareCode() {
     })
     await $.wait(15000);
     resolve()
+  })
+}
+
+//提交互助码
+function submitCode() {
+    return new Promise(async resolve => {
+    $.get({url: `http://www.helpu.cf/jdcodes/submit.php?code=${$.myPlantUuid}&type=bean`, timeout: 10000}, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          if (data) {
+            //console.log(`随机取个${randomCount}码放到您固定的互助码后面(不影响已有固定互助)`)
+            data = JSON.parse(data);
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data || {"code":500});
+      }
+    })
+    await $.wait(10000);
+    resolve({"code":500})
   })
 }
 //格式化助力码
