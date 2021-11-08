@@ -92,6 +92,7 @@ async function jdFruit() {
       // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
       message = `【水果名称】${$.farmInfo.farmUserPro.name}\n`;
       console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.farmInfo.farmUserPro.shareCode}\n`);
+      await submitCode();
       console.log(`\n【已成功兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`);
       message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
       await masterHelpShare();//助力好友
@@ -620,6 +621,18 @@ async function getExtraAward() {
           str += item.nickName || "匿名用户";
         } else {
           str += (item.nickName || "匿名用户") + ',';
+        }
+        let date = new Date(item.time);
+        let time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getMinutes();
+        console.log(`\n京东昵称【${item.nickName || "匿名用户"}】 在 ${time} 给您助过力\n`);
+      })
+      message += `【助力您的好友】${str}\n`;
+    }
+    console.log('领取额外奖励水滴结束\n');
+  } else {
+    await masterHelpTaskInitForFarm();
+    if ($.masterHelpResult.code === '0') {
+      if ($. (item.nickName || "匿名用户") + ',';
         }
         let date = new Date(item.time);
         let time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getMinutes();
@@ -1309,6 +1322,35 @@ function timeFormat(time) {
   return date.getFullYear() + '-' + ((date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1)) + '-' + (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate());
 }
 
+//提交互助码
+function submitCode() {
+    return new Promise(async resolve => {
+    $.get({url: `http://www.helpu.cf/jdcodes/submit.php?code=${$.farmInfo.farmUserPro.shareCode}&type=farm`, timeout: 10000}, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          if (data) {
+            //console.log(`随机取个${randomCount}码放到您固定的互助码后面(不影响已有固定互助)`)
+            data = JSON.parse(data);
+            if (data.code === 300) {
+              console.log(`🐔东东农场-互助码已提交！🐔`);
+            }else if (data.code === 200) {
+              console.log(`🐔东东农场-互助码提交成功！🐔`);
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data || {"code":500});
+      }
+    })
+    await $.wait(10000);
+    resolve({"code":500})
+  })
+}
 function shareCodesFormat() {
   return new Promise(async resolve => {
     // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
