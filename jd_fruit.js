@@ -632,18 +632,6 @@ async function getExtraAward() {
   } else {
     await masterHelpTaskInitForFarm();
     if ($.masterHelpResult.code === '0') {
-      if ($. (item.nickName || "匿名用户") + ',';
-        }
-        let date = new Date(item.time);
-        let time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getMinutes();
-        console.log(`\n京东昵称【${item.nickName || "匿名用户"}】 在 ${time} 给您助过力\n`);
-      })
-      message += `【助力您的好友】${str}\n`;
-    }
-    console.log('领取额外奖励水滴结束\n');
-  } else {
-    await masterHelpTaskInitForFarm();
-    if ($.masterHelpResult.code === '0') {
       if ($.masterHelpResult.masterHelpPeoples && $.masterHelpResult.masterHelpPeoples.length >= 5) {
         // 已有五人助力。领取助力后的奖励
         if (!$.masterHelpResult.masterGotFinal) {
