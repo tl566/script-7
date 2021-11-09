@@ -98,6 +98,12 @@
 0 2 1-11 11 * node /scripts/jd_travel_shop.js >> /scripts/logs/jd_travel_shop.log 2>&1
 #京东饭粒
 35 8 * * * node /scripts/jd_fanli.js >> /scripts/logs/jd_fanli.log 2>&1
+#东东世界
+20 8 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
+#东东世界兑换
+0 0 * * * node /scripts/jd_ddworld_exchange.js >> /scripts/logs/jd_ddworld_exchange.log 2>&1
+#店铺浏览任务
+30 8,13,21 * * * node /scripts/jd_open.js >> /scripts/logs/jd_open.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
