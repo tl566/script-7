@@ -2,15 +2,8 @@
   京东<热爱环游记>小程序任务
   需手动进入任务界面，注意脚本提醒
 
-  20211024 V1.0
-  新增脚本
-  20211026 V1.1
-  调整任务识别方式
-  202211027 V1.2
-  增加页面状态参数，避免误点
-  修改任务界面判断和任务列表判断
-  202211031 V1.3
-  修复完成所有任务无法退出脚本问题
+  20211107 V1.6
+  调整跳出循环方式
  */
 Start();
 console.info("开始任务");
@@ -51,33 +44,55 @@ function Run(){
         click(1250,1950);
         sleep(2000);
         for(var i = 0; !text("去完成").exists() && i < 3; i++){
-            console.log("未识别到任务列表，请手动打开")
+            console.log("未识别到可执行任务，请确认已打开任务列表")
             sleep(3000);
         }
         if(i >= 3){
-            console.log("所有任务已完成，退出当前任务");
+            console.log("未识别到可执行任务，退出当前任务");
             return;
         }
     }
     else{
-        console.log("检测到任务列表");
+        console.log("检测到可执行任务");
         PageStatus=2//已打开任务列表
     }
     sleep(3000);
     var boundsX = 0;
     var boundsY = 0;
-    while(text("去完成").findOne() != null) {
-        if(!text("去完成").exists()){
-            break;
-        }
-        else{
-            console.log("找到未完成任务");
-            boundsX = text("去完成").findOne().bounds().centerX();
-            boundsY = text("去完成").findOne().bounds().centerY();
-            console.info("开始浏览任务");
+    var t = 0
+    while(true) {
+        t++;
+        console.info("第"+t+"次任务");
+        if (textStartsWith("浏览8s可得").exists() && textStartsWith("浏览8s可得").findOnce().parent().child(4).child(0).text() == "去完成") {
+            console.info("开始计时浏览任务");
+            boundsX = textStartsWith("浏览8s可得").findOnce().parent().child(4).bounds().centerX();
+            boundsY = textStartsWith("浏览8s可得").findOnce().parent().child(4).bounds().centerY();
             click(boundsX,boundsY);
             sleep(10000);
             back();
+            sleep(1000);
+            console.log("任务完成");
+        } else if(textStartsWith("浏览并关注8s").exists() && textStartsWith("浏览并关注8s").findOnce().parent().child(4).child(0).text() == "去完成") {
+            console.info("开始浏览关注任务");
+            boundsX = textStartsWith("浏览并关注8s").findOnce().parent().child(4).bounds().centerX();
+            boundsY = textStartsWith("浏览并关注8s").findOnce().parent().child(4).bounds().centerY();
+            click(boundsX,boundsY);
+            sleep(10000);
+            back();
+            sleep(1000);
+            console.log("任务完成");
+        } else if(textStartsWith("成功浏览可得").exists() && textStartsWith("成功浏览可得").findOnce().parent().child(4).child(0).text() == "去完成") {
+            console.info("开始浏览任务");
+            boundsX = textStartsWith("成功浏览可得").findOnce().parent().child(4).bounds().centerX();
+            boundsY = textStartsWith("成功浏览可得").findOnce().parent().child(4).bounds().centerY();
+            click(boundsX,boundsY);
+            sleep(3000);
+            back();
+            sleep(1000);
+            console.log("任务完成");
+        }
+        if(!text("去完成").exists()){
+            break;
         }
         sleep(1000);
     }
