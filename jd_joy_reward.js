@@ -1,4 +1,5 @@
 /*
+Last Modified time: 2021-06-06 21:22:37
 宠汪汪积分兑换奖品脚本, 目前脚本只兑换京豆，兑换京豆成功，才会发出通知提示，其他情况不通知。
 活动入口：京东APP我的-更多工具-宠汪汪
 兑换规则：一个账号一天只能兑换一次京豆。
@@ -8,18 +9,19 @@
 ==============Quantumult X==============
 [task_local]
 #宠汪汪积分兑换奖品
-59 7,15,23 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_joy_reward.js, tag=宠汪汪积分兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png, enabled=true
+59 7,15,23 * * * jd_joy_reward.js, tag=宠汪汪积分兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png, enabled=true
 
 ==============Loon==============
 [Script]
-cron "59 7,15,23 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_joy_reward.js,tag=宠汪汪积分兑换奖品
+cron "59 7,15,23 * * *" script-path=jd_joy_reward.js,tag=宠汪汪积分兑换奖品
 
 ================Surge===============
-宠汪汪积分兑换奖品 = type=cron,cronexp="59 7,15,23 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_joy_reward.js
+宠汪汪积分兑换奖品 = type=cron,cronexp="59 7,15,23 * * *",wake-system=1,timeout=3600,script-path=jd_joy_reward.js
 
 ===============小火箭==========
-宠汪汪积分兑换奖品 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_joy_reward.js, cronexpr="59 7,15,23 * * *", timeout=3600, enable=true
+宠汪汪积分兑换奖品 = type=cron,script-path=jd_joy_reward.js, cronexpr="59 7,15,23 * * *", timeout=3600, enable=true
  */
+// prettier-ignore
 const $ = new Env('宠汪汪积分兑换奖品');
 const zooFaker = require('./utils/JDJRValidator_Pure');
 // $.get = zooFaker.injectToRequest2($.get.bind($));
@@ -32,6 +34,8 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
+let JDtime='';
+let networkdelay = 0;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -41,19 +45,28 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://jdjoy.jd.com';
-Date.prototype.Format = function (fmt) { //author: meizz
-  var o = {
-    "M+": this.getMonth() + 1, //月份
-    "d+": this.getDate(), //日
-    "h+": this.getHours(), //小时
-    "m+": this.getMinutes(), //分
-    "s+": this.getSeconds(), //秒
-    "S": this.getMilliseconds() //毫秒
-  };
-  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-  for (var k in o)
-    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-  return fmt;
+Date.prototype.Format = function (fmt) {
+  var e,
+      n = this, d = fmt, l = {
+          "M+": n.getMonth() + 1,
+          "d+": n.getDate(),
+          "D+": n.getDate(),
+          "h+": n.getHours(),
+          "H+": n.getHours(),
+          "m+": n.getMinutes(),
+          "s+": n.getSeconds(),
+          "w+": n.getDay(),
+          "q+": Math.floor((n.getMonth() + 3) / 3),
+          "S+": n.getMilliseconds()
+      };
+  /(y+)/i.test(d) && (d = d.replace(RegExp.$1, "".concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
+  for (var k in l) {
+      if (new RegExp("(".concat(k, ")")).test(d)) {
+          var t, a = "S+" === k ? "000" : "00";
+          d = d.replace(RegExp.$1, 1 == RegExp.$1.length ? l[k] : ("".concat(a) + l[k]).substr("".concat(l[k]).length))
+      }
+  }
+  return d;
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -61,11 +74,17 @@ Date.prototype.Format = function (fmt) { //author: meizz
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
+      
+      var ran = Math.round(Math.random()*20000);
+      console.log(`为V4延时`+ran+`毫秒`);
+      await $.wait(ran);
+
+      
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = '';
+      $.nickName = '' || $.UserName;
       await TotalBean();
       console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}****\n`);
       if (!$.isLogin) {
@@ -76,6 +95,10 @@ Date.prototype.Format = function (fmt) { //author: meizz
         }
         continue
       }
+
+      let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      await wait(60000);
+
       // console.log(`本地时间与京东服务器时间差(毫秒)：${await get_diff_time()}`);
       $.validate = '';
       $.validate = await zooFaker.injectToRequest()
@@ -123,15 +146,27 @@ async function joyReward() {
       }
       num++
     } while (num < 20 && !$.beanConfigs)
-    if (new Date().getMinutes() === 59) {
-      let nowtime = new Date().Format("s.S")
-      let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 60;
-      if(nowtime < 59) {
-        let sleeptime = (starttime - nowtime) * 1000;
-        console.log(`等待时间 ${sleeptime / 1000}`);
-        await zooFaker.sleep(sleeptime)
-      }
+    ///////////
+    await getJDtime()
+    var timestamp=new Date().getTime();
+    var timedifference=timestamp-Number(JDtime);
+    console.log(`京东服务器时间戳：`+JDtime);
+    console.log(`当前服务器时间戳：`+timestamp);
+    console.log(`服务器延迟为`+timedifference+`毫秒`);
+
+    var setdatetemp = (new Date(new Date().setHours(new Date().getHours()+1))).Format("yyyy-MM-dd hh:mm:ss");
+    var setdate = setdatetemp.split(":")[0]+":00:00";
+    var settimestamp = (new Date(setdate)).getTime();
+    console.log("查找到下一次兑换时间为："+setdate);
+    console.log("查找到下一次兑换时间戳为："+settimestamp);
+    console.log("已设定请求调整时间为："+networkdelay+"毫秒");
+    console.log("正在等待"+(settimestamp-new Date().getTime()+timedifference+networkdelay)+"毫秒......");
+    let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+    if (new Date().getHours()!=16) {
+        await wait(settimestamp-new Date().getTime()+timedifference+networkdelay);
     }
+    console.log("不等了，冲！");
+    ///////////
     console.log(`\ndebug场次:${giftSaleInfos}\n`)
     for (let j = 0; j < 20; j++) {
       // await getExchangeRewards();
@@ -225,6 +260,25 @@ async function joyReward() {
   } catch (e) {
     $.logErr(e)
   }
+}
+async function getJDtime() {
+  return new Promise(async (resolve) => {
+      $.get({url: `https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5`, timeout: 10000,},
+          async (err, resp, data) => {
+              try {
+                  if (err) {
+                      $.logErr(`❌ 账号${$.index} API请求失败，请检查网络后重试\n data: ${JSON.stringify(err, null, 2)}`);
+                  } else {
+                      JDtime = JSON.parse(data).currentTime2;
+                  }
+              } catch (e) {
+                  $.logErr(`======== 账号 ${$.index} ========\nerror:${e}\ndata: ${resp && resp.body}`)
+              } finally {
+                  resolve(data);
+              }
+          }
+      );
+  });
 }
 function getExchangeRewards() {
   return new Promise(resolve => {
