@@ -28,16 +28,6 @@
 1 8,13,20 * * * node /scripts/jd_beauty.js >> /scripts/logs/jd_beauty.log 2>&1
 #金榜创造营
 40 9,21 * * * node /scripts/jd_gold_creator.js >> /scripts/logs/jd_gold_creator.log 2>&1
-#新潮品牌狂欢
-30 9,10 1-18 6 * node /scripts/jd_mcxhd_brandcity.js >> /scripts/logs/jd_mcxhd_brandcity.log 2>&1
-#品牌狂欢城
-30 10 1-18 6 * node /scripts/jd_brandcarnivalcity.js >> /scripts/logs/jd_brandcarnivalcity.log 2>&1
-#翻翻乐
-1 0-23/1 * 6 * node /scripts/jd_flipcards.js >> /scripts/logs/jd_flipcards.log 2>&1
-#京享值pk
-15 0,6,13,19,21 * 6 * node /scripts/jd_pk.js >> /scripts/logs/jd_pk.log 2>&1
-#限时盲盒
-30 7,19 1-18 6 * node /scripts/jd_limitBox.js >> /scripts/logs/jd_limitBox.log 2>&1
 #京喜牧场
 20 0-23/3 * * * node /scripts/jd_jxmc.js >> /scripts/logs/jd_jxmc.log 2>&1
 #京喜牧场助力
@@ -250,10 +240,6 @@
 20 0-23/6 * * * node /scripts/jd_jddj_plantBeans.js >> /scripts/logs/jd_jddj_plantBeans.log 2>&1
 #东东超市抢京豆
 13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
-# 预售福利机
-5 0,2 * * * node /scripts/jd_ys.js >> /scripts/logs/jd_ys.log 2>&1
-# 双十一无门槛红包
-0 0,10,12,20 * * * node /scripts/jd_RedEnvelope.js >> /scripts/logs/jd_RedEnvelope.log 2>&1
 ##############默认注释活动##############
 # 京东试用（默认注释，请配合取关脚本使用）
 10 0 * * *  node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
