@@ -96,6 +96,8 @@
 30 8,13,21 * * * node /scripts/jd_open.js >> /scripts/logs/jd_open.log 2>&1
 #特务Z
 23 8,9 * * * node /scripts/jd_productZ4Brand.js >> /scripts/logs/jd_productZ4Brand.log 2>&1
+#邀请有礼
+5 11 * * * node /scripts/jd_yqyl.js >> /scripts/logs/jd_yqyl.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
