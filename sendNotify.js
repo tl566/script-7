@@ -187,9 +187,9 @@ if (process.env.TG_ONLY) {
   tg_only = process.env.TG_ONLY;
 }
 
-async function sendNotify(text, desp, params = {}, author = '\n\n11.11京享紅包\n抢红包，购痛快。\n每日可中奖3次，最高6666元！\n抢购链接: https://u.jd.com/3dXDTcm\n——————————————\n更多好物推荐：https://u.jd.com/3tX36de\n' + end_txt) {
+async function sendNotify(text, desp, params = {}, author = '\n\n京东秒杀\n秒杀爆品 限时抢购\n抢购链接: https://u.jd.com/2Crsz9x\n——————————————\n更多好物推荐：https://u.jd.com/2dDA7AF\n' + end_txt) {
   //提供6种通知
-  desp += '\n\n11.11京享紅包\n抢红包，购痛快。\n每日可中奖3次，最高6666元！\n抢购链接: https://u.jd.com/3dXDTcm\n——————————————\n更多好物推荐：https://u.jd.com/3tX36de\n';//增加作者信息，防止被贩卖等
+  desp += '\n\n京东秒杀\n秒杀爆品 限时抢购\n抢购链接: https://u.jd.com/2Crsz9x\n——————————————\n更多好物推荐：https://u.jd.com/2dDA7AF\n';//增加作者信息，防止被贩卖等
   try {
     fs.accessSync('./tools/account.json')
     remarks = JSON.parse(fs.readFileSync('./tools/account.json').toString())
