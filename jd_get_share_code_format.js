@@ -71,7 +71,7 @@ if (!$.isNode()) {
       $.shareCodeObj.DreamFactory = exportShareCodes(str, "京喜工厂】");
       $.shareCodeObj.Jxnc = exportShareCodes(str, "京喜农场】");
       $.shareCodeObj.Sgmh = exportShareCodes(str, "闪购盲盒】");
-      $.shareCodeObj.Jdcfd = exportShareCodes(str, "财富岛】");
+      //$.shareCodeObj.Jdcfd = exportShareCodes(str, "财富岛】");
       $.shareCodeObj.Cash = exportShareCodes(str, "签到领现金】");
       //$.shareCodeObj.Bookshop = exportShareCodes(str, "口袋书店】");
       $.shareCodeObj.Health = exportShareCodes(str, "健康社区】");
@@ -223,6 +223,7 @@ function showFormatMsg(shareCodeObj) {
       "MySgmh",
       "ForOtherSgmh"
     );
+/*
   shareCodeObj.Jdcfd &&
      formatShareCodesForLinux(
        shareCodeObj.Jdcfd,
@@ -230,7 +231,7 @@ function showFormatMsg(shareCodeObj) {
        "MyJdcfd",
        "ForOtherJdcfd"
      );
-
+*/
   shareCodeObj.Cash &&
     formatShareCodesForLinux(
       shareCodeObj.Cash,
