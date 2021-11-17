@@ -94,6 +94,7 @@ async function queryjdcouponlistwithfinance() {
         'accept': '*/*',
         'referer': 'https://wqs.jd.com/',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Cookie': $.cookie
     }
     let url = `https://wxa.jd.com/wq.jd.com/activeapi/queryjdcouponlistwithfinance?state=1&wxadd=1&filterswitch=1&sceneval=2&g_login_type=1&g_ty=ls`
     let data = await $.get(url, headers)
@@ -111,6 +112,7 @@ async function deletecouponlistwithfinance(couponId) {
         'accept': '*/*',
         'referer': 'https://wqs.jd.com/',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Cookie': $.cookie
     }
     let url = `https://wq.jd.com/activeapi/deletecouponlistwithfinance?couponinfolist=${escape(
         `${couponId},1,0`)}&_=${Date.now()}&sceneval=2&g_login_type=1&callback=jsonpCBKC&g_ty=ls`

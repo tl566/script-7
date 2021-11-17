@@ -84,7 +84,8 @@ async function getTaskList() {
         'Referer': 'https://ifanli.m.jd.com/rebate/earnBean.html',
         'Host': 'ifanli.m.jd.com',
         'Cache-Control': 'no-cache',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     let url = `https://ifanli.m.jd.com/rebateapi/task/getTaskList`
     headers['User-Agent'] = `Mozilla/5.0 (iPhone; CPU iPhone OS 14_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1 Mobile/15E148 Safari/604.1`
@@ -122,7 +123,8 @@ async function saveTaskRecord(taskId, taskType, businessId, uid, tt) {
         'Host': 'ifanli.m.jd.com',
         'Origin': 'https://ifanli.m.jd.com',
         'Cache-Control': 'no-cache',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     headers['User-Agent'] = `Mozilla/5.0 (iPhone; CPU iPhone OS 14_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1 Mobile/15E148 JDFanli/2.0.20 jd.fanli/2.0.20`
     let data = await $.post(
@@ -148,7 +150,8 @@ async function getTaskFinishCount() {
         'Referer': 'https://ifanli.m.jd.com/rebate/earnBean.html',
         'Host': 'ifanli.m.jd.com',
         'Cache-Control': 'no-cache',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     let url = `https://ifanli.m.jd.com/rebateapi/task/getTaskFinishCount?`
     headers['User-Agent'] = `Mozilla/5.0 (iPhone; CPU iPhone OS 14_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1 Mobile/15E148 Safari/604.1`

@@ -53,7 +53,9 @@ async function ExchangePearlState() {
         'Referer': 'https://st.jingxi.com/promote/2021/fortune_island_complex_v2/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
+
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -82,7 +84,8 @@ async function ExchangePearlHb(dwLvl, ddwVirHb, strPoolName) {
         'Referer': 'https://st.jingxi.com/promote/2021/fortune_island_complex_v2/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
