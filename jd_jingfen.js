@@ -57,16 +57,12 @@ for (let cookie of cookies) {
         for (let url of shops) {
             const cookies = cks  // 读取用户cookie
             await page.emulate(puppeteer.devices['iPhone X']);   // 模拟设备
-            await page.goto('https://m.jd.com/');  // 先打开京东页面
+            await page.goto(url);  // 先打开京东页面
             await page.waitForTimeout(3000);  // 等待3s
             await page.setCookie(...cookies);  // 注入cookie
             // await page.setUserAgent('jdapp;android;8.3.0;10;d41d8cd98f00b204;network/wifi;model/MI6;addressid/541286672;aid/d41d8cd98f00b204;oaid/;osVer/29;appBuild/69909;psn/d41d8cd98f00b204|80;psq/2;uid/d41d8cd98f00b204;adk/;ads/;pap/JA2015_311210|8.3.0|ANDROID 10;osv/10;pv/79.2;jdv/0|androIDApp|t_335139774|appshare|QQfriends|1573031758004|1573031758;ref/com.jingdong.app.mall.home.JDHomeFragment;partner/google;apprpd/Home_Main;Mozilla/5.0 (Linux; Android 10; MI 6 Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.186 Mobile Safari/537.36');
-            await page.goto(url,
-                {
-                    referer: url
-                }
-            );  // 打开锁佣页面
-            await page.screenshot({path: 'full.png', fullPage: true});
+            await page.goto(url);  // 打开锁佣页面
+            await page.screenshot({ path: 'full.png', fullPage: true });
             await page.waitForTimeout(5000) // 等待5s
         }
         await browser.close();
