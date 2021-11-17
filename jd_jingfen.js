@@ -15,7 +15,7 @@ let cookies = [
 ]
 
 for (let cookie of cookies) {
-    let ls = cookie.split(';').slice(0,2)
+    let ls = cookie.split(';').slice(0, 2)
 
     // console.log(ls)
 
@@ -36,9 +36,9 @@ for (let cookie of cookies) {
     (async () => {
         const browser = await puppeteer.launch(
             {
-                headless: false,  // 显示浏览器
+                headless: true,  // 显示浏览器
                 timeout: 30000,  // 超时时间
-                args: [`--window-size=${375},${800}`],  // 设置窗口大小
+                args: [`--window-size=${375},${800}`, '--no-sandbox'],  // 设置窗口大小
             }
         );
         const page = await browser.newPage();
@@ -56,7 +56,7 @@ for (let cookie of cookies) {
                     referer: url
                 }
             );  // 打开锁佣页面
-            await page.screenshot({ path: 'full.png', fullPage: true });
+            await page.screenshot({path: 'full.png', fullPage: true});
             await page.waitForTimeout(5000) // 等待5s
         }
         await browser.close();
