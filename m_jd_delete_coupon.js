@@ -1,4 +1,4 @@
-//59 19 */3 * * m_jd_delete_coupon.js
+//28 19 */3 * * m_jd_delete_coupon.js
 const {Env} = require('./magic');
 const $ = new Env('M优惠券删除');
 //1.支持删除自定义关键词 @符号分割 例如 棉拖@扫把@瓜子
