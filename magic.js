@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 const fs = require("fs");
-const {format} = require("date-fns");
+const moment = require("moment");
 const notify = require('./sendNotify');
 const jdCookieNode = require('./jdCookie.js');
 const CryptoJS = require("crypto-js");
@@ -270,8 +270,10 @@ class Env {
         if (stk) {
             let ens, hash, st = '',
                 ts = this.now('yyyyMMddhhmmssSSS').toString(),
-                tk = this.algo.tk, fp = this.algo.fp, em = this.algo.em;if (tk && fp && em) {
-                hash = em(tk, fp, ts, this.appId, CryptoJS).toString(CryptoJS.enc.Hex)
+                tk = this.algo.tk, fp = this.algo.fp, em = this.algo.em;
+            if (tk && fp && em) {
+                hash = em(tk, fp, ts, this.appId, CryptoJS).toString(
+                    CryptoJS.enc.Hex)
             } else {
                 const random = '5gkjB6SpmC9s';
                 tk = 'tk01wcdf61cb3a8nYUtHcmhSUFFCfddDPRvKvYaMjHkxo6Aj7dhzO+GXGFa9nPXfcgT+mULoF1b1YIS1ghvSlbwhE0Xc';
@@ -308,7 +310,8 @@ class Env {
                     url = url.replace(url.match(/strPhoneID=(.*?)&/)[1], t.id)
                 }
                 if (url.match(/strPgtimestamp=(.*?)&/)) {
-                    url = url.replace(url.match(/strPgtimestamp=(.*?)&/)[1], t.ts)
+                    url = url.replace(url.match(/strPgtimestamp=(.*?)&/)[1],
+                        t.ts)
                 }
             }
             if (url.match(/jxmc_jstoken=(.*?)&/)) {
@@ -470,9 +473,13 @@ class Env {
         return shuffled.slice(min);
     }
 
-
     now(fmt) {
-        return format(new Date(), fmt || 'yyyy-MM-dd hh:mm:ss.SSS')
+        return moment().format(fmt || 'yyyy-MM-DD hh:mm:ss.SSS')
+    }
+
+    format(date, fmt) {
+        return moment(typeof date === 'string' ? date * 1 : date).format(
+            fmt || 'yyyy-MM-DD hh:mm:ss')
     }
 
     timestamp() {
@@ -480,15 +487,13 @@ class Env {
     }
 
     _tk() {
-        function generateStr(input) {
-            let src = 'abcdefghijklmnopqrstuvwxyz1234567890';
-            let res = '';
-            for (let i = 0; i < input; i++) {
+        let id = function (n) {
+            let src = 'abcdefghijklmnopqrstuvwxyz1234567890', res = '';
+            for (let i = 0; i < n; i++) {
                 res += src[Math.floor(src.length * Math.random())];
             }
             return res;
-        }
-        let id = generateStr(40),ts = Date.now().toString(),tk = this.md5(
+        }(40), ts = Date.now().toString(), tk = this.md5(
             '' + decodeURIComponent(this.username) + ts + id
             + 'tPOamqCuk9NLgVPAljUyIHcPRmKlVxDy');
         return {ts: ts, id: id, tk: tk}
@@ -517,9 +522,13 @@ class Env {
                 'Origin': 'https://st.jingxi.com',
                 'Referer': 'https://st.jingxi.com/',
             });
-        return {fp: fp.toString(), tk: data.data.result.tk, em: new Function(`return ${data.data.result.algo}`)()
+        return {
+            fp: fp.toString(),
+            tk: data.data.result.tk,
+            em: new Function(`return ${data.data.result.algo}`)()
         }
     }
 
 }
-module.exports = {Env, CryptoJS};
+
+module.exports = {Env, CryptoJS, moment};
