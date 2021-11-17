@@ -1,2 +1,2 @@
-# WALL.E
-私人仓库请勿fork
+# I AM WALL.E
+## CREATED BY [Meagic](https://t.me/Wall_E_Group)
