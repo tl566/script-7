@@ -1,2 +1,2 @@
 # I AM WALL.E
-## CREATED BY [Meagic](https://t.me/Wall_E_Group)
+## CREATED BY [Meagic](https://t.me/Wall_E_Channel)
