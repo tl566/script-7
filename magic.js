@@ -269,7 +269,7 @@ class Env {
         let stk = decodeURIComponent(this.getQueryString(url, '_stk') || '');
         if (stk) {
             let ens, hash, st = '',
-                ts = this.now('yyyyMMddhhmmssSSS').toString(),
+                ts = this.now('yyyyMMDDhhmmssSSS').toString(),
                 tk = this.algo.tk, fp = this.algo.fp, em = this.algo.em;
             if (tk && fp && em) {
                 hash = em(tk, fp, ts, this.appId, CryptoJS).toString(
