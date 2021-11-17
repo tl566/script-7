@@ -8,13 +8,22 @@ shops = [
     'https://u.jd.com/2I0EsoX',
 ]
 
-let cookies = [
-    'pt_pin=%E4%BD%86%E8%A1%8C%E8%80%95%E8%80%98%E8%8E%AB%E9%97%AE%E6%94%B6%E8%8E%B7;pt_key=AAJhe0rxAECafpOyGuFimc6HuYYNQZ1weXqgQ8D32d8PE9gmZF6dGlOZHG2MNTN7O-0cOfuSsE-MDBfvLO0dwBsOCFr79LTv;',
-    'pt_key=AAJhcRc4ADCu6X7r2WoR5G37k731Mhh2bbPhWtcS9YcpuN28rULFo4HH2W69rlxkxKnrdSUMbKk;pt_pin=jd_4634212d405cd;',
-    // 'pt_key=AAJhcRc4ADCu6X7r2WoR5G37k731Mhh2bbPhWtcS9YcpuN28rULFo4HH2W69rlxkxKnrdSUMbKk;pt_pin=jd_4634212d405cd;'
-]
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+let cookies = [],
+    cookie = '';
+if ($.isNode()) {
+    Object.keys(jdCookieNode).forEach((item) => {
+        cookiesArr.push(jdCookieNode[item])
+    })
+    if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+} else {
+    cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+}
 
 for (let cookie of cookies) {
+
+    console.log(cookie)
+
     let ls = cookie.split(';').slice(0, 2)
 
     // console.log(ls)
