@@ -29,7 +29,6 @@ $.logic = async function () {
         let task = null;
         for (let i = 0; i < taskList.length; i++) {
             let tmp = taskList[i];
-            $.log(tmp.taskName)
             if (tmp.statusName === '活动结束' || !tmp.taskId || !tmp.businessId
                 || tmp.taskId < 1) {
                 continue
@@ -59,7 +58,7 @@ $.logic = async function () {
             task.taskType, data.uid, data.tt)
         await $.wait(2000, 3000)
         if (record === -1) {
-            conso$le.log("获取奖励失败")
+            $.log("获取奖励失败")
             continue;
         }
         $.log(`${record.msg}\n`)
@@ -76,7 +75,6 @@ $.run({wait: [1000, 1500]}).catch(
  */
 // noinspection DuplicatedCode
 async function getTaskList() {
-    let body = encodeURIComponent(``);
     let headers = {
         'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
