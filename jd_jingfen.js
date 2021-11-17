@@ -4,21 +4,21 @@ const puppeteer = require('puppeteer');
 let shops = []  // 长期有效的知名店铺某商品链接列表
 
 shops = [
-    'https://u.jd.com/2I0EsoX',
-    'https://u.jd.com/2I0EsoX',
+    'https://union-click.jd.com/jdc?e=&p=JF8BAM4JK1olXDYCVV9cC08QC2wJGFglGVlaCgFtUQ5SQi0DBUVNGFJeSwUIFxlJX3EIGloUXgIFXF1cC0gIWipURmsUR2RSFTwuYChUZStReR0TQwZSExg9BEcnAl8IGloWWA4EUltZOHsXBF9edVsUXAcDVVteDEMnAl8IHFkTXQEFV11VDEwfM2gIEmtOCGgFXVpdXU4UAjwPHFtFbTYyV25tOEsnAF9KdVwdXg5XBw5dAB4XB2oNTFwdCAEGV1YKDh9HV25dGAhFbQQDVVpUOA',  // 华为京东自营官方旗舰店
+    'https://union-click.jd.com/jdc?e=&p=JF8BANMJK1olXgABU1pfAEoRAl8IGloUXAUCU19dDU0nRzBQRQQlBENHFRxWFlVPRjtUBABAQlRcCEBdCUoWAmwIHFoVWAAdDRsBVXtAADRbbh5qPWVHLhUIDxxCX29abgNTUQoyVW5dCUoUBmcOHV4RbTYCU24fZhRAQS9aUGsUbQYFVlhdD0wVB2oBG1wlWgYLZAUIZkweB29dHlgUDgEFVA5tOHsUM184G2sWbURsVFkKDkJCUGoNSVMVWAUBBA5YDk4VAWgJE1tACFEKUAltCkoWB2Y4',  // 农夫山泉
+    'https://union-click.jd.com/jdc?e=&p=JF8BAMsJK1olXgcCVlpeDU8eAF8KGVsVVQ8EZBoCUBVIMzZNXhpXVhgcDBsJVFRMVnBaRQcLXwQCVFZUDlRORjNVKxBVAQAFCx0Iag5pXARSeDJqNUdnNi5RBHsWM28JGlgQVQAEUVptOEsQMzxmzNyWiZKFSF5tCXsXBG0OG1wSWAELU1lfOEwXCl9TTjUSVAICAVteCRgQBG9YK2slXjYyZF5tC3tVbWcNTl8VWA4GA1xbDU4TB2wBS1gVDQVRBwwJXRsQBW8PK1kUXAILZA', // 伊利牛奶京东自营旗舰店
 ]
 
 const $ = new Env('京粉同店锁佣能力');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-let cookies = [],
-    cookie = '';
+let cookies = []
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
-        cookiesArr.push(jdCookieNode[item])
+        cookies.push(jdCookieNode[item])
     })
     if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-    cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+    cookies = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 
 for (let cookie of cookies) {
