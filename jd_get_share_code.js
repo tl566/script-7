@@ -1246,7 +1246,7 @@ async function getShareCode() {
   //await getJdZZ() //京东赚赚
   //await getJoy() //crazyjoy
   await getSgmh() //闪购盲盒
-  await getCFD() //京喜财富岛
+ // await getCFD() //京喜财富岛
   await getJdCash() //签到领现金
   //await getBookshop() //口袋书店
   await getJdHealth() //东东健康社区
