@@ -8,7 +8,7 @@ const $ = new Env('M牧场助农兑换');
 $.logic = async function () {
     let {goodslist} = await GetLoveGoodsList();
     //红包商品
-    let items = $.randomArray(goodslist.filter(o.neednum === 0), 3)
+    let items = $.randomArray(goodslist.filter(o => o.neednum === 0), 3)
     await $.countdown();
     for (let i = 0; i < items.length; i++) {
         if (!await LoveExchange(items[i].token)) {
