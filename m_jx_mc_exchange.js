@@ -81,6 +81,7 @@ async function LoveExchange(token) {
         return true;
     } else if (data?.message.includes("火爆") || data?.message.includes(
         "还没到兑换时间")) {
+        $.log('火爆或时间还没到')
         return false;
     }
     return true;
