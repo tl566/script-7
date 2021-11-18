@@ -83,8 +83,7 @@ $.interceptors.response.use(function (res) {
     testMode ? console.log(JSON.stringify(data)) : ''
     testMode ? console.log('----------------分割线---------------------') : ''
     return data;
-}, function (err) {
-    testMode ? console.log(err.response?.data) : ''
+}, function () {
     return Promise.reject({})
 })
 
@@ -97,6 +96,7 @@ class Env {
         this.name = name
         this.username = '';
         this.cookie = '';
+        this.cookies = [];
         this.index = '';
         this.ext = [];
         this.msg = [];
@@ -104,6 +104,7 @@ class Env {
         this.appId = '';
         this.algo = {};
         this.bot = false;
+        this.expire = false;
     }
 
     async run(data = {
@@ -145,10 +146,11 @@ class Env {
             }
             cookies = cks;
         }
+        this.cookies = cookies;
         if (data?.before) {
-            for (let i = 0; i <= cookies.length; i++) {
-                if (cookies[i]) {
-                    let cookie = cookies[i];
+            for (let i = 0; i <= this.cookies.length; i++) {
+                if (this.cookies[i] && !this.expire) {
+                    let cookie = this.cookies[i];
                     this.cookie = cookie;
                     this.username = decodeURIComponent(
                         cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -173,14 +175,14 @@ class Env {
             }
         }
         let once = false;
-        for (let i = 0; i <= cookies.length; i++) {
-            if (cookies[i]) {
+        for (let i = 0; i <= this.cookies.length; i++) {
+            if (this.cookies[i] && !this.expire) {
                 this.index = i + 1;
-                if (data?.once && this.index !== data.once && !testMode) {
+                if (data?.once && this.index !== data.once) {
                     once = true;
                     continue;
                 }
-                let cookie = cookies[i];
+                let cookie = this.cookies[i];
                 this.cookie = cookie;
                 this.username = decodeURIComponent(
                     cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -211,6 +213,11 @@ class Env {
         if (!data?.o2o) {
             await this.send();
         }
+    }
+
+    deleteCookie() {
+        delete this.cookies[this.index - 1]
+        return {};
     }
 
     groupBy(arr, fn) {
@@ -245,6 +252,7 @@ class Env {
     }
 
     putMsg(msg) {
+        this.log(msg)
         this.bot ? this.msg.push(msg) :
             this.msg.push(`【当前账号】 ${this.username} ${msg}`)
     }
@@ -497,6 +505,36 @@ class Env {
             '' + decodeURIComponent(this.username) + ts + id
             + 'tPOamqCuk9NLgVPAljUyIHcPRmKlVxDy');
         return {ts: ts, id: id, tk: tk}
+    }
+
+    async get_bean() {
+        let data = await $.post('https://api.m.jd.com/client.action',
+            `functionId=plantBeanIndex&body=${escape(
+                JSON.stringify({
+                    version: "9.0.0.1",
+                    "monitor_source": "plant_app_plant_index",
+                    "monitor_refer": ""
+                })
+            )}&appid=ld&client=apple&area=5_274_49707_49973&build=167283&clientVersion=9.1.0`,
+            {
+                'Host': "api.m.jd.com",
+                "Cookie": this.cookie
+            });
+        return data.data.jwordShareInfo.shareUrl.split('Uuid=')[1] ?? ''
+    }
+
+    async get_farm() {
+        let data = await $.post(
+            'https://api.m.jd.com/client.action?functionId=initForFarm',
+            `body=${escape(
+                JSON.stringify({"version": 4}))}&appid=wh5&clientVersion=9.1.0`,
+            {
+                "origin": "https://home.m.jd.com",
+                "referer": "https://home.m.jd.com/myJd/newhome.action",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Cookie": this.cookie
+            })
+        return data?.farmUserPro?.shareCode ?? ''
     }
 
     async _algo() {
