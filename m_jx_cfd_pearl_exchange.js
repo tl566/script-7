@@ -25,6 +25,10 @@ $.logic = async function () {
                 $.log('你已经换过了')
                 break;
             }
+            if (prizeInfo.dwState === 1) {
+                $.log('没货')
+                break;
+            }
             for (let j = 0; j < 3; j++) {
                 if (await ExchangePearlHb(prizeInfo.dwLvl, prizeInfo.ddwVirHb,
                     prizeInfo.strPool)) {
