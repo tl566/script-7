@@ -8,15 +8,13 @@ const $ = new Env('M牧场兑换');
 $.logic = async function () {
     let {goodslist} = await GetLoveGoodsList();
     //红包商品
-    // let item = $.randomArray(goodslist.filter(o=>o.prizepool.includes("jxmc_") && o.neednum===0),1)[0]
-    let items = $.randomArray(goodslist.filter(
-        o => !o.prizepool.includes("jxmc_") && o.neednum === 0), 3)
+    let items = $.randomArray(goodslist.filter(o.neednum === 0), 3)
     await $.countdown();
     for (let i = 0; i < items.length; i++) {
         if (!await LoveExchange(items[i].token)) {
             break;
         }
-        await $.wait(1500)
+        await $.wait(1000)
     }
 }
 $.run({appId: 10028}).catch(
