@@ -1,7 +1,7 @@
 // noinspection DuplicatedCode
 
 /*
-* 59 19 11-30 11 * m_jx_mc_exchange.js
+* 59 19 11-30 11 * m_jx_mc_zn_exchange.js
 * */
 const {Env} = require('./magic');
 const $ = new Env('M牧场兑换');
