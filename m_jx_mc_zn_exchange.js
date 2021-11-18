@@ -4,7 +4,7 @@
 * 59 19 11-30 11 * m_jx_mc_zn_exchange.js
 * */
 const {Env} = require('./magic');
-const $ = new Env('M牧场兑换');
+const $ = new Env('M牧场助农兑换');
 $.logic = async function () {
     let {goodslist} = await GetLoveGoodsList();
     //红包商品
