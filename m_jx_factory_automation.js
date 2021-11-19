@@ -2,6 +2,9 @@
 //其他活动自动化稍后再写
 const {Env} = require('./magic');
 const $ = new Env('M京东资产');
+let commodityName = process.env.COMMODITY_NAME ? process.env.COMMODITY_NAME
+    : '你还没设置要生产的变量COMMODITY_NAME'
+
 $.logic = async function () {
     let info = await GetUserInfo();
     if (!info) {
@@ -32,8 +35,7 @@ $.logic = async function () {
     let {commodityList} = await GetCommodityList();
     await $.wait(1300, 1500)
     await GetShelvesList()
-    let gx = '面粉4斤';
-    let filter = commodityList.filter(o => o.name.includes(gx));
+    let filter = commodityList.filter(o => o.name.includes(commodityName));
     if (filter.length === 1) {
         let data = await GetCommodityDetails(filter[0].commodityId);
         await GetDeviceDetails();
