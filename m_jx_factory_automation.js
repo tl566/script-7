@@ -45,7 +45,7 @@ $.logic = async function () {
             $.putMsg(`${data.name}已经开始生产`)
         }
     } else {
-        $.putMsg(`没找到你要生产的 ${gx}`)
+        $.putMsg(`没找到你要生产的 ${commodityName}`)
     }
 };
 
@@ -71,6 +71,8 @@ async function AddProduction(factoryId, deviceId, commodityDimId) {
     // noinspection DuplicatedCode
     if (data?.ret === 0) {
         return data?.data
+    } else {
+        $.putMsg(data?.msg)
     }
     return false;
 }
