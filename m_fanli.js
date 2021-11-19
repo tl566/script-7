@@ -1,7 +1,5 @@
-// noinspection DuplicatedCode
-
 /*
-* 38 8 * * * m_fanli.js
+* 38 8,18 * * * m_fanli.js
 * */
 const {Env} = require('./magic');
 const $ = new Env('M饭粒任务');
