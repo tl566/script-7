@@ -2,7 +2,7 @@ const got = require('got');
 var md5 = require('md5');
 const puppeteer = require('puppeteer');
 
-const $ = new Env('京粉锁佣');
+const $ = new Env('京东店铺sy');
 
 // 此处从环境变量中读取多个值
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
