@@ -136,7 +136,7 @@ for (let cookie of cookies) {
                     {
                         headless: true,  // 显示浏览器
                         timeout: 30000,  // 超时时间
-                        args: [`--window-size=${375},${800}`],  // 设置窗口大小
+                        args: [`--window-size=${375},${800}`, '--no-sandbox'],  // 设置窗口大小
                     }
                 );
                 const page = await browser.newPage();
