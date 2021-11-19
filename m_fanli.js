@@ -41,7 +41,6 @@ $.logic = async function () {
                 task = taskList[i]
             }
         }
-        $.log('debug', task)
         if (!task?.taskId) {
             $.log("没有找到可继续进行的任务，结束")
             return;
