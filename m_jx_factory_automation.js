@@ -16,7 +16,7 @@ $.logic = async function () {
     if (info?.productionList) {
         let product = info?.productionList[0];
         if (product.investedElectric !== product.needElectric) {
-            $.putMsg('还没有生产完成');
+            $.log('还没有生产完成');
             return
         }
         let productionId = product.productionId;
