@@ -105,7 +105,7 @@ async function changeLinks(urls) {
 
     // console.log(urls)
     let finalUrls = []
-    for (url of urls) {
+    for (let url of urls) {
         // console.log("当前访问商品:" + url)
         let sign = makeSign(url)
         // console.log(sign)
@@ -147,14 +147,15 @@ async function browse(url, cks) {
     );
 
     const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);  // 解决超时问题
     console.log("当前访问商品:" + url)
     const cookies = cks  // 读取用户cookie
     await page.emulate(puppeteer.devices['iPhone X']);   // 模拟设备
     await page.goto(url);  // 先打开京东页面
-    await page.waitForTimeout(3000);  // 等待3s
+    await page.waitForTimeout(1000);  // 等待3s
     await page.setCookie(...cookies);  // 注入cookie
     await page.goto(url);  // 打开锁佣页面
-    await page.waitForTimeout(3000) // 等待3s
+    await page.waitForTimeout(1500) // 等待3s
     console.log('当前用户浏览完毕')
     await browser.close();
 }
