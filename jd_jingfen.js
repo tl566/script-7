@@ -51,6 +51,7 @@ if ($.isNode()) {
         for (let url of shareUrls) {
             await browse(url, cks)
         }
+        console.log('当前用户浏览完毕')
 
     }
 })()
@@ -126,6 +127,7 @@ async function changeLinks(urls) {
         await $.wait(parseInt(Math.random() * 500, 10))
         try {
             finalUrls.push(data.skuInfos[0].skuUrl)
+            console.log('购物车商品名称:' + data.skuInfos[0].skuName)
         }
         catch(err){
             console.log('当前商品不在推广中')
@@ -152,11 +154,9 @@ async function browse(url, cks) {
     const cookies = cks  // 读取用户cookie
     await page.emulate(puppeteer.devices['iPhone X']);   // 模拟设备
     await page.goto(url);  // 先打开京东页面
-    await page.waitForTimeout(1000);  // 等待3s
     await page.setCookie(...cookies);  // 注入cookie
     await page.goto(url);  // 打开锁佣页面
-    await page.waitForTimeout(1500) // 等待3s
-    console.log('当前用户浏览完毕')
+    await page.waitForTimeout(1000) // 等待1s
     await browser.close();
 }
 
