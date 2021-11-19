@@ -1,0 +1,6 @@
+/node_modules/
+/.idea
+/index.js
+/.history
+1.bat
+.vscode/launch.json

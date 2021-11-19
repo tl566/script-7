@@ -1,0 +1,53 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: 更新领现金和免费拿商品信息
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+  watch:
+    types: started
+  repository_dispatch:
+    types: jd_updatefree_cash
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.owner.id == github.event.sender.id }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false 
+          fetch-depth: 0
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: npm install
+        run: |
+          npm install
+      - name: '运行 【更新领现金】'
+        run: |
+          node jd_updateCash.js
+        env:
+          JD_COOKIE: ${{ secrets.JDcash_COOKIE }}
+          JD_DEBUG: ${{ secrets.JD_DEBUG }}
+          DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
+          DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
+      - name: '运行 【更新免费拿商品信息】'
+        run: |
+          node jd_updateBarGain.js
+        env:
+          JD_COOKIE: ${{ secrets.JDcash_COOKIE }}
+      - name: commit
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "update by Action" -a || echo "Nothing to update"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: master

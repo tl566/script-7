@@ -1,0 +1,47 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: 更新5G超级盲盒
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '31 1,7 * * *'
+  watch:
+    types: started
+  repository_dispatch:
+    types: jd_updateMohe
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.owner.id == github.event.sender.id }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false 
+          fetch-depth: 0
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: npm install
+        run: |
+          npm install              
+      - name: '运行 【更新5G超级盲盒助力码】'
+        run: |
+          node jd_updateJdmf.js
+        env:
+          JD_COOKIE: ${{ secrets.JD_COOKIE }}
+          JD_DEBUG: ${{ secrets.JD_DEBUG }}
+    
+      - name: commit
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "update by Action" -a || echo "Nothing to update"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: master
