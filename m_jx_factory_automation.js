@@ -1,7 +1,7 @@
 //20 * * * * m_jx_factory_automation.js
 //其他活动自动化稍后再写
 const {Env} = require('./magic');
-const $ = new Env('M京东资产');
+const $ = new Env('M京喜工厂自动化');
 let commodityName = process.env.COMMODITY_NAME ? process.env.COMMODITY_NAME
     : '你还没设置要生产的变量COMMODITY_NAME'
 
