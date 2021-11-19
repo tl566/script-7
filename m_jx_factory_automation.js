@@ -61,7 +61,8 @@ async function AddProduction(factoryId, deviceId, commodityDimId) {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -83,7 +84,8 @@ async function GetDeviceDetails() {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -105,7 +107,8 @@ async function GetUserComponent(pin) {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -128,7 +131,8 @@ async function GetUserInfo() {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -151,7 +155,8 @@ async function ExchangeCommodity(productionId) {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -218,7 +223,8 @@ async function queryprizedetails(actives) {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -240,7 +246,8 @@ async function QueryHireReward() {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
@@ -262,7 +269,8 @@ async function GetShelvesList() {
         'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
         'Accept-Encoding': 'gzip, deflate, br',
         'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn'
+        'Accept-Language': 'zh-cn',
+        'Cookie': $.cookie
     }
     // noinspection DuplicatedCode
     headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
