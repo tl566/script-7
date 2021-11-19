@@ -72,8 +72,6 @@
 #10 0,21 * * * node /scripts/jd_carnivalcity_help.js >> /scripts/logs/jd_carnivalcity_help.log 2>&1
 # 电竞预言家
 20 0 * * * node /scripts/jd_djyyj.js >> /scripts/logs/jd_djyyj.log 2>&1
-# 潮玩儿制躁团
-30 11,22 * * * node /scripts/jd_zzt.js >> /scripts/logs/jd_zzt.log 2>&1
 #发财挖宝
 40 12,16 * * * node /scripts/jd_fcwb.js >> /scripts/logs/jd_fcwb.log 2>&1
 #手机竞猜
