@@ -18,6 +18,7 @@ if ($.isNode()) {
 
 
 !(async () => {
+    let num = 0
     for (let cookie of cookies) {
         /**
          * 第一部分功能，先提取购物车的商品链接并转链
@@ -47,13 +48,11 @@ if ($.isNode()) {
             res.value = pre[1]
             cks.push(res)
         }
-
-        for (let url of shareUrls) {
-            await browse(url, cks)
-        }
-        console.log('当前用户浏览完毕')
-
+        await browse(shareUrls, cks)  // 模拟访问该用户的所有购物车链接
+        console.log('当前用户浏览完毕，成功浏览商品数量：' + shareUrls.length)
+        num += shareUrls.length
     }
+    console.log('所有用户浏览完毕！共浏览商品数量：' + num)
 })()
     .catch((e) => {
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -139,24 +138,38 @@ async function changeLinks(urls) {
 }
 
 // 浏览器模拟访问
-async function browse(url, cks) {
+async function browse(urls, cks) {
     const browser = await puppeteer.launch(
         {
             headless: true,  // 显示浏览器
             timeout: 30000,  // 超时时间
-            args: [`--window-size=${375},${800}`, '--no-sandbox'],  // 设置窗口大小
+            args: [
+                '--disable-gpu',  // 关闭GPU硬件加速
+                '--disable-dev-shm-usage',  // 创建临时文件共享内存
+                '--disable-setuid-sandbox',  // uid沙盒
+                '--no-first-run', // 没有设置首页。在启动的时候，就会打开一个空白页面。
+                '--no-sandbox', // 沙盒模式
+                `--window-size=${375},${800}`,  // 设置窗口大小
+                '--no-zygote',
+                '--single-process' // 单进程运行
+            ]
         }
     );
 
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);  // 解决超时问题
-    console.log("当前访问商品:" + url)
     const cookies = cks  // 读取用户cookie
     await page.emulate(puppeteer.devices['iPhone X']);   // 模拟设备
-    await page.goto(url);  // 先打开京东页面
-    await page.setCookie(...cookies);  // 注入cookie
-    await page.goto(url);  // 打开锁佣页面
-    await page.waitForTimeout(1000) // 等待1s
+
+    for (let url of urls) {
+        console.log("当前访问商品:" + url)
+        await page.goto(url);  // 先打开京东页面
+        await page.waitForTimeout(1000);  // 等待3s
+        await page.setCookie(...cookies);  // 注入cookie
+        await page.goto(url);  // 打开锁佣页面
+        await page.waitForTimeout(1000) // 等待3s
+    }
+
     await browser.close();
 }
 
