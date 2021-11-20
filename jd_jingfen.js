@@ -1,8 +1,10 @@
 const got = require('got');
 var md5 = require('md5');
+const tunnel =require('tunnel')
 const puppeteer = require('puppeteer');
 
-const $ = new Env('京东店铺sy');
+
+const $ = new Env('京东店铺锁y');
 
 // 此处从环境变量中读取多个值
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -19,6 +21,7 @@ if ($.isNode()) {
 
 !(async () => {
     let num = 0
+    let proxyIp = await getIp() // 获取本次代理ip
     for (let cookie of cookies) {
         /**
          * 第一部分功能，先提取购物车的商品链接并转链
@@ -27,6 +30,14 @@ if ($.isNode()) {
         const options = {
             headers: {
                 cookie: cookie
+            },
+            agent: {
+                https: new tunnel.httpsOverHttp({
+                    proxy: {
+                        host: proxyIp.split(':')[0],
+                        port: proxyIp.split(':')[1],
+                    }
+                })
             }
         };
 
@@ -48,7 +59,8 @@ if ($.isNode()) {
             res.value = pre[1]
             cks.push(res)
         }
-        await browse(shareUrls, cks)  // 模拟访问该用户的所有购物车链接
+
+        await browse(shareUrls, cks, proxyIp)  // 模拟访问该用户的所有购物车链接
         console.log('当前用户浏览完毕，成功浏览商品数量：' + shareUrls.length)
         num += shareUrls.length
     }
@@ -137,8 +149,15 @@ async function changeLinks(urls) {
     // console.log(finalUrls)
 }
 
+// 提取代理ip
+async function getIp() {
+    const ipApi = 'http://webapi.http.zhimacangku.com/getip?num=1&type=1&pro=110000&city=110200&yys=0&port=11&time=3&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions='
+    let ip = await got.get(ipApi).text()
+    return ip
+}
+
 // 浏览器模拟访问
-async function browse(urls, cks) {
+async function browse(urls, cks, proxyIp) {
     const browser = await puppeteer.launch(
         {
             headless: true,  // 显示浏览器
@@ -151,13 +170,15 @@ async function browse(urls, cks) {
                 '--no-sandbox', // 沙盒模式
                 `--window-size=${375},${800}`,  // 设置窗口大小
                 '--no-zygote',
-                '--single-process' // 单进程运行
+                '--single-process', // 单进程运行
+                `--proxy-server=${proxyIp}` // 使用代理ip
             ]
         }
     );
 
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);  // 解决超时问题
+    // await page.setUserAgent('iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1')  // 设置UA
     const cookies = cks  // 读取用户cookie
     await page.emulate(puppeteer.devices['iPhone X']);   // 模拟设备
 
