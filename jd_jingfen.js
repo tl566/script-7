@@ -22,6 +22,7 @@ if ($.isNode()) {
 !(async () => {
     let num = 0
     let proxyIp = await getIp() // 获取本次代理ip
+    console.log("本次使用的代理ip：" + proxyIp)
     for (let cookie of cookies) {
         /**
          * 第一部分功能，先提取购物车的商品链接并转链
@@ -151,7 +152,7 @@ async function changeLinks(urls) {
 
 // 提取代理ip
 async function getIp() {
-    const ipApi = 'http://webapi.http.zhimacangku.com/getip?num=1&type=1&pro=110000&city=110200&yys=0&port=11&time=3&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions='
+    const ipApi = 'http://webapi.http.zhimacangku.com/getip?num=1&type=1&pro=110000&city=110200&yys=100026&port=1&time=3&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions='
     let ip = await got.get(ipApi).text()
     return ip
 }
