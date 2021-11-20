@@ -186,11 +186,17 @@ async function browse(urls, cks, proxyIp) {
     for (let url of urls) {
         console.log("当前访问商品:" + url)
         let sleepTime = parseInt(Math.random()*(3000-1000+1)+1000);
-        await page.goto(url);  // 先打开京东页面
-        await page.waitForTimeout(sleepTime);  // 等待1-3s
-        await page.setCookie(...cookies);  // 注入cookie
-        await page.goto(url);  // 打开锁佣页面
-        await page.waitForTimeout(sleepTime) // 等待1-3s
+        try {
+            await page.goto(url);  // 先打开京东页面
+            await page.waitForTimeout(sleepTime);  // 等待1-3s
+            await page.setCookie(...cookies);  // 注入cookie
+            await page.goto(url);  // 打开锁佣页面
+            await page.waitForTimeout(sleepTime) // 等待1-3s
+        }
+        catch(err) {
+            console.log("当前链接访问失败，为避免浪费ip，直接进行下一商品访问！")
+        }
+
     }
 
     await browser.close();
