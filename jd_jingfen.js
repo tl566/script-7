@@ -46,9 +46,22 @@ if ($.isNode()) {
 
         console.log("当前操作用户：" + $.UserName)   // 输出当前用户
 
-        let urls = await getUrls(options)
+        try {
+            let urls = await getUrls(options)
+        }
+        catch (e) {
+            console.log('当前购物车列表请求失败，执行下次请求！' + e)
+            continue
+        }
+
         // console.log(urls)
-        let shareUrls = await changeLinks(urls)  // 转链后的锁佣链接
+        try {
+            let shareUrls = await changeLinks(urls)  // 转链后的锁佣链接
+        }
+        catch (e) {
+            console.log('当前转链失败，执行下次请求！' + e)
+            continue
+        }
         // console.log(shareUrls)
         let ls = cookie.split(';').slice(0,2)   // 调整为访问时所需的cookie格式
         // console.log(ls)
@@ -61,7 +74,14 @@ if ($.isNode()) {
             cks.push(res)
         }
 
-        await browse(shareUrls, cks, proxyIp)  // 模拟访问该用户的所有购物车链接
+        try {
+            await browse(shareUrls, cks, proxyIp)  // 模拟访问该用户的所有购物车链接
+        }
+        catch (e) {
+            console.log('本次模拟浏览失败，执行下一个用户！')
+            continue
+        }
+
         console.log('当前用户浏览完毕，成功浏览商品数量：' + shareUrls.length)
         num += shareUrls.length
     }
