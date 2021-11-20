@@ -46,8 +46,9 @@ if ($.isNode()) {
 
         console.log("当前操作用户：" + $.UserName)   // 输出当前用户
 
+        let urls = []
         try {
-            let urls = await getUrls(options)
+            urls = await getUrls(options)
         }
         catch (e) {
             console.log('当前购物车列表请求失败，执行下次请求！' + e)
@@ -55,8 +56,10 @@ if ($.isNode()) {
         }
 
         // console.log(urls)
+
+        let shareUrls = []
         try {
-            let shareUrls = await changeLinks(urls)  // 转链后的锁佣链接
+            shareUrls = await changeLinks(urls)  // 转链后的锁佣链接
         }
         catch (e) {
             console.log('当前转链失败，执行下次请求！' + e)
