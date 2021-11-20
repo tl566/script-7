@@ -163,11 +163,12 @@ async function browse(urls, cks) {
 
     for (let url of urls) {
         console.log("当前访问商品:" + url)
+        let sleepTime = parseInt(Math.random()*(3000-1000+1)+1000);
         await page.goto(url);  // 先打开京东页面
-        await page.waitForTimeout(1000);  // 等待3s
+        await page.waitForTimeout(sleepTime);  // 等待1-3s
         await page.setCookie(...cookies);  // 注入cookie
         await page.goto(url);  // 打开锁佣页面
-        await page.waitForTimeout(1000) // 等待3s
+        await page.waitForTimeout(sleepTime) // 等待1-3s
     }
 
     await browser.close();
