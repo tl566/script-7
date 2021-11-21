@@ -413,7 +413,7 @@ function Env(name, opts) {
                         }
                     })
                 }
-                Object.assign(options, { agent })
+                Object.assign(opts, { agent })
             }
             return this.send.call(this.env, opts)
         }
@@ -430,7 +430,7 @@ function Env(name, opts) {
                         }
                     })
                 }
-                Object.assign(options, { agent })
+                Object.assign(opts, { agent })
             }
             return this.send.call(this.env, opts, 'POST')
         }
