@@ -402,36 +402,10 @@ function Env(name, opts) {
         }
 
         get(opts) {
-            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
-                console.log('当前请求启用代理ip：' + process.env.PROXY_HOST)
-                const tunnel = require("tunnel");
-                const agent = {
-                    https: tunnel.httpsOverHttp({
-                        proxy: {
-                            host: process.env.PROXY_HOST,
-                            port: process.env.PROXY_PORT * 1
-                        }
-                    })
-                }
-                Object.assign(opts, { agent })
-            }
             return this.send.call(this.env, opts)
         }
 
         post(opts) {
-            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
-                console.log('当前请求启用代理ip：' + process.env.PROXY_HOST)
-                const tunnel = require("tunnel");
-                const agent = {
-                    https: tunnel.httpsOverHttp({
-                        proxy: {
-                            host: process.env.PROXY_HOST,
-                            port: process.env.PROXY_PORT * 1
-                        }
-                    })
-                }
-                Object.assign(opts, { agent })
-            }
             return this.send.call(this.env, opts, 'POST')
         }
     }
@@ -674,6 +648,20 @@ function Env(name, opts) {
                 delete opts.headers['Content-Type']
                 delete opts.headers['Content-Length']
             }
+            // 启用代理ip
+            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
+                console.log('当前请求启用代理ip：' + process.env.PROXY_HOST)
+                const tunnel = require("tunnel");
+                const agent = {
+                    https: tunnel.httpsOverHttp({
+                        proxy: {
+                            host: process.env.PROXY_HOST,
+                            port: process.env.PROXY_PORT * 1
+                        }
+                    })
+                }
+                Object.assign(opts, { agent })
+            }
             if (this.isSurge() || this.isLoon()) {
                 if (this.isSurge() && this.isNeedRewrite) {
                     opts.headers = opts.headers || {}
@@ -735,6 +723,20 @@ function Env(name, opts) {
                 opts.headers['Content-Type'] = 'application/x-www-form-urlencoded'
             }
             if (opts.headers) delete opts.headers['Content-Length']
+            // 启用代理ip
+            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
+                console.log('当前请求启用代理ip：' + process.env.PROXY_HOST)
+                const tunnel = require("tunnel");
+                const agent = {
+                    https: tunnel.httpsOverHttp({
+                        proxy: {
+                            host: process.env.PROXY_HOST,
+                            port: process.env.PROXY_PORT * 1
+                        }
+                    })
+                }
+                Object.assign(opts, { agent })
+            }
             if (this.isSurge() || this.isLoon()) {
                 if (this.isSurge() && this.isNeedRewrite) {
                     opts.headers = opts.headers || {}
