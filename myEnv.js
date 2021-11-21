@@ -1,5 +1,5 @@
 // prettier-ignore
-function Env(name, opts) {
+exports.Env = function Env(name, opts) {
     class Http {
         constructor(env) {
             this.env = env
@@ -263,7 +263,7 @@ function Env(name, opts) {
 
         get(opts, callback = () => {}) {
             // 增加启用代理ip的代码 start
-            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
+            if (this.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
                 console.log('根据环境变量PROXY_HOST配置，本次请求采用代理ip发送...')
                 const tunnel = require("tunnel");
                 const agent = {
@@ -338,7 +338,7 @@ function Env(name, opts) {
 
         post(opts, callback = () => {}) {
             // 增加启用代理ip的代码 start
-            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
+            if (this.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
                 console.log('根据环境变量PROXY_HOST配置，本次请求采用代理ip发送...')
                 const tunnel = require("tunnel");
                 const agent = {
