@@ -262,6 +262,22 @@ function Env(name, opts) {
         }
 
         get(opts, callback = () => {}) {
+            // 增加启用代理ip的代码 start
+            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
+                console.log('根据环境变量PROXY_HOST配置，本次请求采用代理ip发送...')
+                const tunnel = require("tunnel");
+                const agent = {
+                    https: tunnel.httpsOverHttp({
+                        proxy: {
+                            host: process.env.PROXY_HOST,
+                            port: process.env.PROXY_PORT * 1
+                        }
+                    })
+                }
+                Object.assign(opts, { agent })
+            }
+            // 增加启用代理ip的代码 end
+
             if (opts.headers) {
                 delete opts.headers['Content-Type']
                 delete opts.headers['Content-Length']
@@ -321,6 +337,21 @@ function Env(name, opts) {
         }
 
         post(opts, callback = () => {}) {
+            // 增加启用代理ip的代码 start
+            if ($.isNode() && process.env.PROXY_HOST && process.env.PROXY_PORT) {
+                console.log('根据环境变量PROXY_HOST配置，本次请求采用代理ip发送...')
+                const tunnel = require("tunnel");
+                const agent = {
+                    https: tunnel.httpsOverHttp({
+                        proxy: {
+                            host: process.env.PROXY_HOST,
+                            port: process.env.PROXY_PORT * 1
+                        }
+                    })
+                }
+                Object.assign(opts, { agent })
+            }
+            // 增加启用代理ip的代码 end
             const method = opts.method ? opts.method.toLocaleLowerCase() : 'post'
             // 如果指定了请求体, 但没指定`Content-Type`, 则自动生成
             if (opts.body && opts.headers && !opts.headers['Content-Type']) {
