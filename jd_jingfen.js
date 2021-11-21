@@ -89,6 +89,11 @@ if ($.isNode()) {
         num += shareUrls.length
     }
     console.log('所有用户浏览完毕！共浏览商品数量：' + num)
+    // 发送通知
+    if ($.isNode()) {
+        await notify.sendNotify('今日所有用户浏览完毕！共浏览商品数量：' + num + '，下次执行时间为下周今日！');
+    }
+
 })()
     .catch((e) => {
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
