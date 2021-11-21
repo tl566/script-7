@@ -25,20 +25,12 @@ https://github.com/inoyna12/JDsc
 3. 获取互助码【完成】          -jd_get_share_code.js
 4. 京东店铺锁y【完成】         -jd_jingfen.js
 
+锁佣脚本1车在周一执行。2车在周二，以此类推，每周运行一次
 
 
 
-
-
-
-0, 获取各类互助码【完成】
-1，东东农场+农场助力码【完成】
-2，自研京粉【完成】
-3，价保【完成】
-
-
-### 新脚本设置
-1. 将env开头替换为自己的，可以支持代理ip访问
+### 新脚本增加代理ip设置
+将env开头替换如下，即可以支持代理ip访问
 ```
 const myEnv = require('./myEnv.js')
 const $ = new myEnv.Env('京喜领88元红包');
