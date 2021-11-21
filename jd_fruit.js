@@ -26,6 +26,7 @@ jd免费水果 搬的https://github.com/liuxiaoyucc/jd-helper/blob/a6f275d978574
 export DO_TEN_WATER_AGAIN="" 默认再次浇水
 
 */
+const name = new Env('东东农场');  // 拉取脚本时定时任务命名
 const myEnv = require('./myEnv.js')
 const $ = new myEnv.Env('东东农场');
 

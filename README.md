@@ -32,6 +32,7 @@ https://github.com/inoyna12/JDsc
 ### 新脚本增加代理ip设置
 将env开头替换如下，即可以支持代理ip访问
 ```
+const name = new Env('脚本名称');  // 拉取脚本时定时任务命名
 const myEnv = require('./myEnv.js')
 const $ = new myEnv.Env('京喜领88元红包');
 ```

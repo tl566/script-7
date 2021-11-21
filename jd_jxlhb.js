@@ -19,6 +19,7 @@ cron "0 0 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_
 ===============小火箭==========
 京喜领88元红包 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js, cronexpr="0 0 * * *", timeout=3600, enable=true
  */
+const name = new Env('京喜领88元红包');  // 拉取脚本时定时任务命名
 const myEnv = require('./myEnv.js')
 const $ = new myEnv.Env('京喜领88元红包');
 
