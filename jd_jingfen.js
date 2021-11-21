@@ -1,3 +1,11 @@
+/*
+京东店铺锁y
+==============Quantumult X==============
+[task_local]
+#京东店铺锁y
+0 7 * * 1 tag=京东店铺锁y, img-url=, enabled=true
+ */
+
 const got = require('got');
 var md5 = require('md5');
 const tunnel =require('tunnel')
@@ -92,7 +100,7 @@ if ($.isNode()) {
     console.log('所有用户浏览完毕！共浏览商品数量：' + num)
     // 发送通知
     if ($.isNode()) {
-        await notify.sendNotify('今日所有用户浏览完毕！共浏览商品数量：' + num + '，下次执行时间为下周今日！');
+        await notify.sendNotify(`京东店铺锁y执行完成`, '所有用户浏览完毕！共浏览商品数量：' + num);
     }
 
 })()
