@@ -5,6 +5,7 @@ const puppeteer = require('puppeteer');
 
 
 const $ = new Env('京东店铺锁y');
+const notify = $.isNode() ? require('./sendNotify') : '';
 
 // 此处从环境变量中读取多个值
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
