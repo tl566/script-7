@@ -3,7 +3,7 @@
 ==============Quantumult X==============
 [task_local]
 #京东店铺锁y
-0 7 * * 1 tag=京东店铺锁y, img-url=, enabled=true
+cron "0 7 * * 1" jd_jingfen.js, tag:京东店铺锁y
  */
 
 const got = require('got');
