@@ -122,9 +122,16 @@ if ($.isNode()) {
 // 提取购物车商品列表，最多20个
 async function getUrls(options) {
     let urls = []
-    let data = await got.get('https://p.m.jd.com/cart/cart.action?fromnav=1&sceneval=2&jxsid=16371654022816454477', options)
-        .text()
-    // console.log(data)
+    console.log('判断卡住节点3')
+    let data = ''
+    try {
+        data = await got.get('https://p.m.jd.com/cart/cart.action?fromnav=1&sceneval=2&jxsid=16371654022816454477', options).text()
+    }
+    catch (e) {
+        console.log('请求失败：' + e)
+    }
+
+    console.log("判断卡住节点4：" + data)
     const pattern = /skuItemUrl":"(.*?)\?/g
     const items = data.matchAll(pattern)
 
