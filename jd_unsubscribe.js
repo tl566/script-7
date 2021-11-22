@@ -25,7 +25,7 @@ let args_xh = {
      * 是否执行取消关注，默认true
      * 可通过环境变量控制：JD_UNSUB
      * */
-    isRun: process.env.JD_UNSUB || true,
+    isRun: process.env.JD_UNSUB || false,
     /*
      * 执行完毕是否进行通知，默认false
      * 可用环境变量控制：JD_TRY_PLOG
