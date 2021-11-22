@@ -131,7 +131,7 @@ async function getUrls(options) {
         console.log('请求失败：' + e)
     }
 
-    console.log("判断卡住节点4：" + data)
+    console.log("判断卡住节点4")
     const pattern = /skuItemUrl":"(.*?)\?/g
     const items = data.matchAll(pattern)
 
