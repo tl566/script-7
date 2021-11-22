@@ -3,6 +3,10 @@ echo "开始拷贝必要文件"
 sudo cp api.py ./serverless
 cd ./serverless
 
+echo "开始安装所需模块"
+sudo -H pip install --upgrade setuptools >/dev/null
+sudo -H pip install Flask -i https://pypi.tuna.tsinghua.edu.cn/simple/ -t ./
+
 #部署至腾讯云函数
 if [ -z "$TENCENT_SECRET_ID" ] || [ -z "$TENCENT_SECRET_KEY" ]; then
   echo "部署至腾讯云需要填写TENCENT_SECRET_ID和TENCENT_SECRET_KEY两个secrets，跳过部署"
