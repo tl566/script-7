@@ -240,14 +240,15 @@ async function browse(urls, cks, proxyIp) {
     // await page.setUserAgent('iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1')  // 设置UA
     const cookies = cks  // 读取用户cookie
     await page.emulate(puppeteer.devices['iPhone X']);   // 模拟设备
-    await page.setRequestInterception(true);     // 开启拦截请求模式，拦截图片
-    await page.on('request', interceptedRequest => {
-        //判断如果是 图片请求  就直接拦截
-        if (interceptedRequest.url().endsWith('.png') || interceptedRequest.url().endsWith('.jpg') || interceptedRequest.url().endsWith('.dpg')|| interceptedRequest.url().endsWith('.webp'))
-            interceptedRequest.abort();   //终止请求
-        else
-            interceptedRequest.continue();//弹出
-    });
+    // 不要使用拦截器，防止京东的js重复请求
+    // await page.setRequestInterception(true);     // 开启拦截请求模式，拦截图片
+    // await page.on('request', interceptedRequest => {
+    //     //判断如果是 图片请求  就直接拦截
+    //     if (interceptedRequest.url().endsWith('.png') || interceptedRequest.url().endsWith('.jpg') || interceptedRequest.url().endsWith('.dpg')|| interceptedRequest.url().endsWith('.webp'))
+    //         interceptedRequest.abort();   //终止请求
+    //     else
+    //         interceptedRequest.continue();//弹出
+    // });
 
     for (let url of urls) {
         console.log("当前访问商品:" + url)
