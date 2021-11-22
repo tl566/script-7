@@ -12,7 +12,7 @@ JD_TRY_TRIALPRICE
 需要花钱的试用最高自己花多少钱
 
 JD_TRY_TITLEFILTERS
-手机卡@手机壳@电话卡@课程@尿库@尿不湿@情趣@婴儿@性用品@教材@试卷@习题@茶叶@茶包@课本
+手机卡@手机壳@电话卡@课程@尿库@尿不湿@情趣@婴儿@性用品@教材@试卷@习题@茶叶@茶包@课本@激活码@枸杞@桑葚@菊花茶@减肥茶@阳痿@早泄
 屏蔽黑名单关键词，中间用@隔开
  */
 
@@ -202,7 +202,7 @@ let args_xh = {
                 trialActivityTitleList = []
                 $.isLimit = false;
                 // 获取tabList的，不知道有哪些的把这里的注释解开跑一遍就行了
-                // await try_tabList();
+                await try_tabList();
                 // return;
                 $.isForbidden = false
                 $.wrong = false
