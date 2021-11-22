@@ -48,6 +48,9 @@ if ($.isNode()) {
                         port: proxyIp.split(':')[1],
                     }
                 })
+            },
+            timeout: {
+                request: 10000
             }
         };
 
@@ -174,7 +177,10 @@ async function changeLinks(urls) {
         }
 
         const {data} = await got.post('https://www.dgrlm.com/qcypopen/open/v1/qcSmartChain', {
-            json: params
+            json: params,
+            timeout: {
+                request: 10000
+            }
         }).json();
         // console.log(data)  // 返回接口结果
         await $.wait(parseInt(Math.random() * 500, 10))
@@ -194,7 +200,11 @@ async function changeLinks(urls) {
 // 提取代理ip
 async function getIp() {
     const ipApi = 'http://webapi.http.zhimacangku.com/getip?num=1&type=1&pro=110000&city=110200&yys=100026&port=1&time=3&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions='
-    let ip = await got.get(ipApi).text()
+    let ip = await got.get(ipApi,{
+        timeout: {
+            request: 10000
+        }
+    }).text()
     return ip
 }
 
