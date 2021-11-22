@@ -11,6 +11,7 @@ const {
     getEnvs,
 	getEnvById,
     DisableCk,
+    delEnv,
     EnableCk,
     getstatus
 } = require('./utils/ql.js');
@@ -214,19 +215,19 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
                 if (!$.isLogin) {
 
                     if (strnowstatus == 0) {
-                        const DisableCkBody = await DisableCk(envs[i]._id);
+                        const DisableCkBody = await delEnv(envs[i]._id);
                         if (DisableCkBody.code == 200) {
                             if ($.isNode() && WP_APP_TOKEN_ONE) {
-                                strNotifyOneTemp = `京东账号: ${$.nickName || $.UserName2} 已失效,自动禁用成功!\n如果要继续挂机，请联系管理员重新登录账号，账号有效期为30天.`
+                                strNotifyOneTemp = `京东账号: ${$.nickName || $.UserName2} 已失效,自动删除成功!\n如果要继续挂机，请联系管理员重新登录账号，账号有效期为20-30天.`
 
                                     if (strAllNotify)
                                         strNotifyOneTemp += `\n` + strAllNotify;
 
                                     await notify.sendNotifybyWxPucher(`${$.name}`, strNotifyOneTemp, `${$.UserName2}`);
                             }
-                            console.log(`京东账号${$.index} : ${$.nickName || $.UserName2} 已失效,自动禁用成功!\n`);
-                            TempDisableMessage = ReturnMessageTitle + ` (自动禁用成功!)\n`;
-                            TempErrorMessage = ReturnMessageTitle + ` 已失效,自动禁用成功!\n`;
+                            console.log(`京东账号${$.index} : ${$.nickName || $.UserName2} 已失效,自动删除成功!\n`);
+                            TempDisableMessage = ReturnMessageTitle + ` (自动删除成功!)\n`;
+                            TempErrorMessage = ReturnMessageTitle + ` 已失效,自动删除成功!\n`;
                         } else {
                             if ($.isNode() && WP_APP_TOKEN_ONE) {
                                 strNotifyOneTemp = `京东账号: ${$.nickName || $.UserName2} 已失效!\n如果要继续挂机，请联系管理员重新登录账号，账号有效期为30天.`
