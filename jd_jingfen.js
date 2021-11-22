@@ -142,13 +142,14 @@ async function changeLinks(urls) {
     const appKey = '61A0BC48DB485329C2691099CCC5E47F'
     const appSecret = '11A09359DEC125B071FC0B5425CBCBEE1EE3C4C69A62262512681C15FC9997B9'
     const unionId = 1002497745  // 联盟id
+    const positionId = 3004044014  // 推广位id
     let timestamp = (new Date()).valueOf()
     let copywriting = ''  // 待转链文案，此处仅需要原商品链接即可
     const version = 'v1'  // 版本，建议v1
 
     // 计算打工人api的sign
     function makeSign(copywriting) {
-        let signPre = `appKey${appKey}copywriting${copywriting}timestamp${timestamp}unionId${unionId}version${version}`  // ascii值排序
+        let signPre = `appKey${appKey}copywriting${copywriting}positionId${positionId}timestamp${timestamp}unionId${unionId}version${version}`  // ascii值排序
         let signStr = appSecret + signPre + appSecret
         return md5(signStr).toUpperCase()
     }
@@ -166,6 +167,7 @@ async function changeLinks(urls) {
             "sign": sign,
             "copywriting": url,
             "unionId": unionId,
+            "positionId": positionId,
             "version": version
         }
 
