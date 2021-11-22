@@ -316,7 +316,7 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
                 allMessageGp2 += `👇👇👇👇👇检测出错账号👇👇👇👇👇\n` + OErrorMessageGp2 + `\n\n`;
             }
             if (DisableMessageGp2) {
-                allMessageGp2 += `👇👇👇👇👇自动禁用账号👇👇👇👇👇\n` + DisableMessageGp2 + `\n\n`;
+                allMessageGp2 += `👇👇👇👇👇自动删除账号👇👇👇👇👇\n` + DisableMessageGp2 + `\n\n`;
             }
             if (EnableMessageGp2) {
                 if (CKAutoEnable == "true") {
@@ -357,7 +357,7 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
                 allMessageGp3 += `👇👇👇👇👇检测出错账号👇👇👇👇👇\n` + OErrorMessageGp3 + `\n\n`;
             }
             if (DisableMessageGp3) {
-                allMessageGp3 += `👇👇👇👇👇自动禁用账号👇👇👇👇👇\n` + DisableMessageGp3 + `\n\n`;
+                allMessageGp3 += `👇👇👇👇👇自动删除账号👇👇👇👇👇\n` + DisableMessageGp3 + `\n\n`;
             }
             if (EnableMessageGp3) {
                 if (CKAutoEnable == "true") {
@@ -397,7 +397,7 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
                 allMessageGp4 += `👇👇👇👇👇检测出错账号👇👇👇👇👇\n` + OErrorMessageGp4 + `\n\n`;
             }
             if (DisableMessageGp4) {
-                allMessageGp4 += `👇👇👇👇👇自动禁用账号👇👇👇👇👇\n` + DisableMessageGp4 + `\n\n`;
+                allMessageGp4 += `👇👇👇👇👇自动删除账号👇👇👇👇👇\n` + DisableMessageGp4 + `\n\n`;
             }
             if (EnableMessageGp4) {
                 if (CKAutoEnable == "true") {
@@ -437,7 +437,7 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
             allMessage += `👇👇👇👇👇检测出错账号👇👇👇👇👇\n` + OErrorMessage + `\n\n`;
         }
         if (DisableMessage) {
-            allMessage += `👇👇👇👇👇自动禁用账号👇👇👇👇👇\n` + DisableMessage + `\n\n`;
+            allMessage += `👇👇👇👇👇自动删除账号👇👇👇👇👇\n` + DisableMessage + `\n\n`;
         }
         if (EnableMessage) {
             if (CKAutoEnable == "true") {
