@@ -6,6 +6,8 @@
  * @Description: 批量取关京东店铺和商品
  * @Fixed: 不再支持Qx，仅支持Node.js
  */
+// cron "0 22 * * *" jx_unsubscribe.js,tag=取消关注和店铺
+
 const $ = new Env('批量取关店铺和商品');
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
