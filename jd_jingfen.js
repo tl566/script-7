@@ -58,6 +58,7 @@ if ($.isNode()) {
         let urls = []
         try {
             urls = await getUrls(options)
+            console.log('卡住判断节点1：'+urls)
         }
         catch (e) {
             console.log('当前购物车列表请求失败，执行下次请求！' + e)
@@ -69,6 +70,7 @@ if ($.isNode()) {
         let shareUrls = []
         try {
             shareUrls = await changeLinks(urls)  // 转链后的锁佣链接
+            console.log('卡住判断节点2：'+shareUrls)
         }
         catch (e) {
             console.log('当前转链失败，执行下次请求！' + e)
