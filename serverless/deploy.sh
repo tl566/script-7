@@ -1,6 +1,6 @@
 #将需要的代码复制并cd到severless文件夹
 echo "开始拷贝必要文件"
-sudo cp api.py ./serverless
+sudo cp app.py ./serverless
 cd ./serverless
 
 echo "开始安装所需模块"
