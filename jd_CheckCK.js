@@ -13,7 +13,7 @@ const {
     DisableCk,
     EnableCk,
     getstatus
-} = require('./ql');
+} = require('./utils/ql.js');
 const api = got.extend({
         retry: {
             limit: 0
@@ -139,7 +139,7 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
 
     for (let i = 0; i < envs.length; i++) {
         if (envs[i].value) {
-            cookie = await getEnvById(envs[i]._id);			
+            cookie = await getEnvById(envs[i]._id);
             $.UserName = (cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
             $.UserName2 = decodeURIComponent($.UserName);
             $.index = i + 1;
@@ -465,7 +465,7 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
             console.log(allMessage);
 			if (strAllNotify)
                     allMessage += `\n` + strAllNotify;
-				
+
             await notify.sendNotify(`${$.name}`, `${allMessage}`, {
                 url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean`
             })
