@@ -21,6 +21,7 @@ cron "10 0,7,23 * * *" script-path=jd_syj.js, tag=赚京豆
 赚京豆 = type=cron,script-path=jd_syj.js, cronexpr="10 0,7,23 * * *", timeout=3600, enable=true
  */
 const $ = new Env('赚京豆');
+let sc = require("./share_code.js")
 
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
