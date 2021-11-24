@@ -1,5 +1,5 @@
 # carry
 
-搬运学习
+搬运自 https://github.com/Aaron-lv/sync 学习javascripts
 
-24小时内删除
+请24小时内删除
