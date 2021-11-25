@@ -511,7 +511,7 @@ class Env {
     }
 
     now(fmt) {
-        return format(fmt || 'yyyy-MM-dd HH:mm:ss.SSS')
+        return format(new Date(), fmt || 'yyyy-MM-dd HH:mm:ss.SSS')
     }
 
     // format(date, fmt) {
