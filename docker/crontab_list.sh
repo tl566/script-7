@@ -96,6 +96,8 @@
 5 11 * * * node /scripts/jd_yqyl.js >> /scripts/logs/jd_yqyl.log 2>&1
 #京东答题领金豆
 9 10 * * * node /scripts/jd_dt.js >> /scripts/logs/jd_dt.log 2>&1
+#京东金榜
+13 13 * * * node /scripts/jd_gold_sign.js >> /scripts/logs/jd_gold_sign.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
