@@ -3,6 +3,10 @@ JD_TRY
 true
 是否开启试用
 
+JD_TRY_PLOG
+false
+关闭试用日志输出
+
 JD_TRY_TABID
 3@4@5@6@12@1
 试用品类id，从日志中查看，id可能会变，及时调整变量
