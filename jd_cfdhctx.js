@@ -1,6 +1,9 @@
 /*
 根据自己服务器的运行时间改定时
-默认兑换10元，export CFD_MOON_NUM="5"#兑换5元
+默认兑换10元
+export CFD_MOON_NUM="5"#兑换5元
+export CFD_MOON_NUM="1"#兑换1元
+export CFD_MOON_NUM="0.2"#兑换0.2元
 cron 0 * * * * jd_cfdhctx.js
 */
 const $ = new Env('财富岛兑换');
@@ -36,6 +39,18 @@ Date.prototype.Format = function (fmt) { //author: meizz
 }
 
 !(async () => {
+    if(cfd_moon === 0.2){
+    //兑换0.2元红包
+        dwLvl=1;
+        ddwVirHb=20;
+        console.log("*****你设置CFD_MOON_NUM兑换0.2元红包*****");
+    }
+    if(cfd_moon === 1){
+    //兑换1元红包
+        dwLvl=2;
+        ddwVirHb=100;
+        console.log("*****你设置CFD_MOON_NUM兑换1元红包*****");
+    }
     if(cfd_moon === 5){
     //兑换5元红包
         dwLvl=3;
@@ -49,6 +64,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
         console.log("*****你设置CFD_MOON_NUM兑换10元红包*****");
 
     }
+
     for (let i = 0; i < cookiesArr.length; i++) {
         cookie = cookiesArr[i];
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
