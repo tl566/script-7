@@ -6,7 +6,10 @@ cron "40 8,10,12,14 * * *" ZY_big_winner_Mod.js
 // 一天可翻多次，但有上限
 // 运气好每次可得0.3元以上的微信现金(需京东账号绑定到微信)
  //详细说明参考 https://github.com/ccwav/QLScript2.
-const $ = new Env('省钱大赢家之翻翻乐');
+const name = new Env('省钱大赢家之翻翻乐');  // 拉取脚本时定时任务命名
+const myEnv = require('./myEnv.js')
+const $ = new myEnv.Env('省钱大赢家之翻翻乐');
+
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
