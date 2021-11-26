@@ -7,7 +7,7 @@ cron:21 9 * * *
 
 */
 
-const $ = new Env('MM领京豆');
+const $ = new Env('京东首页领京豆');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 
