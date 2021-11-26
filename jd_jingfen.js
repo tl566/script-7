@@ -229,13 +229,15 @@ async function browse(urls, cks, proxyIp) {
                 '--no-sandbox', // 沙盒模式
                 `--window-size=${375},${800}`,  // 设置窗口大小
                 '--no-zygote',
-                '--single-process', // 单进程运行
+                // '--single-process', // 单进程运行，无痕模式开启时报错
                 `--proxy-server=${proxyIp}` // 使用代理ip
             ]
         }
     );
 
-    const page = await browser.newPage();
+    // 启动无痕模式
+    const context = await browser.createIncognitoBrowserContext()
+    const page = await context.newPage()
     await page.setDefaultNavigationTimeout(0);  // 解决超时问题
     // await page.setUserAgent('iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1')  // 设置UA
     const cookies = cks  // 读取用户cookie
