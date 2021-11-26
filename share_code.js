@@ -25,8 +25,23 @@ exports.ModCK = function(cks) {
     for (var i = 0; i < eck.length; i++) {
         sck.push(eck[i])
     }
-    if (sck.length > 1) {
+    if (sck.length >= 2) {
         sck.push(sck[0])
+    }
+    if (sck.length >= 3) {
+        sck.push(sck[0])
+        sck.push(sck[1])
+    }
+    if (sck.length >= 4) {
+        sck.push(sck[0])
+        sck.push(sck[1])
+        sck.push(sck[2])
+    }
+    if (sck.length >= 5) {
+        sck.push(sck[0])
+        sck.push(sck[1])
+        sck.push(sck[2])
+        sck.push(sck[3])
     }
     return sck
 }
