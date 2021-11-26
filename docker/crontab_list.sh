@@ -100,6 +100,8 @@
 13 13 * * * node /scripts/jd_gold_sign.js >> /scripts/logs/jd_gold_sign.log 2>&1
 #京东签到翻牌
 8 8 * * * node /scripts/jd_sign_flop.js >> /scripts/logs/jd_sign_flop.log 2>&1
+#京喜财富岛合成生鲜兑换
+0 0,12 * * * node /scripts/jd_cfd_fresh_exchange.js >> /scripts/logs/jd_cfd_fresh_exchange.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
