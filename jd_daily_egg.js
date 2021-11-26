@@ -8,14 +8,11 @@ Last Modified time: 2020-11-20 14:11:01
 [task_local]
 #天天提鹅
 10 * * * * jd_daily_egg.js, tag=天天提鹅, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdte.png, enabled=true
-
 ================Loon==============
 [Script]
 cron "10 * * * *" script-path=jd_daily_egg.js,tag=天天提鹅
-
 ===============Surge=================
 天天提鹅 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=jd_daily_egg.js
-
 ============小火箭=========
 天天提鹅 = type=cron,script-path=jd_daily_egg.js, cronexpr="10 * * * *", timeout=3600, enable=true
  */
@@ -29,6 +26,13 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const { JSDOM } = $.isNode() ? require('jsdom') : '';
 const { window } = new JSDOM(``, { url: dailyEggUrl, runScripts: "outside-only", pretentToBeVisual: true, resources: "usable" })
 const Faker = require('./JDSignValidator.js')
+function oc(fn, defaultVal) {//optioanl chaining
+  try {
+    return fn()
+  } catch (e) {
+    return undefined
+  }
+}
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -64,7 +68,8 @@ if ($.isNode()) {
       const fakerBody = Faker.getBody(dailyEggUrl)
       $.fp = fakerBody.fp
       $.eid = await getClientData(fakerBody)
-      $.token = (await downloadUrl("https://gia.jd.com/m.html")).match(/var\s*?jd_risk_token_id\s*?=\s*["`'](\S*?)["`'];?/)?.[1] || ""
+      const temp = (await downloadUrl("https://gia.jd.com/m.html")).match(/var\s*?jd_risk_token_id\s*?=\s*["`'](\S*?)["`'];?/)
+      $.token = oc(() => temp[1]) || ""
       await jdDailyEgg();
     }
   }
@@ -148,7 +153,7 @@ function toWithdraw() {
 }
 function toDailyHome() {
   return new Promise(async resolve => {
-    const body = getBody(false)
+    const body = getBody()
     $.get(taskUrl('toDailyHome', body), (err, resp, data) => {
       try {
         if (err) {
