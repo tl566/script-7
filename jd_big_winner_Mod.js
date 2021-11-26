@@ -234,7 +234,7 @@ function gambleHomePage() {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`${$.name} API请求失败1，请检查网路重试`)
 				} else {
 					if (data) {
 						data = JSON.parse(data);
@@ -284,7 +284,7 @@ function gambleOpenReward() {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`${$.name} API请求失败2，请检查网路重试`)
 				} else {
 					if (data) {
 						data = JSON.parse(data);
@@ -335,7 +335,7 @@ function openRedReward(functionId = 'gambleChangeReward', type) {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`${$.name} API请求失败3，请检查网路重试`)
 				} else {
 					if (data) {
 						console.log(`翻翻乐结果：${data}\n`);
@@ -418,7 +418,7 @@ function apCashWithDraw(id, poolBaseId, prizeGroupId, prizeBaseId, prizeType) {
 			try {
 				if (err) {
 					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败，请检查网路重试`)
+					console.log(`${$.name} API请求失败4，请检查网路重试`)
 				} else {
 					if (data) {
 						data = JSON.parse(data);
