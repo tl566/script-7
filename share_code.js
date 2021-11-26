@@ -25,6 +25,9 @@ exports.ModCK = function(cks) {
     for (var i = 0; i < eck.length; i++) {
         sck.push(eck[i])
     }
+    if (sck.length > 1) {
+        sck.push(sck[0])
+    }
     return sck
 }
 
