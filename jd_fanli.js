@@ -1,5 +1,5 @@
 
-/* 
+/*
 京东饭粒
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
@@ -19,7 +19,10 @@ cron "40 0,9,17 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJ
 京东饭粒 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_fanli.js, cronexpr="40 0,9,17 * * *", timeout=3600, enable=true
 */
 
-const $ = new Env('京东饭粒');
+const name = new Env('京东饭粒');  // 拉取脚本时定时任务命名
+const myEnv = require('./myEnv.js')
+const $ = new myEnv.Env('京东饭粒');
+
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [], cookie = '', message = '',personMessage='';
@@ -88,15 +91,15 @@ if ($.isNode()) {
                            }
                         }
                     }
-                    
+
                 }
                 else{
                     console.log("任务已做完")
                 }
-                
+
             }
         }
-  
+
 })()
     .catch((e) => {
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -124,7 +127,7 @@ function saveTaskRecord(ck,taskId,businessId,taskType) {
             "Content-Type": "application/json;charset=UTF-8"
         },
         body : JSON.stringify({ taskId: taskId,businessId:businessId, taskType: taskType }),
-       
+
     }
     return new Promise(resolve => {
         $.post(opt, (err, resp, data) => {
@@ -142,8 +145,8 @@ function saveTaskRecord(ck,taskId,businessId,taskType) {
                         else{
                             console.log("未获取到活动内容，开始下一个")
                         }
-                        
-                     
+
+
                     } else {
                         $.log("京东返回了空数据")
                     }
@@ -177,7 +180,7 @@ function saveTaskRecord1(ck,taskId,businessId,taskType,uid,tt) {
             "Content-Type": "application/json;charset=UTF-8"
         },
         body : JSON.stringify({ taskId: taskId, taskType: taskType,businessId:businessId,uid:uid,tt:tt }),
-       
+
     }
     return new Promise(resolve => {
         $.post(opt, (err, resp, data) => {
@@ -279,7 +282,7 @@ function getTaskList(ck) {
                         else{
                             console.log("未获取到活动列表，请检查活动")
                         }
-                       
+
                     }
                 }
             } catch (e) {
