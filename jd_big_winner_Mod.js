@@ -370,6 +370,10 @@ function openRedReward(functionId = 'gambleChangeReward', type) {
                         console.log(`翻翻乐 翻倍 失败：${JSON.stringify(data)}\n`);
                     }
                 }
+                else {
+                    console.log('数据返回失败，跳出任务')
+                    throw('数据返回失败，跳出任务')
+                }
             }
             catch (e) {
                 console.log(`${JSON.stringify(err)}`)
