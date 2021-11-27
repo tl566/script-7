@@ -332,52 +332,50 @@ function openRedReward(functionId = 'gambleChangeReward', type) {
 	}
 	return new Promise(resolve => {
 		$.post(options, (err, resp, data) => {
-			try {
-				if (err) {
-					console.log(`${JSON.stringify(err)}`)
-					console.log(`${$.name} API请求失败3，请检查网路重试`)
-				} else {
-					if (data) {
-						console.log(`翻翻乐结果：${data}\n`);
-						data = JSON.parse(data);
-						if (data['code'] === 0) {
-							$.rewardData = data.data;
-							if (data.data.rewardState === 1) {
-								if (data.data.rewardValue >= money) {
-									//已翻倍到0.3元，可以提现了
-									$.canApCashWithDraw = true;
-									$.changeReward = false;
-									// message += `${data.data.rewardValue}元现金\n`
-								}
-								if (data.data.rewardType === 1) {
-									console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 成功，获得：${data.data.rewardValue}元红包\n`);
-								} else if (data.data.rewardType === 2) {
-									console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 成功，获得：${data.data.rewardValue}元现金\n`);
-									// $.canApCashWithDraw = true;
-								} else {
-									console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 成功，获得：${JSON.stringify(data)}\n`);
-								}
-							} else if (data.data.rewardState === 3) {
-								console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 失败，奖品溜走了/(ㄒoㄒ)/~~\n`);
-								$.changeReward = false;
-							} else {
-								if (type) {
-									console.log(`翻翻乐领取成功：${data.data.amount}现金\n`)
-									ReturnMessage += `${new Date().getHours()}点：${data.data.amount}现金\n`;
-								} else {
-									console.log(`翻翻乐 翻倍 成功，获得：${JSON.stringify(data)}\n`);
-								}
-							}
-						} else {
-							$.canApCashWithDraw = true;
-							$.changeReward = false;
-							console.log(`翻翻乐 翻倍 失败：${JSON.stringify(data)}\n`);
-						}
-					}
-				}
-			} catch (e) {
-				$.logErr(e, resp)
-			}
+		    try {
+                if (data) {
+                    console.log(`翻翻乐结果：${data}\n`);
+                    data = JSON.parse(data);
+                    if (data['code'] === 0) {
+                        $.rewardData = data.data;
+                        if (data.data.rewardState === 1) {
+                            if (data.data.rewardValue >= money) {
+                                //已翻倍到0.3元，可以提现了
+                                $.canApCashWithDraw = true;
+                                $.changeReward = false;
+                                // message += `${data.data.rewardValue}元现金\n`
+                            }
+                            if (data.data.rewardType === 1) {
+                                console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 成功，获得：${data.data.rewardValue}元红包\n`);
+                            } else if (data.data.rewardType === 2) {
+                                console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 成功，获得：${data.data.rewardValue}元现金\n`);
+                                // $.canApCashWithDraw = true;
+                            } else {
+                                console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 成功，获得：${JSON.stringify(data)}\n`);
+                            }
+                        } else if (data.data.rewardState === 3) {
+                            console.log(`翻翻乐 第${data.data.changeTimes}次翻倍 失败，奖品溜走了/(ㄒoㄒ)/~~\n`);
+                            $.changeReward = false;
+                        } else {
+                            if (type) {
+                                console.log(`翻翻乐领取成功：${data.data.amount}现金\n`)
+                                ReturnMessage += `${new Date().getHours()}点：${data.data.amount}现金\n`;
+                            } else {
+                                console.log(`翻翻乐 翻倍 成功，获得：${JSON.stringify(data)}\n`);
+                            }
+                        }
+                    } else {
+                        $.canApCashWithDraw = true;
+                        $.changeReward = false;
+                        console.log(`翻翻乐 翻倍 失败：${JSON.stringify(data)}\n`);
+                    }
+                }
+            }
+            catch (e) {
+                console.log(`${JSON.stringify(err)}`)
+                console.log(`${$.name} API请求失败3，请检查网路重试`)
+                $.logErr(e, resp)
+            }
 			finally {
 				resolve()
 			}
