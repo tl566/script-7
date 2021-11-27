@@ -369,6 +369,7 @@ function openRedReward(functionId = 'gambleChangeReward', type) {
                         $.changeReward = false;
                         console.log(`翻翻乐 翻倍 失败：${JSON.stringify(data)}\n`);
                     }
+                    resolve()
                 }
                 else {
                     console.log('数据返回失败，跳出任务')
@@ -380,9 +381,6 @@ function openRedReward(functionId = 'gambleChangeReward', type) {
                 console.log(`${$.name} API请求失败3，请检查网路重试`)
                 $.logErr(e, resp)
             }
-			finally {
-				resolve()
-			}
 		})
 	})
 }
