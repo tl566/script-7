@@ -1,9 +1,12 @@
 /*
-根据自己服务器的运行时间改定时
-默认兑换10元
+
+设置环境变量兑换金额，默认兑换10元
 export CFD_MOON_NUM="5"#兑换5元
 export CFD_MOON_NUM="1"#兑换1元
 export CFD_MOON_NUM="0.2"#兑换0.2元
+export CFD_MOON_NUM="random"#随机兑换0.2-5元
+
+根据自己服务器的运行时间改定时
 cron 0 * * * * jd_cfdhctx.js
 */
 const $ = new Env('财富岛兑换');
@@ -62,9 +65,13 @@ Date.prototype.Format = function (fmt) { //author: meizz
         dwLvl=2;
         ddwVirHb=1000;
         console.log("*****你设置CFD_MOON_NUM兑换10元红包*****");
-
     }
-
+    if(cfd_moon === 'random'){
+    //随机兑换0.2-5元
+        dwLvl='undefined';
+        ddwVirHb='undefined';
+        console.log("*****你设置CFD_MOON_NUM随机兑换0.2-5元红包*****");
+    }
     for (let i = 0; i < cookiesArr.length; i++) {
         cookie = cookiesArr[i];
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -95,7 +102,7 @@ function taskPostUrl(){
 
 function taskUrl(cookie) {
             return {
-                "url": `https://m.jingxi.com/jxbfd/user/ExchangePearlHb?__t=1638080462797&strZone=jxbfd&dwLvl=undefined&dwIsRandHb=1&ddwVirHb=undefined&strPoolName=anhjZmQyX2V4Y2hhbmdlX2hjc2poYl8yMDIxMTE%3D&dwExchangeType=0&_stk=__t%2CdwExchangeType%2CdwIsRandHb%2CstrPoolName%2CstrZone&_ste=1&h5st=20211128142102799%3B5807507075086161%3B10032%3Btk01wad7c1b9330nSxYwZsYaWVV9sXca6omEZjAo9%2BjjRA8mqQgBs%2BR9%2B1QEFMUnsJ0JqGL6hirKxkJ86LK0c1CzeDz1%3Bc67784b0555b8b224b9427ba0b4fd6afca15b2ed5d36a60061a45dcd9f82bfc5&_=1638080462808&sceneval=2&g_login_type=1&callback=jsonpCBKI&g_ty=ls%0D%0A`,
+                "url": `https://m.jingxi.com/jxbfd/user/ExchangePearlHb?__t=1638080462797&strZone=jxbfd&dwLvl=${dwLvl}&dwIsRandHb=1&ddwVirHb=${ddwVirHb}&strPoolName=anhjZmQyX2V4Y2hhbmdlX2hjc2poYl8yMDIxMTE%3D&dwExchangeType=0&_stk=__t%2CdwExchangeType%2CdwIsRandHb%2CstrPoolName%2CstrZone&_ste=1&h5st=20211128142102799%3B5807507075086161%3B10032%3Btk01wad7c1b9330nSxYwZsYaWVV9sXca6omEZjAo9%2BjjRA8mqQgBs%2BR9%2B1QEFMUnsJ0JqGL6hirKxkJ86LK0c1CzeDz1%3Bc67784b0555b8b224b9427ba0b4fd6afca15b2ed5d36a60061a45dcd9f82bfc5&_=1638080462808&sceneval=2&g_login_type=1&callback=jsonpCBKI&g_ty=ls%0D%0A`,
                 "headers": {
                     "Host": "m.jingxi.com",
                     "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
