@@ -20,7 +20,7 @@ $.logic = async function () {
     let joins = await dbJoinProgressList(id, token);
     await $.wait(100, 200)
     for (const ele of list) {
-        $.log('参与', ele.actTitle, $.format(ele.endTime));
+        $.log('参与', ele.actTitle, $.formatDate(ele.endTime));
         if (joins.includes(ele._id)) {
             $.log(ele.actTitle, `你已经参与了夺宝`)
             continue;
