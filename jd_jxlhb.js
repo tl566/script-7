@@ -78,7 +78,8 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3';
         token = await getJxToken()
         await main();
     }
-    //互助
+    $.shit = true
+        //互助
     console.log(`\n\n自己京东账号助力码：\n${JSON.stringify($.packetIdArr)}\n\n`);
     console.log(`\n开始助力：助力逻辑 先自己京东相互助力，如有剩余助力机会，则助力作者\n`)
     for (let i = cookiesArr.length - 1; i > -1; i--) {
@@ -199,10 +200,12 @@ function getUserInfo() {
                         } else {
                             console.log(`获取助力码成功：${data.Data.strUserPin}\n`);
                             if (data.Data.strUserPin) {
-                                $.packetIdArr.push({
-                                    strUserPin: data.Data.strUserPin,
-                                    userName: $.UserName
-                                })
+                                if (!$.shit) {
+                                    $.packetIdArr.push({
+                                        strUserPin: data.Data.strUserPin,
+                                        userName: $.UserName
+                                    })
+                                }
                             }
                         }
                         if (data.Data.strUserPin) {
