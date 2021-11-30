@@ -57,7 +57,8 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3';
     res["codes"] = [];
     $.authorMyShareIds = [...((res && res.codes) || [])];
     //开启红包,获取互助码
-    for (let i = 0; i < process.env.CHETOU_NUMBER ? process.env.CHETOU_NUMBER : 12; i++) {
+    var chetou = process.env.CHETOU_NUMBER ? +process.env.CHETOU_NUMBER : 12
+    for (let i = 0; i < chetou; i++) {
         cookie = cookiesArr[i];
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
         $.index = i + 1;
@@ -87,6 +88,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3';
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
         $.canHelp = true;
         UA = UAInfo[$.UserName]
+
         token = await getJxToken()
         await main();
         for (let j = 0; j < $.packetIdArr.length && $.canHelp; j++) {
