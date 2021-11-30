@@ -130,7 +130,7 @@ async function jdFruit() {
 
         await initForFarm();
         if ($.farmInfo.farmUserPro) {
-            await collect();
+            // await collect();
             // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
             // message = `【水果名称】${$.farmInfo.farmUserPro.name}\n`;
             // // console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.farmInfo.farmUserPro.shareCode}\n`);

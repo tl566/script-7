@@ -82,7 +82,7 @@ const ZLC = !(process.env.JD_JOIN_ZLC && process.env.JD_JOIN_ZLC === 'false');
             subTitle = '';
             option = {};
             $.retry = 0;
-            await collect();
+            // await collect();
         }
     }
     for (let i = 0; i < cookiesArr.length; i++) {
@@ -106,7 +106,7 @@ const ZLC = !(process.env.JD_JOIN_ZLC && process.env.JD_JOIN_ZLC === 'false');
             subTitle = '';
             option = {};
             $.retry = 0;
-            await shareCodesFormat();
+            // await shareCodesFormat();
             await jdFruit();
         }
     }
