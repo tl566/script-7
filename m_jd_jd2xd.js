@@ -1,7 +1,7 @@
 //50,55 23 * * * m_jd_jd2xd.js
 //抄AK大佬的
 //如果有过期京豆,将以100的整数倍兑换
-//问题反馈https://t.me/Wall_E_Channel
+//问题反馈:https://t.me/Wall_E_Channel
 const {Env} = require('./magic');
 const $ = new Env('M京豆转喜豆');
 $.logic = async function () {

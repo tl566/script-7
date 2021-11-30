@@ -1,5 +1,5 @@
 //32 7-22 * * * m_jx_cfd_card.js
-//问题反馈https://t.me/Wall_E_Channel
+//问题反馈:https://t.me/Wall_E_Channel
 const {Env} = require('./magic');
 const $ = new Env('M财富岛加速');
 $.logic = async function () {
