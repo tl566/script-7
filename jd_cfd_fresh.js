@@ -265,7 +265,7 @@ function composePearlAddProcess(strDT, strLT) {
 }
 function getPearlDailyReward() {
     return new Promise((resolve) => {
-        $.get(taskUrl(`user/GetPearlDailyReward`, `__t=${Date.now()}`), (err, resp, data) => {
+        $.get(taskUrl(`user/GetPpPearlDailyReward`, `__t=${Date.now()}`), (err, resp, data) => {
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
@@ -283,7 +283,7 @@ function getPearlDailyReward() {
 }
 function pearlDailyDraw(ddwSeasonStartTm, strToken) {
     return new Promise((resolve) => {
-        $.get(taskUrl(`user/PearlDailyDraw`, `__t=${Date.now()}&ddwSeaonStart=${ddwSeasonStartTm}&strToken=${strToken}`), (err, resp, data) => {
+        $.get(taskUrl(`user/PpPearlDailyDraw`, `__t=${Date.now()}&ddwSeaonStart=${ddwSeasonStartTm}&strToken=${strToken}`), (err, resp, data) => {
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
