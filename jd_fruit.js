@@ -152,11 +152,11 @@ async function jdFruit() {
             message = `【水果名称】${$.farmInfo.farmUserPro.name}\n`;
             // console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.farmInfo.farmUserPro.shareCode}\n`);
             // jdFruitShareArr.push($.farmInfo.farmUserPro.shareCode)
-            await $.get({
-                url: 'http://106.13.233.51:8080/activeJdFruitCode?code=' + $.farmInfo.farmUserPro.shareCode
-            }, function(err, resp, data) {
-                console.log('互助码状态:' + resp.body);
-            })
+            // await $.get({
+            //     url: 'http://106.13.233.51:8080/activeJdFruitCode?code=' + $.farmInfo.farmUserPro.shareCode
+            // }, function(err, resp, data) {
+            //     console.log('互助码状态:' + resp.body);
+            // })
             console.log(`\n【已成功兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`);
             message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
             await masterHelpShare(); //助力好友
@@ -185,7 +185,8 @@ async function jdFruit() {
             await getWaterFriendGotAward(); //领取为2好友浇水奖励
             await duck();
             await doTenWaterAgain(); //再次浇水
-            await predictionFruit(); //预测水果成熟时间
+            //
+            // await predictionFruit(); //预测水果成熟时间
         } else {
             console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: ${JSON.stringify($.farmInfo)}`);
             if ($.retry < 3) {
@@ -1023,7 +1024,7 @@ async function collect() {
             console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.farmInfo.farmUserPro.shareCode}\n`);
             jdFruitShareArr.push($.farmInfo.farmUserPro.shareCode)
         } else {
-            console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: ${JSON.stringify($.farmInfo)}`);
+            console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据:`); // ${JSON.stringify($.farmInfo)}
         }
     } catch (e) {
         $.logErr(e);
