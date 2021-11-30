@@ -189,12 +189,12 @@ async function jdFruit() {
             // await predictionFruit(); //预测水果成熟时间
         } else {
             console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: `);
-            if ($.retry < 2) {
-                $.retry++
-                    console.log(`等待10秒后重试,第:${$.retry}次`);
-                await $.wait(10000);
-                await jdFruit();
-            }
+            // if ($.retry < 2) {
+            //     $.retry++
+            //         console.log(`等待10秒后重试,第:${$.retry}次`);
+            //     await $.wait(10000);
+            //     await jdFruit();
+            // }
         }
     } catch (e) {
         console.log(`任务执行异常，请检查执行日志 ‼️‼️`);
@@ -299,7 +299,7 @@ async function doDailyTask() {
     //   getExtraAward(),//领取额外水滴奖励
     //   turntableFarm()//天天抽奖得好礼
     // ])
-    await getAwardInviteFriend();
+    // await getAwardInviteFriend();
     await clockInIn(); //打卡领水
     await executeWaterRains(); //水滴雨
     await getExtraAward(); //领取额外水滴奖励

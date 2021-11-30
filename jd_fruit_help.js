@@ -143,6 +143,7 @@ async function jdFruit() {
             // console.log(`\n【已成功兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`);
             // message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
             await masterHelpShare(); //助力好友
+            await getAwardInviteFriend();
             // if ($.farmInfo.treeState === 2 || $.farmInfo.treeState === 3) {
             //     option['open-url'] = urlSchema;
             //     $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.farmInfo.farmUserPro.name}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
@@ -172,12 +173,12 @@ async function jdFruit() {
             // await predictionFruit(); //预测水果成熟时间
         } else {
             console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: `);
-            if ($.retry < 2) {
-                $.retry++
-                    console.log(`等待10秒后重试,第:${$.retry}次`);
-                await $.wait(10000);
-                await jdFruit();
-            }
+            // if ($.retry < 2) {
+            //     $.retry++
+            //         console.log(`等待10秒后重试,第:${$.retry}次`);
+            //     await $.wait(10000);
+            //     await jdFruit();
+            // }
         }
     } catch (e) {
         console.log(`任务执行异常，请检查执行日志 ‼️‼️`);
