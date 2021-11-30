@@ -171,7 +171,7 @@ async function jdFruit() {
             //
             // await predictionFruit(); //预测水果成熟时间
         } else {
-            console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: ${JSON.stringify($.farmInfo)}`);
+            console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: `);
             if ($.retry < 3) {
                 $.retry++
                     console.log(`等待10秒后重试,第:${$.retry}次`);
