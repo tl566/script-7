@@ -57,7 +57,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3';
     res["codes"] = [];
     $.authorMyShareIds = [...((res && res.codes) || [])];
     //开启红包,获取互助码
-    var chetou = process.env.CHETOU_NUMBER ? +process.env.CHETOU_NUMBER : 12
+    var chetou = process.env.JX_CHETOU_NUMBER ? +process.env.JX_CHETOU_NUMBER : cookiesArr.length
     console.log("车头" + chetou)
     for (let i = 0; i < chetou; i++) {
         cookie = cookiesArr[i];
@@ -88,7 +88,8 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3';
         cookie = cookiesArr[i];
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
         $.canHelp = true;
-        UA = UAInfo[$.UserName]
+        UA = `jdpingou;iPhone;4.13.0;14.4.2;${randomString(40)};network/wifi;model/iPhone10,2;appBuild/100609;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/${Math.random * 98 + 1};pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
+        UAInfo[$.UserName] = UA
 
         token = await getJxToken()
         await main();
