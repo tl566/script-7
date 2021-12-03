@@ -8,14 +8,14 @@
 ============Quantumultx===============
 [task_local]
 # 京东赚赚
-10 0 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdzz.js, tag=京东赚赚, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdzz.png, enabled=true
+10 11 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdzz.js, tag=京东赚赚, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdzz.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "10 0 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdzz.js,tag=京东赚赚
+cron "10 11 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdzz.js,tag=京东赚赚
 
 ===============Surge=================
-京东赚赚 = type=cron,cronexp="10 0 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdzz.js
+京东赚赚 = type=cron,cronexp="10 11 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdzz.js
 
 ============小火箭=========
 京东赚赚 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdzz.js, cronexpr="10 0 * * *", timeout=3600, enable=true
@@ -24,7 +24,7 @@ const $ = new Env('京东赚赚');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-let helpAuthor=true; // 帮助作者
+let helpAuthor=false; // 帮助作者
 const randomCount = $.isNode() ? 20 : 5;
 let jdNotify = true; // 是否关闭通知，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
@@ -40,7 +40,7 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const inviteCodes = [
-''
+  ''
 ]
 let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000);
 !(async () => {
@@ -78,12 +78,12 @@ let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
 async function jdWish() {
   $.bean = 0
@@ -100,13 +100,13 @@ async function jdWish() {
     let task = $.taskList[i]
     if (task['taskId'] === 1 && task['status'] !== 2) {
       console.log(`去做任务：${task.taskName}`)
-      await doTask({"taskId": task['taskId'],"mpVersion":"3.4.0"})
+      await doTask({"taskId": task['taskId'],"taskToken": task['taskToken'],"mpVersion":"3.4.0"})
     } else if (task['taskId'] !== 3 && task['status'] !== 2) {
       console.log(`去做任务：${task.taskName}`)
       if(task['itemId'])
-        await doTask({"itemId":task['itemId'],"taskId":task['taskId'],"mpVersion":"3.4.0"})
+        await doTask({"itemId":task['itemId'],"taskId":task['taskId'],"taskToken": task['taskToken'],"mpVersion":"3.4.0"})
       else
-        await doTask({"taskId": task['taskId'],"mpVersion":"3.4.0"})
+        await doTask({"taskId": task['taskId'],"taskToken": task['taskToken'],"mpVersion":"3.4.0"})
       await $.wait(3000)
     }
   }
@@ -221,7 +221,7 @@ function doTask(body, func = "doInteractTask") {
 async function helpFriends() {
   for (let code of $.newShareCodes) {
     if (!code) continue
-    await doTask({"itemId": code, "taskId": "3", "mpVersion": "3.4.0"}, "doHelpTask")
+    await doTask({"itemId": code, "taskId": "3", "taskToken": task['taskToken'],"mpVersion": "3.4.0"}, "doHelpTask")
   }
 }
 //格式化助力码

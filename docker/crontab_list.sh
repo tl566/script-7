@@ -104,6 +104,10 @@
 0 0,12 * * * node /scripts/jd_cfd_fresh_exchange.js >> /scripts/logs/jd_cfd_fresh_exchange.log 2>&1
 #临期京豆兑换为喜豆
 33 9 * * * node /scripts/jd_exchangejxbeans.js >> /scripts/logs/jd_exchangejxbeans.log 2>&1
+#组队分豆-安佳
+1 0,7,12 * * * node /scripts/jd_anjia.js >> /scripts/logs/jd_anjia.log 2>&1
+#星系牧场
+1 0-23/2 * * * node /scripts/jd_qqxing.js >> /scripts/logs/jd_qqxing.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
