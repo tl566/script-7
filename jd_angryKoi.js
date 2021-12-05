@@ -7,29 +7,28 @@ TG学习交流群：https://t.me/cdles
 */
 const $ = new Env("愤怒的锦鲤")
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randomString(40)}`
+const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random() * 4 + 10)}.${Math.ceil(Math.random() * 4)};${randomString(40)}`
 var kois = process.env.kois ?? ""
-let cookiesArr = []
+let cookiesArr = [];
 var helps = [];
-var tools= []
+var tools = [];
 !(async () => {
-    if(!kois){
+    if (!kois) {
         console.log("请在环境变量中填写需要助力的账号")
     }
     requireConfig()
     for (let i in cookiesArr) {
         cookie = cookiesArr[i]
-        if(kois.indexOf(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])!=-1){
-                var num="";
-                for(var g=0;g<6;g++)
-                {
-                     num+=Math.floor(Math.random()*10);
-                }
-            var data = await requestApi('h5launch',cookie,{
-                 "followShop":0,
-                 "random": num,
-                 "log":"42588613~8,~0iuxyee",
-                 "sceneid":"JLHBhPageh5"
+        if (kois.indexOf(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]) != -1) {
+            var num = "";
+            for (var g = 0; g < 6; g++) {
+                num += Math.floor(Math.random() * 10);
+            }
+            var data = await requestApi('h5launch', cookie, {
+                "followShop": 0,
+                "random": num,
+                "log": "42588613~8,~0iuxyee",
+                "sceneid": "JLHBhPageh5"
             });
             switch (data?.data?.result?.status) {
                 case 1://火爆
@@ -37,13 +36,13 @@ var tools= []
                 case 2://已经发起过
                     break;
                 default:
-                    if(data?.data?.result?.redPacketId){
-                        helps.push({redPacketId: data.data.result.redPacketId, success: false, id: i, cookie: cookie})
+                    if (data?.data?.result?.redPacketId) {
+                        helps.push({ redPacketId: data.data.result.redPacketId, success: false, id: i, cookie: cookie })
                     }
                     continue;
-            }   
-            data = await requestApi('h5activityIndex',cookie,{
-                "isjdapp":1
+            }
+            data = await requestApi('h5activityIndex', cookie, {
+                "isjdapp": 1
             });
             console.log("发起请求")
             switch (data?.data?.code) {
@@ -52,52 +51,72 @@ var tools= []
                 case 10002://活动正在进行，火爆号
                     break;
                 case 20001://红包活动正在进行，可拆
-                    helps.push({redPacketId: data.data.result.redpacketInfo.id, success: false, id: i, cookie: cookie})
+                    helps.push({ redPacketId: data.data.result.redpacketInfo.id, success: false, id: i, cookie: cookie })
                     break;
                 default:
                     break;
             }
         }
-        tools.push({id: i, cookie: cookie})   
+        tools.push({ id: i, cookie: cookie })
     }
-    for(let help of helps){
+    for (let help of helps) {
         open(help)
     }
     await $.wait(60000)
-})()  .catch((e) => {
+})().catch((e) => {
     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+})
+    .finally(() => {
+        $.done();
+    })
 
-function open(help){
-    var num="";
-    for(var i=0;i<6;i++)
-    {
-        num+=Math.floor(Math.random()*10);
-        }
+function open(help) {
+    var num = "";
+    for (var i = 0; i < 6; i++) {
+        num += Math.floor(Math.random() * 10);
+    }
     var tool = tools.pop()
-    if(!tool)return
-    if(help.success)return
+    if (!tool) return
+    if (help.success) return
     requestApi('jinli_h5assist', tool.cookie, {
         "redPacketId": help.redPacketId,
-        "followShop":0,
+        "followShop": 0,
         "random": num,
-        "log":"42588613~8,~0iuxyee",
-        "sceneid":"JLHBhPageh5"
-    }).then(function(data){
+        "log": "42588613~8,~0iuxyee",
+        "sceneid": "JLHBhPageh5"
+    }).then(function (data) {
         desc = data?.data?.result?.statusDesc
         if (desc && desc.indexOf("助力已满") != -1) {
+
             tools.unshift(tool)
-            help.success=true
+            help.success = true
+            openRedPacket(help.cookie)
         } else if (!data) {
             tools.unshift(tool)
         }
-        console.log(`${tool.id}->${help.id}`, desc)   
-        open(help)         
-    })   
+        console.log(`${tool.id}->${help.id}`, desc)
+        open(help)
+    })
 }
+
+async function openRedPacket(cookie) {
+    var num = "";
+    for (var g = 0; g < 6; g++) {
+        num += Math.floor(Math.random() * 10);
+    }
+    // https://api.m.jd.com/api?appid=jinlihongbao&functionId=h5receiveRedpacketAll&loginType=2&client=jinlihongbao&t=1638189287348&clientVersion=10.2.4&osVersion=-1
+    let resp = await requestApi('h5receiveRedpacketAll', cookie, {
+        "random": num,
+        "log": "42588613~8,~0iuxyee",
+        "sceneid": "JLHBhPageh5"
+    });
+    if (resp?.data?.biz_code == 0) {
+        console.info(`领取到 ${resp.data.result?.discount} 元红包`)
+    } else {
+        console.error(`领取红包失败，结果为 ${JSON.stringify(resp)}`)
+    }
+}
+
 function requestApi(functionId, cookie, body = {}) {
     return new Promise(resolve => {
         $.post({
@@ -133,7 +152,7 @@ function requireConfig() {
                     cookiesArr.push(jdCookieNode[item])
                 }
             })
-            if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+            if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => { };
         } else {
             cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
         }
@@ -211,7 +230,7 @@ function Env(t, e) {
             const i = this.getdata(t);
             if (i) try {
                 s = JSON.parse(this.getdata(t))
-            } catch {}
+            } catch { }
             return s
         }
         setjson(t, e) {
@@ -323,7 +342,7 @@ function Env(t, e) {
         initGotEnv(t) {
             this.got = this.got ? this.got : require("got"), this.cktough = this.cktough ? this.cktough : require("tough-cookie"), this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar, t && (t.headers = t.headers ? t.headers : {}, void 0 === t.headers.Cookie && void 0 === t.cookieJar && (t.cookieJar = this.ckjar))
         }
-        get(t, e = (() => {})) {
+        get(t, e = (() => { })) {
             t.headers && (delete t.headers["Content-Type"], delete t.headers["Content-Length"]), this.isSurge() || this.isLoon() ? (this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
                 "X-Surge-Skip-Scripting": !1
             })), $httpClient.get(t, (t, s, i) => {
@@ -373,7 +392,7 @@ function Env(t, e) {
                 e(s, i, i && i.body)
             }))
         }
-        post(t, e = (() => {})) {
+        post(t, e = (() => { })) {
             if (t.body && t.headers && !t.headers["Content-Type"] && (t.headers["Content-Type"] = "application/x-www-form-urlencoded"), t.headers && delete t.headers["Content-Length"], this.isSurge() || this.isLoon()) this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
                 "X-Surge-Skip-Scripting": !1
             })), $httpClient.post(t, (t, s, i) => {
