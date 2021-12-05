@@ -26,7 +26,7 @@ var tools = []
 
 let notify, allMessage = '';
 
-!(async() => {
+!(async () => {
     await requireConfig()
 
     console.log(`当前配置的车头数目：${chetou_number}，是否开启公平模式：${fair_mode}`)
@@ -34,7 +34,7 @@ let notify, allMessage = '';
     console.log("开始获取用于助力的账号列表")
     for (let i in cookiesArr) {
         // 将用于助力的账号加入列表
-        tools.push({ id: i, assisted: false, cookie: cookiesArr[i] })
+        tools.push({id: i, assisted: false, cookie: cookiesArr[i]})
     }
     console.log(`用于助力的数目为 ${tools.length}`)
     allMessage += `用于助力的数目为 ${tools.length}\n`
@@ -63,7 +63,7 @@ let notify, allMessage = '';
     allMessage += `本次互助顺序(车头优先，其余等概率随机，每次运行都不一样): ${cookieIndexOrder}\n\n`
 
     console.log("开始助力")
-        // 最多尝试2*账号数目次，避免无限尝试，保底
+    // 最多尝试2*账号数目次，避免无限尝试，保底
     let remainingTryCount = 2 * cookiesArr.length
     let helpIndex = 0
     while (helpIndex < cookiesArr.length && tools.length > 0 && remainingTryCount > 0) {
@@ -133,16 +133,15 @@ let notify, allMessage = '';
         await notify.sendNotify(`${$.name}`, `${allMessage}`)
     }
 })().catch((e) => {
-        $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+})
     .finally(() => {
         $.done();
     })
 
 // https://stackoverflow.com/a/2450976
 function shuffle(array) {
-    let currentIndex = array.length,
-        randomIndex;
+    let currentIndex = array.length, randomIndex;
 
     // While there remain elements to shuffle...
     while (currentIndex != 0) {
@@ -152,8 +151,7 @@ function shuffle(array) {
 
         // And swap it with the current element.
         [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]
-        ];
+            array[randomIndex], array[currentIndex]];
     }
 
     return array;
@@ -186,14 +184,14 @@ async function getHelpInfoForCk(cookieIndex, cookie) {
         await $.wait(5000)
     }
 
-    switch (data ? .data ? .result ? .status) {
-        case 1: //火爆
+    switch (data?.data?.result?.status) {
+        case 1://火爆
             console.debug(`h5launch 被风控，变成黑号了, data=${JSON.stringify(data)}`)
             return;
-        case 2: //已经发起过
+        case 2://已经发起过
             break;
         default:
-            if (data ? .data ? .result ? .redPacketId) {
+            if (data?.data?.result?.redPacketId) {
                 // 加入help队列
                 return {
                     redPacketId: data.data.result.redPacketId,
@@ -220,11 +218,10 @@ async function getHelpInfoForCk(cookieIndex, cookie) {
     }
 
 
-    if (data ? .data ? .result ? .redpacketConfigFillRewardInfo) {
+    if (data?.data?.result?.redpacketConfigFillRewardInfo) {
         // 打印今日红包概览
         let info = data.data.result
-        let headmanNickName = "",
-            packetTotalSum = 0;
+        let headmanNickName = "", packetTotalSum = 0;
         if (info.redpacketInfo) {
             headmanNickName = info.redpacketInfo.headmanNickName
             packetTotalSum = info.redpacketInfo.packetTotalSum
@@ -243,14 +240,14 @@ async function getHelpInfoForCk(cookieIndex, cookie) {
         }
     }
 
-    switch (data ? .data ? .code) {
-        case 20002: //已达拆红包数量限制
+    switch (data?.data?.code) {
+        case 20002://已达拆红包数量限制
             console.debug("已领取今天全部红包")
             break;
-        case 10002: //活动正在进行，火爆号
+        case 10002://活动正在进行，火爆号
             console.debug(`h5activityIndex 被风控，变成黑号了, data=${JSON.stringify(data)}`)
             break;
-        case 20001: //红包活动正在进行，可拆
+        case 20001://红包活动正在进行，可拆
             // 加入help队列
             return {
                 redPacketId: data.data.result.redpacketInfo.id,
@@ -270,7 +267,7 @@ async function appendRewardInfoToNotify(cookieIndex, cookie) {
     });
 
     // 判断是否有红包可以领
-    if (calcCanTakeRedpacketCount(data ? .data ? .result) > 0) {
+    if (calcCanTakeRedpacketCount(data?.data?.result) > 0) {
         let info = data.data.result
         let headmanNickName = "";
         if (info.redpacketInfo) {
@@ -294,10 +291,9 @@ async function appendRewardInfoToNotify(cookieIndex, cookie) {
     }
 
     // 打印今日红包概览
-    if (data ? .data ? .result ? .redpacketConfigFillRewardInfo) {
+    if (data?.data?.result?.redpacketConfigFillRewardInfo) {
         let info = data.data.result
-        let headmanNickName = "",
-            packetTotalSum = 0;
+        let headmanNickName = "", packetTotalSum = 0;
         if (info.redpacketInfo) {
             headmanNickName = info.redpacketInfo.headmanNickName
             packetTotalSum = info.redpacketInfo.packetTotalSum
@@ -328,7 +324,7 @@ async function appendRewardInfoToNotify(cookieIndex, cookie) {
 }
 
 function calcCanTakeRedpacketCount(info) {
-    if (!info ? .redpacketConfigFillRewardInfo) {
+    if (!info?.redpacketConfigFillRewardInfo) {
         return 0
     }
 
@@ -355,7 +351,7 @@ async function openRedPacket(cookie) {
         "log": "42588613~8,~0iuxyee",
         "sceneid": "JLHBhPageh5"
     });
-    if (resp ? .data ? .biz_code == 0) {
+    if (resp?.data?.biz_code == 0) {
         console.info(`领取到 ${resp.data.result?.discount} 元红包`)
     } else {
         console.error(`领取红包失败，结果为 ${JSON.stringify(resp)}`)
@@ -376,8 +372,8 @@ async function helpThisUser(help, tool) {
         "random": num,
         "log": "42588613~8,~0iuxyee",
         "sceneid": "JLHBhPageh5"
-    }).then(function(data) {
-        let desc = data ? .data ? .result ? .statusDesc
+    }).then(function (data) {
+        let desc = data?.data?.result?.statusDesc
         if (desc) {
             if (desc.indexOf("助力成功") != -1) {
                 help.helpCount += 1
@@ -434,7 +430,8 @@ async function requireConfig() {
                     cookiesArr.push(jdCookieNode[item])
                 }
             })
-            if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+            if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {
+            };
         } else {
             cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
         }
@@ -524,7 +521,8 @@ function Env(t, e) {
             const i = this.getdata(t);
             if (i) try {
                 s = JSON.parse(this.getdata(t))
-            } catch {}
+            } catch {
+            }
             return s
         }
 
@@ -567,13 +565,15 @@ function Env(t, e) {
         }
 
         loaddata() {
-            if (!this.isNode()) return {}; {
+            if (!this.isNode()) return {};
+            {
                 this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
                 const t = this.path.resolve(this.dataFile),
                     e = this.path.resolve(process.cwd(), this.dataFile),
                     s = this.fs.existsSync(t),
                     i = !s && this.fs.existsSync(e);
-                if (!s && !i) return {}; {
+                if (!s && !i) return {};
+                {
                     const i = s ? t : e;
                     try {
                         return JSON.parse(this.fs.readFileSync(i))
@@ -650,7 +650,8 @@ function Env(t, e) {
             this.got = this.got ? this.got : require("got"), this.cktough = this.cktough ? this.cktough : require("tough-cookie"), this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar, t && (t.headers = t.headers ? t.headers : {}, void 0 === t.headers.Cookie && void 0 === t.cookieJar && (t.cookieJar = this.ckjar))
         }
 
-        get(t, e = (() => {})) {
+        get(t, e = (() => {
+        })) {
             t.headers && (delete t.headers["Content-Type"], delete t.headers["Content-Length"]), this.isSurge() || this.isLoon() ? (this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
                 "X-Surge-Skip-Scripting": !1
             })), $httpClient.get(t, (t, s, i) => {
@@ -701,7 +702,8 @@ function Env(t, e) {
             }))
         }
 
-        post(t, e = (() => {})) {
+        post(t, e = (() => {
+        })) {
             if (t.body && t.headers && !t.headers["Content-Type"] && (t.headers["Content-Type"] = "application/x-www-form-urlencoded"), t.headers && delete t.headers["Content-Length"], this.isSurge() || this.isLoon()) this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
                 "X-Surge-Skip-Scripting": !1
             })), $httpClient.post(t, (t, s, i) => {
