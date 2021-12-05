@@ -59,6 +59,8 @@ let notify, allMessage = '';
         for (let idx = 0; idx < cookiesArr.length; idx++) {
             var cookie = cookiesArr[idx];
             if (kois.indexOf(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]) != -1) {
+                cookieIndexOrder.unshift(idx)
+            }else{
                 cookieIndexOrder.push(idx)
             }
         }
