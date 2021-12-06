@@ -58,12 +58,14 @@ let notify, allMessage = '';
         // 未开启公平模式，则按照顺序互助，前面的先互助满
         for (let idx = 0; idx < cookiesArr.length; idx++) {
             var cookie = cookiesArr[idx];
+            let otherIndexes = []
             if (kois.indexOf(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]) != -1) {
-                cookieIndexOrder.unshift(idx)
+                otherIndexes.push(idx)
             }else{
                 cookieIndexOrder.push(idx)
             }
         }
+        cookieIndexOrder = otherIndexes.concat(cookieIndexOrder)
     }
     console.log(`最终互助顺序如下（优先互助满前面的）：\n${cookieIndexOrder}`)
     allMessage += `本次互助顺序(车头优先，其余等概率随机，每次运行都不一样): ${cookieIndexOrder}\n\n`
