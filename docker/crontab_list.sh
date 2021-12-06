@@ -109,7 +109,9 @@
 #星系牧场
 1 0-23/2 * * * node /scripts/jd_qqxing.js >> /scripts/logs/jd_qqxing.log 2>&1
 #骁龙
-10 9,17 * * * node /scripts/jd_xiaolong.js >> /scripts/logs/jd_xiaolong.log 2>&1
+10 9,17 * * * node /scripts/jd_xiaolong.js >> /scripts/logs/jd_xiaolong.log 2>&
+#京东生鲜每日抽奖
+30 7 * * * node /scripts jd_sxLottery.js >> /scripts/logs/jd_sxLottery.log 2>&
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
