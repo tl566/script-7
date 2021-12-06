@@ -55,10 +55,11 @@ let notify, allMessage = '';
         shuffle(otherIndexes)
         cookieIndexOrder = cookieIndexOrder.concat(otherIndexes)
     } else {
+        let otherIndexes = []
         // 未开启公平模式，则按照顺序互助，前面的先互助满
         for (let idx = 0; idx < cookiesArr.length; idx++) {
             var cookie = cookiesArr[idx];
-            let otherIndexes = []
+            
             if (kois.indexOf(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]) != -1) {
                 otherIndexes.push(idx)
             }else{
