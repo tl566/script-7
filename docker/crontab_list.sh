@@ -63,7 +63,7 @@
 #一加
 25 14 * * * node /scripts/jd_yijia.js >> /scripts/logs/jd_yijia.log 2>&
 #幸运扭蛋
-11 12 * * * node /scripts/jd_lucky_egg.js >> /scripts/logs/jd_lucky_egg.log 2>&
+11 12 * * * node /scripts/jd_lucky_egg.js >> /scripts/logs/jd_lucky_egg.log 2>&1
 #魔方兑换
 0 0 * * * node /scripts/jd_mofang_exchange.js >> /scripts/logs/jd_mofang_exchange.log 2>&1
 # 手机狂欢城
@@ -109,9 +109,9 @@
 #星系牧场
 1 0-23/2 * * * node /scripts/jd_qqxing.js >> /scripts/logs/jd_qqxing.log 2>&1
 #骁龙
-10 9,17 * * * node /scripts/jd_xiaolong.js >> /scripts/logs/jd_xiaolong.log 2>&
+10 9,17 * * * node /scripts/jd_xiaolong.js >> /scripts/logs/jd_xiaolong.log 2>&1
 #京东生鲜每日抽奖
-30 7 * * * node /scripts jd_sxLottery.js >> /scripts/logs/jd_sxLottery.log 2>&
+30 7 * * * node /scripts jd_sxLottery.js >> /scripts/logs/jd_sxLottery.log 2>&1
 # 金榜年终奖
 5 0,2 * * * node /scripts/jd_split.js >> /scripts/logs/jd_split.log 2>&1
 ##############长期活动##############
