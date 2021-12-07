@@ -114,6 +114,8 @@
 30 7 * * * node /scripts/jd_sxLottery.js >> /scripts/logs/jd_sxLottery.log 2>&1
 #金榜年终奖
 5 0,2 * * * node /scripts/jd_split.js >> /scripts/logs/jd_split.log 2>&1
+#京东我的理想家
+6 7 * * *  node /scripts/jd_lxLottery.js >> /scripts/logs/jd_lxLottery.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
