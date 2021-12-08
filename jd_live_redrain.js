@@ -62,7 +62,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
           }
           continue
         }
-       // await receiveRedRain(id);
+        await receiveRedRain(id);
       }
     }
   if (allMessage) {
