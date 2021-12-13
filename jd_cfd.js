@@ -1280,7 +1280,7 @@ function browserTask(taskType) {
             await $.wait(2000);
           }
           //领取奖励
-          await awardTask(0, taskinfo, bizCode);
+          await awardTask(0, taskinfo,  "jxbfd");
         }
         break;
       case 1://成就任务
@@ -1749,7 +1749,7 @@ async function requestAlgo() {
       "expandParams": ""
     })
   }
-  new Promise(async resolve => {
+  return new Promise(async resolve => {
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
