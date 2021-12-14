@@ -236,7 +236,7 @@ function taskHomePage() {
 //领取任务API,需token
 function startTask(taskType) {
   // 从taskHomePage返回的数据里面拿taskType
-  let data = {taskType};
+  let data = {"isjdapp":1,"random":"33235811","log":"4817e3a2~8,~1wsv3ig","sceneid":"JLHBhPageh5", taskType};
   data['token'] = $.md5($.md5("j" + JSON.stringify(data) + "D"))
   return new Promise((resolve) => {
     $.post(taskUrl(arguments.callee.name.toString(), data), (err, resp, data) => {
@@ -281,7 +281,7 @@ async function active(taskType) {
 
 //获取具体任务详情API
 function getTaskDetailForColor(taskType) {
-  const data = {"clientInfo":{}, taskType};
+  const data = {"isjdapp":1,"random":"33235811","log":"4817e3a2~8,~1wsv3ig","sceneid":"JLHBhPageh5", taskType};
   return new Promise((resolve) => {
     $.post(taskUrl(arguments.callee.name.toString(), data), (err, resp, data) => {
       try {
@@ -325,7 +325,7 @@ function taskReportForColor(taskType, detailId) {
 }
 //领取做完任务后的红包
 function receiveTaskRedpacket(taskType) {
-  const body = {"isjdapp":1,"random":"33235811","log":"4817e3a2~8,~1wsv3ig","sceneid":"JLHBhPageh5"};
+  const body = {"isjdapp":1,"random":"33235811","log":"4817e3a2~8,~1wsv3ig","sceneid":"JLHBhPageh5", taskType};
   return new Promise((resolve) => {
     $.post(taskUrl('h5receiveRedpacketAll', body), (err, resp, data) => {
       try {
@@ -380,8 +380,9 @@ function jinli_h5assist(redPacketId) {
 }
 //领取红包API
 function h5receiveRedpacketAll() {
-  const options = taskUrl(arguments.callee.name.toString(), {"clientInfo":{}})
-  return new Promise((resolve) => {
+  const body = {"isjdapp":1,"random":"33235811","log":"4817e3a2~8,~1wsv3ig","sceneid":"JLHBhPageh5"};
+  const options = taskUrl(arguments.callee.name.toString(), body)
+    return new Promise((resolve) => {
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
@@ -568,7 +569,7 @@ function getAuthorShareCode(url) {
 
 function taskUrl(functionId, body = {}) {
   return {
-    url: `${JD_API_HOST}?appid=jinlihongbao&functionId=${functionId}&loginType=2&client=jinlihongbao&clientVersion=10.1.0&osVersion=iOS&d_brand=iPhone&d_model=iPhone&t=${new Date().getTime() * 1000}`,
+    url: `${JD_API_HOST}?appid=jinlihongbao&functionId=${functionId}&loginType=2&client=jinlihongbao&clientVersion=10.2.6&osVersion=iOS&d_brand=iPhone&d_model=iPhone&t=${new Date().getTime() * 1000}`,
     body: `body=${escape(JSON.stringify(body))}`,
     headers: {
       "Host": "api.m.jd.com",
