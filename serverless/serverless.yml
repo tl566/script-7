@@ -9,7 +9,7 @@ inputs:
   src: ./  #代码路径
   type: web # 函数类型，默认为 event(事件类型)，web(web类型)
   runtime: Python3.6 # 云函数运行时的环境
-  installDependency: true
+  # installDependency: true
   region: ap-guangzhou # 云函数所在区域
   description: "jd sign"
   memorySize: 512 # 内存大小，单位MB
