@@ -6,6 +6,10 @@ import hashlib
 import time
 import uuid
 from urllib.parse import quote
+from requests import post, get
+from urllib3 import disable_warnings
+
+disable_warnings()
 
 server = flask.Flask(__name__)
 
@@ -104,20 +108,68 @@ def get_sign(functionId, body, uuid, client, clientVersion):
     return sign
 
 
+def get_cookie(sign, body, key):
+    url = f"https://api.m.jd.com/client.action?functionId=genToken&{sign}"
+    headers = {
+        "cookie": key,
+        'user-agent': "JD4iPhone/167774 (iPhone; iOS 14.6; Scale/2.00)",
+        'accept-language': 'zh-Hans-CN;q=1, en-CN;q=0.9',
+        'content-type': 'application/x-www-form-urlencoded;'
+    }
+    try:
+        res = post(url, headers=headers, data=body, verify=False)
+        token = res.json()['tokenKey']
+    except Exception as error:
+        return False
+    url = 'https://un.m.jd.com/cgi-bin/app/appjmp'
+    params = {
+        'tokenKey': token,
+        'to': 'https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page',
+        'client_type': 'android',
+        'appid': 879,
+        'appup_type': 1,
+    }
+    try:
+        res = get(url=url, params=params, verify=False, allow_redirects=False).cookies.get_dict()
+    except Exception as error:
+        return False
+    if "app_open" in res['pt_key']:
+        cookie = f"pt_key={res['pt_key']};pt_pin={res['pt_pin']};"
+        return cookie
+    else:
+        return False
+
+
 @server.route('/genToken', methods=['post'])
 def main():
     url = request.values.get('url')
+    wskey = request.values.get('wskey')
     if url:
         body = '{"to":"%s"}' % url
         sign = get_sign("genToken", body, "".join(str(uuid.uuid4()).split("-")), "apple", "10.0.10")
         res = {"code": 200, "data": {"body": f'body={quote(body)}', "sign": sign}}
-        print(f"传入的链接：{url}\n计算得出的sign：{sign}\n编码后的body：{body}")
     else:
         res = {"code": 400, "data": "请传入url参数！"}
     if url:
-        print(f"传出的json包：{res}")
-    return json.dumps(res, ensure_ascii=False)
+        print(res)
+        return json.dumps(res, ensure_ascii=False)
+    if wskey and "pin" in wskey and "wskey" in wskey:
+        url = "https://plogin.m.jd.com/jd-mlogin/static/html/appjmp_blank.html"
+        body = '{"to":"%s"}' % url
+        sign = get_sign("genToken", body, "".join(str(uuid.uuid4()).split("-")), "apple", "10.0.10")
+        body = f'body={quote(body)}'
+        cookie = get_cookie(sign, body, wskey)
+        if cookie:
+            res = {"code": 200, "data": {"wskey": wskey, "cookie": cookie}}
+            print(res['data']['wskey'])
+        else:
+            res = {"code": 400, "data": "获取cookie失败！"}
+    else:
+        res = {"code": 400, "data": "请传入正确的wskey值！"}
+    if wskey:
+        print(res)
+        return json.dumps(res, ensure_ascii=False)
 
 
 if __name__ == '__main__':
-    server.run(host='0.0.0.0', port=9000)
+    server.run(host='0.0.0.0', port=9000, debug=True)
