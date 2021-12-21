@@ -1,16 +1,14 @@
 #组件信息
-app: jd-sign
 component: scf # (必填) 引用 component 的名称，当前用到的是 tencent-scf 组件
 name: app # (必填) 创建的实例名称，请修改成您的实例名称
 
 inputs:
-  name: ${app} #函数名称
+  name: jd-sign #函数名称
   namespace: default
   src: ./  #代码路径
   type: web # 函数类型，默认为 event(事件类型)，web(web类型)
   runtime: Python3.6 # 云函数运行时的环境
-  installDependency: true
-  region: ap-guangzhou # 云函数所在区域
+  region: ap-hongkong # 云函数所在区域
   description: "京东算sign并返回"
   publicAccess: true # 是否开启公网访问
   environment: #  环境变量
