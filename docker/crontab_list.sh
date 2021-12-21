@@ -106,7 +106,6 @@
 1 0,7,12 * * * node /scripts/jd_anjia.js >> /scripts/logs/jd_anjia.log 2>&1
 #星系牧场
 1 0-23/2 * * * node /scripts/jd_qqxing.js >> /scripts/logs/jd_qqxing.log 2>&1
-1 0-23/2 * * * node /scripts/jd_qqxing.js >> /scripts/logs/jd_qqxing.log 2>&1
 #京东我的理想家
 6 7 * * *  node /scripts/jd_lxLottery.js >> /scripts/logs/jd_lxLottery.log 2>&1
 #冰雪闪耀季
@@ -117,6 +116,8 @@
 0 0,18 * * * node /scripts/jd_mall_active.js >> /scripts/logs/jd_mall_active.log 2>&1
 #京车会签到
 19 7 * * * node /scripts/jd_jchsign.js >> /scripts/logs/jd_jchsign.log 2>&1
+#战队投注
+10 11,22 * * * node /scripts/jd_zd.js >> /scripts/logs/jd_zd.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,18 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
