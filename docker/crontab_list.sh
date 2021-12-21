@@ -279,3 +279,8 @@
 # */20 * * * * node /scripts/jd_family.js >> /scripts/logs/jd_family.log 2>&1
 # jd_cash_exchange
 # 0,1,2 0 * * * node /scripts/jd_cash_exchange.js >> /scripts/logs/jd_cash_exchange.log 2>&1
+##############其他活动#################
+#爱企查日常任务
+0 30 10,19 * * ? node /scripts/lf_aiqiche.js >> /scripts/logs/lf_aiqiche.log 2>&1
+#爱企查商城监控
+0 0/10 * * * ? node /scripts/lf_aiqichaShop.js >> /scripts/logs/lf_aiqichaShop.log 2>&1
