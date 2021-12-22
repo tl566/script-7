@@ -11,13 +11,10 @@
 const $ = new Env("爱企查日常任务");
 const axios = require("axios")
 const notify = $.isNode() ? require("./sendNotify") : "";
-//aqcookie = $.isNode() ? process.env.aqcCookies : "";
-aqcookie = ''
-if (!process.env.aqcCookies || process.env.aqcCookies === ''){
-    console.log(`缺少aqcCookies环境变量或者aqcCookies为空！`);return;
-    return;
-}else{
-    aqcookie = process.env.aqcCookies;
+let aqcCookies = process.env.aqcCookies;
+aqcookie='BDUSS=l5Z1gteDR1MzhlUmhZYXRqdmdURzN4VGJWOGNyWURUODRack1DSVYtSE9jT3BoRVFBQUFBJCQAAAAAAAAAAAEAAACu8V82wei34834wucwOTE4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM7jwmHO48JhSV;';
+if (aqcCookies){
+    aqcookie = aqcCookies;
 }
 aqcookieArr = [];
 
@@ -263,7 +260,7 @@ if (aqcookie) {
     }
     aqc();
 } else {
-    console.log("请手动抓取cookies");
+    console.log(`缺少aqcCookies环境变量或者aqcCookies为空！`);return;
     return;
 }
 
