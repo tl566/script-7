@@ -1,5 +1,5 @@
+// cron "*/10 * * * " lf_aiqichaShop.js
 /*
- cron "0 0/10 * * * ?" lf_aiqichaShop.js
 
  爱企查商城监控
  多商品请用逗号分割 格式:AQ03006,AQ03007,AQ03008 青龙变量aqcGood
