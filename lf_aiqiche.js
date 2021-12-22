@@ -1,5 +1,5 @@
 /*
- cron "25 8,19 * * " lf_aiqiche.js
+ cron "25 8,19 * * * " lf_aiqiche.js
  爱企查邀请连接：https://aiqicha.baidu.com/m/usercenter/inviteCode?uid=xlTM-TogKuTwmQHC-sdqfrmD-uu1DzQTsAmd
 
  手动抓取CK:https://passport.baidu.com/v2/?login 一个BDUSS=xxxxx;就行了 请安装axios依赖
