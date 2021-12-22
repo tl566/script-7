@@ -11,7 +11,13 @@
 const $ = new Env("爱企查日常任务");
 const axios = require("axios")
 const notify = $.isNode() ? require("./sendNotify") : "";
-aqcookie = $.isNode() ? process.env.aqcCookies : "";
+//aqcookie = $.isNode() ? process.env.aqcCookies : "";
+aqcookie = ''
+if (!process.env.aqcCookies || process.env.aqcCookies === ''){
+    console.log(`缺少aqcCookies环境变量或者aqcCookies为空！`);
+}else{
+    aqcookie = process.env.aqcCookies;
+}
 aqcookieArr = [];
 
 var sleep = ms => new Promise(resolve => setTimeout(resolve, ms));

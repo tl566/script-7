@@ -14,8 +14,16 @@
 const $ = new Env("爱企查商城监控");
 const axios = require("axios")
 const notify = $.isNode() ? require("./sendNotify") : "";
-aqcookie = $.isNode() ? process.env.aqcCookies : "";
-aqcGoods = $.isNode() ? process.env.aqcGood : "";
+if (!process.env.aqcCookies || process.env.aqcCookies === ''){
+    console.log(`缺少aqcCookies环境变量或者aqcCookies为空！`);
+}else{
+    aqcookie = process.env.aqcCookies;
+}
+if (!process.env.aqcGoods || process.env.aqcGoods === ''){
+    console.log(`缺少aqcGoods环境变量或者aqcGoods为空！`);
+}else{
+    aqcGoods = process.env.aqcGoods;
+}
 aqcookieArr = [];
 aqcookieGoodsArr = [];
 
