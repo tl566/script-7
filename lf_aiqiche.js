@@ -14,7 +14,8 @@ const notify = $.isNode() ? require("./sendNotify") : "";
 //aqcookie = $.isNode() ? process.env.aqcCookies : "";
 aqcookie = ''
 if (!process.env.aqcCookies || process.env.aqcCookies === ''){
-    console.log(`缺少aqcCookies环境变量或者aqcCookies为空！`);
+    console.log(`缺少aqcCookies环境变量或者aqcCookies为空！`);return;
+    return;
 }else{
     aqcookie = process.env.aqcCookies;
 }

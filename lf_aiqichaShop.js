@@ -16,11 +16,13 @@ const axios = require("axios")
 const notify = $.isNode() ? require("./sendNotify") : "";
 if (!process.env.aqcCookies || process.env.aqcCookies === ''){
     console.log(`缺少aqcCookies环境变量或者aqcCookies为空！`);
+    return;
 }else{
     aqcookie = process.env.aqcCookies;
 }
 if (!process.env.aqcGoods || process.env.aqcGoods === ''){
     console.log(`缺少aqcGoods环境变量或者aqcGoods为空！`);
+    return;
 }else{
     aqcGoods = process.env.aqcGoods;
 }
