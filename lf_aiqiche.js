@@ -12,7 +12,7 @@ const $ = new Env("爱企查日常任务");
 const axios = require("axios")
 const notify = $.isNode() ? require("./sendNotify") : "";
 let aqcCookies = process.env.aqcCookies;
-aqcookie='BDUSS=l5Z1gteDR1MzhlUmhZYXRqdmdURzN4VGJWOGNyWURUODRack1DSVYtSE9jT3BoRVFBQUFBJCQAAAAAAAAAAAEAAACu8V82wei34834wucwOTE4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM7jwmHO48JhSV;';
+aqcookie='';
 if (aqcCookies){
     aqcookie = aqcCookies;
 }
