@@ -5,12 +5,17 @@
  * 脚本是否耗时只看args_xh.maxLength的大小
  * 上一作者说了每天最多300个商店，总上限为500个，jd_unsubscribe.js我已更新为批量取关版
  * 请提前取关至少250个商店确保京东试用脚本正常运行
- *
+16 2 * * * jd_try.js
  * @Address: https://github.com/X1a0He/jd_scripts_fixed/blob/main/jd_try_xh.js
  * @LastEditors: X1a0He
  */
 const $ = new Env('京东试用')
 const URL = 'https://api.m.jd.com/client.action'
+
+const thefs = require('fs');
+const thepath = '/jd/scripts/0sendNotify_Annyooo.js'
+const notifyTip = $.isNode() ? process.env.MY_NOTIFYTIP : false;
+
 let trialActivityIdList = []
 let trialActivityTitleList = []
 let notifyMsg = ''
@@ -37,8 +42,9 @@ $.innerKeyWords =
         "女用", "神油", "足力健", "老年", "老人",
         "宠物", "饲料", "丝袜", "黑丝", "磨脚",
         "脚皮", "除臭", "性感", "内裤", "跳蛋",
-        "安全套", "龟头", "阴道", "阴部"
+        "安全套", "龟头", "阴道", "阴部", "手机卡"
     ]
+
 //下面很重要，遇到问题请把下面注释看一遍再来问
 let args_xh = {
     /*
@@ -48,7 +54,7 @@ let args_xh = {
      * C商品原价99元，试用价1元，如果下面设置为50，那么C商品将会被加入到待提交的试用组
      * 默认为0
      * */
-    jdPrice: process.env.JD_TRY_PRICE * 1 || 0,
+    jdPrice: process.env.JD_TRY_PRICE * 1 || 100,
     /*
      * 获取试用商品类型，默认为1，原来不是数组形式，我以为就只有几个tab，结果后面还有我服了
      * 1 - 精选
@@ -121,7 +127,7 @@ let args_xh = {
      * 不打印的缺点：无法清晰知道每个商品为什么会被过滤，哪个商品被添加到了待提交试用组
      * 可设置环境变量：JD_TRY_PLOG，默认为true
      * */
-    printLog: process.env.JD_TRY_PLOG || true,
+    printLog: process.env.JD_TRY_PLOG || false,
     /*
      * 白名单，是否打开，如果下面为true，那么黑名单会自动失效
      * 白名单和黑名单无法共存，白名单永远优先于黑名单
@@ -139,16 +145,15 @@ let args_xh = {
      * 每多少个账号发送一次通知，默认为4
      * 可通过环境变量控制 JD_TRY_SENDNUM
      * */
-    sendNum: process.env.JD_TRY_SENDNUM * 1 || 4,
+    sendNum: process.env.JD_TRY_SENDNUM * 1 || 50,
 }
 //上面很重要，遇到问题请把上面注释看一遍再来问
+let JD_TRY = true
 !(async() => {
-    console.log('X1a0He留：遇到问题请把脚本内的注释看一遍再来问，谢谢')
-    console.log('X1a0He留：遇到问题请把脚本内的注释看一遍再来问，谢谢')
     console.log('X1a0He留：遇到问题请把脚本内的注释看一遍再来问，谢谢')
     await $.wait(500)
     // 如果你要运行京东试用这个脚本，麻烦你把环境变量 JD_TRY 设置为 true
-    if(process.env.JD_TRY && process.env.JD_TRY === 'true'){
+    if(JD_TRY = true){
         await requireConfig()
         if(!$.cookiesArr[0]){
             $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
@@ -170,6 +175,12 @@ let args_xh = {
                         "open-url": "https://bean.m.jd.com/bean/signIndex.action"
                     });
                     await $.notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+
+                    if ($.isNode() && thefs.existsSync(thepath) && notifyTip){
+                        let thenotify = require(thepath);
+                        await thenotify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+                    }
+
                     continue
                 }
                 $.totalTry = 0
@@ -222,7 +233,7 @@ let args_xh = {
                 }
             }
             if($.isNode()){
-                if($.index % args_xh.sendNum === 0){
+                if($.index % args_xh.sendNum === 0 && notifyMsg != ""){
                     $.sentNum++;
                     console.log(`正在进行第 ${$.sentNum} 次发送通知，发送数量：${args_xh.sendNum}`)
                     await $.notify.sendNotify(`${$.name}`, `${notifyMsg}`)
@@ -231,7 +242,7 @@ let args_xh = {
             }
         }
         if($.isNode()){
-            if(($.cookiesArr.length - ($.sentNum * args_xh.sendNum)) < args_xh.sendNum){
+            if(($.cookiesArr.length - ($.sentNum * args_xh.sendNum)) < args_xh.sendNum && notifyMsg != ""){
                 console.log(`正在进行最后一次发送通知，发送数量：${($.cookiesArr.length - ($.sentNum * args_xh.sendNum))}`)
                 await $.notify.sendNotify(`${$.name}`, `${notifyMsg}`)
                 notifyMsg = "";
@@ -263,7 +274,7 @@ function requireConfig(){
         }
         if(typeof process.env.JD_TRY_WHITELIST === "undefined") args_xh.whiteList = false;
         else args_xh.whiteList = process.env.JD_TRY_WHITELIST === 'true';
-        if(typeof process.env.JD_TRY_PLOG === "undefined") args_xh.printLog = true;
+        if(typeof process.env.JD_TRY_PLOG === "undefined") args_xh.printLog = false;
         else args_xh.printLog = process.env.JD_TRY_PLOG === 'true';
         if(typeof process.env.JD_TRY_PASSZC === "undefined") args_xh.passZhongCao = true;
         else args_xh.passZhongCao = process.env.JD_TRY_PASSZC === 'true';
@@ -569,11 +580,24 @@ async function showMsg(){
         message += `🎉 ${$.completeNum}个商品已完成\n`;
         message += `🗑 ${$.giveupNum}个商品已放弃\n\n`;
     }
+
+    if ($.isNode() && $.successNum != 0 && thefs.existsSync(thepath) && notifyTip){
+        let the_msg = ``;
+        the_msg += `【京东账号${$.index}】${$.nickName || $.UserName}\n`;
+        the_msg += `${$.successNum}个商品待领取🎉\n`;
+        the_msg += `${$.getNum}个商品已领取\n`;
+        the_msg += `恭喜中奖免费试用，请尽快领取哦\n`;
+        the_msg += `入口：京东APP-首页滑动-特色频道-0元试新-我的试用`;
+        let thenotify = require(thepath);
+        await thenotify.sendNotify(`${$.name}`, `${the_msg}`)
+    }
+
+
     if(!args_xh.jdNotify || args_xh.jdNotify === 'false'){
         $.msg($.name, ``, message, {
             "open-url": 'https://try.m.jd.com/user'
         })
-        if($.isNode())
+        if($.isNode() && $.successNum != 0)
             notifyMsg += `${message}`
     } else {
         console.log(message)
