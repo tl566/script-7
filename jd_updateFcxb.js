@@ -9,7 +9,7 @@ let cookiesArr = [],
     cookie = '',
     message;
 $.shareCodes=[];
-let linkId = 'yCcpwTLIbY6pjaM42ACUVg';
+let linkId = 'pTTvJeSTrpthgk9ASBVGsw';
 
 
 if ($.isNode()) {
