@@ -1,7 +1,12 @@
+// @grant nodejs
 /*
+ENV
+
 JOY_COIN_MAXIMIZE =      最大化硬币收益，如果合成后全部挖土后还有空位，则开启此模式（默认开启） 0关闭 1开启
 
 请确保新用户助力过开工位，否则开启游戏了就不算新用户，后面就不能助力开工位了！！！！！！！！！！
+
+如需关闭请添加变量，变量名：HELP_JOYPARK，变量值：false
 
 更新地址：https://github.com/Tsukasa007/my_script
 
@@ -27,6 +32,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '';
+let hotFlag = false;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -78,14 +84,15 @@ message = ""
       }
       console.log(`\n\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if ($.isNode()) {
-        if (process.env.HELP_JOYPARK && process.env.HELP_JOYPARK == "true") {
+        if (process.env.HELP_JOYPARK && process.env.HELP_JOYPARK == "false") {
+        } else {
           await getShareCode()
           if ($.kgw_invitePin && $.kgw_invitePin.length) {
-            $.log("开始帮【zero205】助力开工位\n");
+            $.log("开始帮作者助力开工位\n");
             $.kgw_invitePin = [...($.kgw_invitePin || [])][Math.floor((Math.random() * $.kgw_invitePin.length))];
             let resp = await getJoyBaseInfo(undefined, 2, $.kgw_invitePin);
             if (resp.helpState && resp.helpState === 1) {
-              $.log("帮【zero205】开工位成功，感谢！\n");
+              $.log("帮作者开工位成功，感谢！\n");
             } else if (resp.helpState && resp.helpState === 3) {
               $.log("你不是新用户！跳过开工位助力\n");
             } else if (resp.helpState && resp.helpState === 2) {
@@ -109,6 +116,7 @@ message = ""
       //从低合到高
       await doJoyMergeAll($.activityJoyList)
       await getGameMyPrize()
+	  await $.wait(1500)
     }
   }
 })()
@@ -129,7 +137,7 @@ async function getJoyBaseInfo(taskId = '', inviteType = '', inviterPin = '', pri
           if (printLog) {
             $.log(`等级: ${data.data.level}|金币: ${data.data.joyCoin}`);
             if (data.data.level >= 30 && $.isNode()) {
-              $.log(`【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看使用优惠券\n活动入口：京东极速版APP->我的->汪汪乐园`);
+              await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看使用优惠券\n活动入口：京东极速版APP->我的->汪汪乐园`);
               $.log(`\n开始解锁新场景...\n`);
               await doJoyRestart()
             }
@@ -162,7 +170,7 @@ function getJoyList(printLog = false) {
               //$.wait(50);
               $.log(`id:${data.data.activityJoyList[i].id}|name: ${data.data.activityJoyList[i].name}|level: ${data.data.activityJoyList[i].level}`);
               if (data.data.activityJoyList[i].level >= 30 && $.isNode()) {
-                $.log(`【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请尽快前往活动查看领取\n活动入口：京东极速版APP->汪汪乐园\n更多脚本->"https://github.com/zero205/JD_tencent_scf"`);
+                await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请尽快前往活动查看领取\n活动入口：京东极速版APP->汪汪乐园\n`);
                 $.log(`\n开始解锁新场景...\n`);
                 await doJoyRestart()
               }
@@ -280,6 +288,9 @@ async function doJoyMergeAll(activityJoyList) {
     $.log(`开始合成 ${minLevel} ${joyMinLevelArr[0].id} <=> ${joyMinLevelArr[1].id} 【限流严重，5秒后合成！如失败会重试】`);
     await $.wait(5000)
     await doJoyMerge(joyMinLevelArr[0].id, joyMinLevelArr[1].id);
+	    if (hotFlag) {
+      return false;
+    }
     await getJoyList()
     await doJoyMergeAll($.activityJoyList)
   } else if (joyMinLevelArr.length === 1 && joyMinLevelArr[0].level < fastBuyLevel) {
@@ -337,12 +348,17 @@ function doJoyMerge(joyId1, joyId2) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
           data = {}
+          hotFlag = true;
         } else {
           data = JSON.parse(data);
           $.log(`合成 ${joyId1} <=> ${joyId2} ${data.success ? `成功！` : `失败！【${data.errMsg}】 code=${data.code}`}`)
+          if (data.code == '1006') {
+            hotFlag = true
+          }
         }
       } catch (e) {
         $.logErr(e, resp)
+        hotFlag = true;
       } finally {
         resolve(data.data);
       }
@@ -487,7 +503,7 @@ function apCashWithDraw(id, poolBaseId, prizeGroupId, prizeBaseId) {
 function getShareCode() {
   return new Promise(resolve => {
       $.get({
-          url: "http://adguard.ipq.co/joypark.json",
+          url: "https://raw.githubusercontent.com/msechen/shareCodes/main/joypark.json",
           headers: {
               "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
           }
