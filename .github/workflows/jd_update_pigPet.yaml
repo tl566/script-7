@@ -1,4 +1,4 @@
-name: 更新金榜年终奖助力码
+name: 更新金融养猪大转盘助力码
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
   watch:
     types: started
   repository_dispatch:
-    types: jd_updateSplit
+    types: jd_update_pigPet
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,9 +26,9 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【更新金榜年终奖助力码】'
+      - name: '运行 【更新金融养猪大转盘助力码】'
         run: |
-          node jd_updateSplit.js
+          node jd_update_pigPet.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
       - name: commit
@@ -43,4 +43,4 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           branch: master
       - name: Purge CDN Cache
-        run: curl https://purge.jsdelivr.net/gh/DX3242/updateTeam@master/shareCodes/split.json           
+        run: curl https://purge.jsdelivr.net/gh/DX3242/updateTeam@master/shareCodes/pigPet.json           
