@@ -47,7 +47,7 @@ $.JOY_COIN_MAXIMIZE = process.env.JOY_COIN_MAXIMIZE === '1'
 $.log(`最大化收益模式: 已${$.JOY_COIN_MAXIMIZE ? `默认开启` : `关闭`}  `)
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
-message = ""
+let message = '';
 !(async () => {
     $.user_agent = require('./USER_AGENTS').USER_AGENT
     if (!cookiesArr[0]) {
@@ -83,6 +83,8 @@ message = ""
                 continue
             }
             console.log(`\n\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+            subTitle = '';
+            wwlevel = '';
             // if ($.isNode()) {
             //     if (process.env.HELP_JOYPARK && process.env.HELP_JOYPARK == "false") {
             //     } else {
@@ -107,6 +109,9 @@ message = ""
             //下地后还有有钱买Joy并且买了Joy
             $.hasJoyCoin = true
             await getJoyBaseInfo(undefined, undefined, undefined, true);
+            if (wwlevel >= 30) {
+                continue;
+            }
             $.activityJoyList = []
             $.workJoyInfoList = []
             await getJoyList(true);
@@ -118,6 +123,9 @@ message = ""
             await getGameMyPrize()
             await $.wait(1500)
         }
+    }
+    if ($.isNode() && message && $.ctrTemp) {
+        await notify.sendNotify(`${$.name}`, `${message}`)
     }
 })()
     .catch((e) => $.logErr(e))
@@ -136,11 +144,13 @@ async function getJoyBaseInfo(taskId = '', inviteType = '', inviterPin = '', pri
                     data = JSON.parse(data);
                     if (printLog) {
                         $.log(`等级: ${data.data.level}|金币: ${data.data.joyCoin}`);
-                        if (data.data.level >= 30 && $.isNode()) {
-                            await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看使用优惠券\n活动入口：京东极速版APP->我的->汪汪乐园`);
-                            $.log(`\n开始解锁新场景...\n`);
-                            await doJoyRestart()
-                        }
+                        wwlevel =data.data.level;
+                        message += `${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看使用优惠券\n活动入口：京东极速版APP->我的->汪汪乐园`;
+                        // if (data.data.level >= 30 && $.isNode()) {
+                        //     await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看使用优惠券\n活动入口：京东极速版APP->我的->汪汪乐园`);
+                        //     $.log(`\n开始解锁新场景...\n`);
+                        //     await doJoyRestart()
+                        // }
                     }
                     $.joyBaseInfo = data.data
                 }
@@ -170,9 +180,12 @@ function getJoyList(printLog = false) {
                             //$.wait(50);
                             $.log(`id:${data.data.activityJoyList[i].id}|name: ${data.data.activityJoyList[i].name}|level: ${data.data.activityJoyList[i].level}`);
                             if (data.data.activityJoyList[i].level >= 30 && $.isNode()) {
-                                await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请尽快前往活动查看领取\n活动入口：京东极速版APP->汪汪乐园\n`);
-                                $.log(`\n开始解锁新场景...\n`);
-                                await doJoyRestart()
+                                // await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请尽快前往活动查看领取\n活动入口：京东极速版APP->汪汪乐园\n`);
+                                // $.log(`\n开始解锁新场景...\n`);
+                                // await doJoyRestart()
+                                wwlevel =data.data.level;
+                                message += `${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看使用优惠券\n活动入口：京东极速版APP->我的->汪汪乐园`;
+                                break;
                             }
                         }
                         $.log("\n在铲土的joy⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️")
