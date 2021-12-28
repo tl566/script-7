@@ -318,7 +318,7 @@ function task(function_id, body, isCommon = 0) {
                             }
                         }
                     } else {
-                        $.log("京东没有返回数据")
+                        // $.log("京东没有返回数据")
                     }
                 }
             } catch (error) {
