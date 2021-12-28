@@ -296,7 +296,10 @@ function task(function_id, body, isCommon = 0) {
                                 case 'getPrize':
                                     console.log(data.data.name)
                                     $.getPrize = data.data.name;
-                                    await notify.sendNotify($.name, data.data.name, '', `\n`);
+                                    if (data.data.name) {
+                                        message += data.data.name + " "
+                                    }
+                                    // await notify.sendNotify($.name, data.data.name, '', `\n`);
                                     break
                                 default:
                                     $.log(JSON.stringify(data))
