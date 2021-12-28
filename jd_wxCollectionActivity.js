@@ -1,7 +1,7 @@
 /*
 https://lzkj-isv.isvjcloud.com/wxgame/activity/8530275?activityId=
 
-推送设置 isPush 推送模式, 设置为 false 每次推送, true 跑完了推送
+推送设置 DoPush 推送模式, 设置为 false 每次推送, true 跑完了推送
 
 JD_CART_REMOVESIZE || 20; // 运行一次取消多全部已关注的商品。数字0表示不取关任何商品
 JD_CART_REMOVEALL || true;    //是否清空，如果为false，则上面设置了多少就只删除多少条
@@ -148,7 +148,7 @@ if ($.isNode()) {
     cookiesArr.reverse();
     cookiesArr = cookiesArr.filter(item => !!item);
 }
-let isPush = process.env.isPush || false; // 设置为 false 每次推送, true 跑完了推送
+let doPush = process.env.DoPush || false; // 设置为 false 每次推送, true 跑完了推送
 let removeSize = process.env.JD_CART_REMOVESIZE || 20; // 运行一次取消多全部已关注的商品。数字0表示不取关任何商品
 let isRemoveAll = process.env.JD_CART_REMOVEALL || true;    //是否清空，如果为false，则上面设置了多少就只删除多少条
 $.keywords = process.env.JD_CART_KEYWORDS || []
@@ -304,7 +304,7 @@ function task(function_id, body, isCommon = 0) {
                                 case 'getPrize':
                                     console.log(data.data.name)
                                     $.getPrize = data.data.name;
-                                    if (isPush === true) {
+                                    if (doPush === true) {
                                         if (data.data.name) {
                                             message += data.data.name + " "
                                         }
