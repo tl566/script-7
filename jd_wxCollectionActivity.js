@@ -173,7 +173,7 @@ $.keywordsNum = 0;
                     continue
                 }
                 authorCodeList = [
-                    'b5d9535918264a4f92fff9d314d7db81',
+                    '',
                 ]
                 $.bean = 0;
                 $.ADID = getUUID('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 1);
