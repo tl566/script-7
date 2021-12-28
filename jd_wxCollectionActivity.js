@@ -185,11 +185,11 @@ $.keywordsNum = 0;
                 $.drawInfoName = false
                 $.getPrize = null;
                 await addCart();
-                if($.drawInfoName === false || $.getPrize === null){
-                    break
-                } else if($.getPrize != null && !$.getPrize.includes("京豆")){
-                    break
-                }
+                // if($.drawInfoName === false || $.getPrize === null){
+                //     break
+                // } else if($.getPrize != null && !$.getPrize.includes("京豆")){
+                //     break
+                // }
                 await $.wait(3000)
                 await requireConfig();
                 do {
