@@ -304,7 +304,7 @@ function task(function_id, body, isCommon = 0) {
                                 case 'getPrize':
                                     console.log(data.data.name)
                                     $.getPrize = data.data.name;
-                                    if (isPush) {
+                                    if (isPush === true) {
                                         if (data.data.name) {
                                             message += data.data.name + " "
                                         }
